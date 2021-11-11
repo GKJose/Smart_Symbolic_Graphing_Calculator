@@ -55,7 +55,6 @@ static disp_size_t disp_size;
 
 static lv_obj_t * tv;
 static lv_obj_t * calendar;
-static lv_obj_t * calendar_header;
 static lv_style_t style_text_muted;
 static lv_style_t style_title;
 static lv_style_t style_icon;
@@ -104,36 +103,36 @@ void lv_demo_widgets(void)
 #if LV_FONT_MONTSERRAT_24
         font_large     =  &lv_font_montserrat_24;
 #else
-        LV_LOG_WARN("LV_FONT_MONTSERRAT_24 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.")
+        LV_LOG_WARN("LV_FONT_MONTSERRAT_24 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.");
 #endif
 #if LV_FONT_MONTSERRAT_16
         font_normal    =  &lv_font_montserrat_16;
 #else
-        LV_LOG_WARN("LV_FONT_MONTSERRAT_16 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.")
+        LV_LOG_WARN("LV_FONT_MONTSERRAT_16 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.");
 #endif
     } else if(disp_size == DISP_MEDIUM) {
         tab_h = 45;
 #if LV_FONT_MONTSERRAT_20
         font_large     =  &lv_font_montserrat_20;
 #else
-        LV_LOG_WARN("LV_FONT_MONTSERRAT_20 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.")
+        LV_LOG_WARN("LV_FONT_MONTSERRAT_20 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.");
 #endif
 #if LV_FONT_MONTSERRAT_14
         font_normal    =  &lv_font_montserrat_14;
 #else
-        LV_LOG_WARN("LV_FONT_MONTSERRAT_14 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.")
+        LV_LOG_WARN("LV_FONT_MONTSERRAT_14 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.");
 #endif
     } else { /* disp_size == DISP_SMALL */
         tab_h = 45;
 #if LV_FONT_MONTSERRAT_18
         font_large     =  &lv_font_montserrat_18;
 #else
-    LV_LOG_WARN("LV_FONT_MONTSERRAT_18 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.")
+    LV_LOG_WARN("LV_FONT_MONTSERRAT_18 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.");
 #endif
 #if LV_FONT_MONTSERRAT_12
         font_normal    =  &lv_font_montserrat_12;
 #else
-    LV_LOG_WARN("LV_FONT_MONTSERRAT_12 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.")
+    LV_LOG_WARN("LV_FONT_MONTSERRAT_12 is not enabled for the widgets demo. Using LV_FONT_DEFAULT instead.");
 #endif
     }
 
@@ -1193,6 +1192,8 @@ static void ta_event_cb(lv_event_t * e)
         lv_keyboard_set_textarea(kb, NULL);
         lv_obj_set_height(tv, LV_VER_RES);
         lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);
+        lv_indev_reset(NULL, ta);
+
     }
     else if(code == LV_EVENT_READY || code == LV_EVENT_CANCEL) {
         lv_obj_set_height(tv, LV_VER_RES);
@@ -1214,14 +1215,14 @@ static void birthday_event_cb(lv_event_t * e)
                 calendar = lv_calendar_create(lv_layer_top());
                 lv_obj_set_style_bg_opa(lv_layer_top(), LV_OPA_50, 0);
                 lv_obj_set_style_bg_color(lv_layer_top(), lv_palette_main(LV_PALETTE_GREY), 0);
-                if(disp_size == DISP_SMALL) lv_obj_set_size(calendar, 180, 180);
-                else if(disp_size == DISP_MEDIUM) lv_obj_set_size(calendar, 200, 200);
-                else  lv_obj_set_size(calendar, 300, 300);
+                if(disp_size == DISP_SMALL) lv_obj_set_size(calendar, 180, 200);
+                else if(disp_size == DISP_MEDIUM) lv_obj_set_size(calendar, 200, 220);
+                else  lv_obj_set_size(calendar, 300, 330);
                 lv_calendar_set_showed_date(calendar, 1990, 01);
                 lv_obj_align(calendar, LV_ALIGN_CENTER, 0, 30);
                 lv_obj_add_event_cb(calendar, calendar_event_cb, LV_EVENT_ALL, ta);
 
-                calendar_header = lv_calendar_header_dropdown_create(lv_layer_top(), calendar);
+                lv_calendar_header_dropdown_create(calendar);
             }
         }
     }
@@ -1231,7 +1232,7 @@ static void calendar_event_cb(lv_event_t * e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t * ta = lv_event_get_user_data(e);
-    lv_obj_t * obj = lv_event_get_target(e);
+    lv_obj_t * obj = lv_event_get_current_target(e);
     if(code == LV_EVENT_VALUE_CHANGED) {
         lv_calendar_date_t d;
         lv_calendar_get_pressed_date(obj, &d);
@@ -1240,9 +1241,7 @@ static void calendar_event_cb(lv_event_t * e)
         lv_textarea_set_text(ta, buf);
 
         lv_obj_del(calendar);
-        lv_obj_del(calendar_header);
         calendar = NULL;
-        calendar_header = NULL;
         lv_obj_clear_flag(lv_layer_top(), LV_OBJ_FLAG_CLICKABLE);
         lv_obj_set_style_bg_opa(lv_layer_top(), LV_OPA_TRANSP, 0);
     }
@@ -1306,10 +1305,10 @@ static void chart_event_cb(lv_event_t * e)
         if(dsc->part == LV_PART_TICKS && dsc->id == LV_CHART_AXIS_PRIMARY_X) {
             if(lv_chart_get_type(obj) == LV_CHART_TYPE_BAR) {
                 const char * month[] = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
-                lv_snprintf(dsc->text, sizeof(dsc->text), "%s", month[dsc->value]);
+                lv_snprintf(dsc->text, dsc->text_length, "%s", month[dsc->value]);
             } else {
                 const char * month[] = {"Jan", "Febr", "March", "Apr", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
-                lv_snprintf(dsc->text, sizeof(dsc->text), "%s", month[dsc->value]);
+                lv_snprintf(dsc->text, dsc->text_length, "%s", month[dsc->value]);
             }
         }
 
@@ -1421,7 +1420,7 @@ static void shop_chart_event_cb(lv_event_t * e)
         /*Set the markers' text*/
         if(dsc->part == LV_PART_TICKS && dsc->id == LV_CHART_AXIS_PRIMARY_X) {
             const char * month[] = {"Jan", "Febr", "March", "Apr", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
-            lv_snprintf(dsc->text, sizeof(dsc->text), "%s", month[dsc->value]);
+            lv_snprintf(dsc->text, dsc->text_length, "%s", month[dsc->value]);
         }
         if(dsc->part == LV_PART_ITEMS) {
             dsc->rect_dsc->bg_opa = LV_OPA_TRANSP; /*We will draw it later*/

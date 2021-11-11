@@ -82,7 +82,16 @@ void lv_disp_load_scr(lv_obj_t * scr)
 {
     lv_disp_t * d = lv_obj_get_disp(scr);
     if(!d) return;  /*Shouldn't happen, just to be sure*/
+
+    lv_obj_t * old_scr = d->act_scr;
+
+    if(d->act_scr) lv_event_send(old_scr, LV_EVENT_SCREEN_UNLOAD_START, NULL);
+    if(d->act_scr) lv_event_send(scr, LV_EVENT_SCREEN_LOAD_START, NULL);
+
     d->act_scr = scr;
+
+    if(d->act_scr) lv_event_send(scr, LV_EVENT_SCREEN_LOADED, NULL);
+    if(d->act_scr) lv_event_send(old_scr, LV_EVENT_SCREEN_UNLOADED, NULL);
 
     lv_obj_invalidate(scr);
 }
@@ -126,14 +135,13 @@ lv_obj_t * lv_disp_get_layer_sys(lv_disp_t * disp)
  */
 void lv_disp_set_theme(lv_disp_t * disp, lv_theme_t * th)
 {
-	if(disp == NULL) disp = lv_disp_get_default();
+    if(disp == NULL) disp = lv_disp_get_default();
     disp->theme = th;
 
     if(disp->screen_cnt == 3 &&
-        lv_obj_get_child_cnt(disp->screens[0]) == 0 &&
-        lv_obj_get_child_cnt(disp->screens[1]) == 0 &&
-        lv_obj_get_child_cnt(disp->screens[2]) == 0)
-    {
+       lv_obj_get_child_cnt(disp->screens[0]) == 0 &&
+       lv_obj_get_child_cnt(disp->screens[1]) == 0 &&
+       lv_obj_get_child_cnt(disp->screens[2]) == 0) {
         lv_theme_apply(disp->screens[0]);
     }
 }
@@ -144,7 +152,7 @@ void lv_disp_set_theme(lv_disp_t * disp, lv_theme_t * th)
  */
 lv_theme_t * lv_disp_get_theme(lv_disp_t * disp)
 {
-	if(disp == NULL) disp = lv_disp_get_default();
+    if(disp == NULL) disp = lv_disp_get_default();
     return disp->theme;
 }
 
@@ -219,16 +227,21 @@ void lv_disp_set_bg_opa(lv_disp_t * disp, lv_opa_t opa)
  */
 void lv_scr_load_anim(lv_obj_t * new_scr, lv_scr_load_anim_t anim_type, uint32_t time, uint32_t delay, bool auto_del)
 {
+
     lv_disp_t * d = lv_obj_get_disp(new_scr);
     lv_obj_t * act_scr = lv_scr_act();
 
-    if(d->del_prev && act_scr != d->scr_to_load && d->scr_to_load) {
-        lv_obj_del(act_scr);
+    /*If an other screen load animation is in progress
+     *make target screen loaded immediately. */
+    if(d->scr_to_load && act_scr != d->scr_to_load) {
         lv_disp_load_scr(d->scr_to_load);
         lv_anim_del(d->scr_to_load, NULL);
         lv_obj_set_pos(d->scr_to_load, 0, 0);
         lv_obj_remove_local_style_prop(d->scr_to_load, LV_STYLE_OPA, 0);
 
+        if(d->del_prev) {
+            lv_obj_del(act_scr);
+        }
         act_scr = d->scr_to_load;
     }
 
@@ -322,8 +335,11 @@ void lv_scr_load_anim(lv_obj_t * new_scr, lv_scr_load_anim_t anim_type, uint32_t
             break;
     }
 
+    lv_event_send(act_scr, LV_EVENT_SCREEN_UNLOAD_START, NULL);
+
     lv_anim_start(&a_new);
     lv_anim_start(&a_old);
+
 }
 
 /**
@@ -402,9 +418,11 @@ lv_timer_t * _lv_disp_get_refr_timer(lv_disp_t * disp)
 static void scr_load_anim_start(lv_anim_t * a)
 {
     lv_disp_t * d = lv_obj_get_disp(a->var);
-    d->prev_scr = lv_scr_act();
 
-    lv_disp_load_scr(a->var);
+    d->prev_scr = lv_scr_act();
+    d->act_scr = a->var;
+
+    lv_event_send(d->act_scr, LV_EVENT_SCREEN_LOAD_START, NULL);
 }
 
 static void opa_scale_anim(void * obj, int32_t v)
@@ -425,6 +443,9 @@ static void set_y_anim(void * obj, int32_t v)
 static void scr_anim_ready(lv_anim_t * a)
 {
     lv_disp_t * d = lv_obj_get_disp(a->var);
+
+    lv_event_send(d->act_scr, LV_EVENT_SCREEN_LOADED, NULL);
+    lv_event_send(d->prev_scr, LV_EVENT_SCREEN_UNLOADED, NULL);
 
     if(d->prev_scr && d->del_prev) lv_obj_del(d->prev_scr);
     d->prev_scr = NULL;

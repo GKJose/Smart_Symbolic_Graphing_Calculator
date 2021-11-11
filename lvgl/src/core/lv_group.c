@@ -79,7 +79,7 @@ void lv_group_del(lv_group_t * group)
     /*Remove the objects from the group*/
     lv_obj_t ** obj;
     _LV_LL_READ(&group->obj_ll, obj) {
-        if((*obj)->spec_attr) (*obj)->spec_attr->group_p = NULL;
+        if((*obj)->spec_attr)(*obj)->spec_attr->group_p = NULL;
     }
 
     _lv_ll_clear(&(group->obj_ll));
@@ -149,8 +149,8 @@ void lv_group_swap_obj(lv_obj_t * obj1, lv_obj_t * obj2)
     /*Do not add the object twice*/
     lv_obj_t ** obj_i;
     _LV_LL_READ(&g1->obj_ll, obj_i) {
-        if((*obj_i) == obj1) (*obj_i) =  obj2;
-        else if((*obj_i) == obj2) (*obj_i) =  obj1;
+        if((*obj_i) == obj1)(*obj_i) =  obj2;
+        else if((*obj_i) == obj2)(*obj_i) =  obj1;
     }
 
     if(*g1->obj_focus == obj1) lv_group_focus_obj(obj2);
@@ -211,7 +211,7 @@ void lv_group_remove_all_objs(lv_group_t * group)
     /*Remove the objects from the group*/
     lv_obj_t ** obj;
     _LV_LL_READ(&group->obj_ll, obj) {
-        if((*obj)->spec_attr) (*obj)->spec_attr->group_p = NULL;
+        if((*obj)->spec_attr)(*obj)->spec_attr->group_p = NULL;
     }
 
     _lv_ll_clear(&(group->obj_ll));
@@ -395,8 +395,18 @@ static void focus_next_core(lv_group_t * group, void * (*begin)(const lv_ll_t *)
         if(obj_next == NULL) continue;
         if(lv_obj_get_state(*obj_next) & LV_STATE_DISABLED) continue;
 
-        /*Hidden objects don't receive focus*/
-        if(lv_obj_has_flag(*obj_next, LV_OBJ_FLAG_HIDDEN) == false) break;
+        /*Hidden objects don't receive focus.
+         *If any parent is hidden, the object is also hidden)*/
+        lv_obj_t * parent = *obj_next;
+        while(parent) {
+            if(lv_obj_has_flag(parent, LV_OBJ_FLAG_HIDDEN)) break;
+            parent = lv_obj_get_parent(parent);
+        }
+
+        if(parent && lv_obj_has_flag(parent, LV_OBJ_FLAG_HIDDEN)) continue;
+
+        /*If we got her a good candidate is found*/
+        break;
     }
 
     if(obj_next == group->obj_focus) return; /*There's only one visible object and it's already focused*/

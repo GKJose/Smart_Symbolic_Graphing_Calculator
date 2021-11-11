@@ -1,12 +1,13 @@
 /**
  * @file lv_demo_conf.h
- * Configuration file for v8.1.0-dev
+ * Configuration file for v8.1.1-dev
  *
  */
 /*
  * COPY THIS FILE AS lv_demo_conf.h
  */
 
+/* clang-format off */
 #if 0 /*Set it to "1" to enable the content*/
 
 #ifndef LV_DEMO_CONF_H

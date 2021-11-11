@@ -81,7 +81,7 @@ static uint32_t spectrum_i_pause = 0;
 static uint32_t bar_ofs = 0;
 static uint32_t spectrum_lane_ofs_start = 0;
 static uint32_t bar_rot = 0;
-static uint32_t time;
+static uint32_t time_act;
 static lv_timer_t *  sec_counter_timer;
 static const lv_font_t * font_small;
 static const lv_font_t * font_large;
@@ -195,10 +195,10 @@ lv_obj_t * _lv_demo_music_main_create(lv_obj_t * parent)
 
     lv_obj_set_grid_dsc_array(cont, grid_cols, grid_rows);
     lv_obj_set_style_grid_row_align(cont, LV_GRID_ALIGN_SPACE_BETWEEN, 0);
-    lv_obj_set_grid_cell(title_box, LV_GRID_ALIGN_STRETCH, 0, 1, LV_ALIGN_CENTER, 2, 1);
-    lv_obj_set_grid_cell(icon_box, LV_GRID_ALIGN_STRETCH, 0, 1, LV_ALIGN_CENTER, 4, 1);
-    lv_obj_set_grid_cell(ctrl_box, LV_GRID_ALIGN_STRETCH, 0, 1, LV_ALIGN_CENTER, 6, 1);
-    lv_obj_set_grid_cell(handle_box, LV_GRID_ALIGN_STRETCH, 0, 2, LV_ALIGN_CENTER, 8, 1);
+    lv_obj_set_grid_cell(title_box, LV_GRID_ALIGN_STRETCH, 0, 1, LV_GRID_ALIGN_CENTER, 2, 1);
+    lv_obj_set_grid_cell(icon_box, LV_GRID_ALIGN_STRETCH, 0, 1, LV_GRID_ALIGN_CENTER, 4, 1);
+    lv_obj_set_grid_cell(ctrl_box, LV_GRID_ALIGN_STRETCH, 0, 1, LV_GRID_ALIGN_CENTER, 6, 1);
+    lv_obj_set_grid_cell(handle_box, LV_GRID_ALIGN_STRETCH, 0, 2, LV_GRID_ALIGN_CENTER, 8, 1);
     lv_obj_set_grid_cell(spectrum_obj, LV_GRID_ALIGN_STRETCH, 1, 1, LV_GRID_ALIGN_CENTER, 1, 9);
 #endif
 
@@ -624,7 +624,7 @@ static lv_obj_t * create_handle(lv_obj_t * parent)
 static void track_load(uint32_t id)
 {
     spectrum_i = 0;
-    time = 0;
+    time_act = 0;
     spectrum_i_pause = 0;
     lv_slider_set_value(slider_obj, 0, LV_ANIM_OFF);
     lv_label_set_text(time_obj, "0:00");
@@ -934,9 +934,9 @@ static void next_click_event_cb(lv_event_t * e)
 
 static void timer_cb(lv_timer_t * t)
 {
-    time++;
-    lv_label_set_text_fmt(time_obj, "%d:%02d", time / 60, time % 60);
-    lv_slider_set_value(slider_obj, time, LV_ANIM_ON);
+    time_act++;
+    lv_label_set_text_fmt(time_obj, "%d:%02d", time_act / 60, time_act % 60);
+    lv_slider_set_value(slider_obj, time_act, LV_ANIM_ON);
 }
 
 static void spectrum_end_cb(lv_anim_t * a)

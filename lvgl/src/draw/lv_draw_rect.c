@@ -28,10 +28,11 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
+#if LV_USE_EXTERNAL_RENDERER == 0
 LV_ATTRIBUTE_FAST_MEM static void draw_bg(const lv_area_t * coords, const lv_area_t * clip_area,
                                           const lv_draw_rect_dsc_t * dsc);
 LV_ATTRIBUTE_FAST_MEM static void draw_bg_img(const lv_area_t * coords, const lv_area_t * clip,
-                                          const lv_draw_rect_dsc_t * dsc);
+                                              const lv_draw_rect_dsc_t * dsc);
 LV_ATTRIBUTE_FAST_MEM static void draw_border(const lv_area_t * coords, const lv_area_t * clip,
                                               const lv_draw_rect_dsc_t * dsc);
 
@@ -49,10 +50,11 @@ void draw_border_generic(const lv_area_t * clip_area, const lv_area_t * outer_ar
                          lv_coord_t rout, lv_coord_t rin, lv_color_t color, lv_opa_t opa, lv_blend_mode_t blend_mode);
 
 static void draw_border_simple(const lv_area_t * clip, const lv_area_t * outer_area, const lv_area_t * inner_area,
-        lv_color_t color, lv_opa_t opa);
+                               lv_color_t color, lv_opa_t opa);
 
 #if LV_DRAW_COMPLEX
-LV_ATTRIBUTE_FAST_MEM static inline lv_color_t grad_get(const lv_draw_rect_dsc_t * dsc, lv_coord_t s, lv_coord_t i);
+    LV_ATTRIBUTE_FAST_MEM static inline lv_color_t grad_get(const lv_draw_rect_dsc_t * dsc, lv_coord_t s, lv_coord_t i);
+#endif
 #endif
 
 /**********************
@@ -89,6 +91,7 @@ LV_ATTRIBUTE_FAST_MEM void lv_draw_rect_dsc_init(lv_draw_rect_dsc_t * dsc)
     dsc->border_side = LV_BORDER_SIDE_FULL;
 }
 
+#if LV_USE_EXTERNAL_RENDERER == 0
 /**
  * Draw a rectangle
  * @param coords the coordinates of the rectangle
@@ -147,7 +150,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_bg(const lv_area_t * coords, const lv_are
 
     /*Complex case: there is gradient, mask, or radius*/
 #if LV_DRAW_COMPLEX == 0
-    LV_LOG_WARN("Can't draw complex rectangle because LV_DRAW_COMPLEX = 0")
+    LV_LOG_WARN("Can't draw complex rectangle because LV_DRAW_COMPLEX = 0");
 #else
     /*Get clipped fill area which is the real draw area.
      *It is always the same or inside `fill_area`*/
@@ -173,12 +176,15 @@ LV_ATTRIBUTE_FAST_MEM static void draw_bg(const lv_area_t * coords, const lv_are
 
     /*In case of horizontal gradient pre-compute a line with a gradient*/
     lv_color_t * grad_map = NULL;
+    lv_color_t * grad_map_ofs = NULL;
     if(grad_dir == LV_GRAD_DIR_HOR) {
         grad_map = lv_mem_buf_get(coords_w * sizeof(lv_color_t));
         int32_t i;
         for(i = 0; i < coords_w; i++) {
-            grad_map[i] = grad_get(dsc, coords_w, i - coords_bg.x1);
+            grad_map[i] = grad_get(dsc, coords_w, i);
         }
+        grad_map_ofs = grad_map;
+        if(dsc->bg_grad_dir == LV_GRAD_DIR_HOR) grad_map_ofs += draw_area.x1 - coords_bg.x1;
     }
 
     int32_t h;
@@ -203,7 +209,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_bg(const lv_area_t * coords, const lv_are
                 _lv_blend_fill(clip_area, &blend_area, dsc->bg_color, mask_buf, mask_res, LV_OPA_COVER, dsc->blend_mode);
             }
             else if(grad_dir == LV_GRAD_DIR_HOR) {
-                _lv_blend_map(clip_area, &blend_area, grad_map, mask_buf, mask_res, LV_OPA_COVER, dsc->blend_mode);
+                _lv_blend_map(clip_area, &blend_area, grad_map_ofs, mask_buf, mask_res, LV_OPA_COVER, dsc->blend_mode);
             }
             else if(grad_dir == LV_GRAD_DIR_VER) {
                 lv_color_t c = grad_get(dsc, coords_h, h - coords_bg.y1);
@@ -236,7 +242,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_bg(const lv_area_t * coords, const lv_are
                 _lv_blend_fill(clip_area, &blend_area, dsc->bg_color, mask_buf, mask_res, LV_OPA_COVER, dsc->blend_mode);
             }
             else if(grad_dir == LV_GRAD_DIR_HOR) {
-                _lv_blend_map(clip_area, &blend_area, grad_map, mask_buf, mask_res, LV_OPA_COVER, dsc->blend_mode);
+                _lv_blend_map(clip_area, &blend_area, grad_map_ofs, mask_buf, mask_res, LV_OPA_COVER, dsc->blend_mode);
             }
             else if(grad_dir == LV_GRAD_DIR_VER) {
                 lv_color_t c = grad_get(dsc, coords_h, top_y - coords_bg.y1);
@@ -252,7 +258,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_bg(const lv_area_t * coords, const lv_are
                 _lv_blend_fill(clip_area, &blend_area, dsc->bg_color, mask_buf, mask_res, LV_OPA_COVER, dsc->blend_mode);
             }
             else if(grad_dir == LV_GRAD_DIR_HOR) {
-                _lv_blend_map(clip_area, &blend_area, grad_map, mask_buf, mask_res, LV_OPA_COVER, dsc->blend_mode);
+                _lv_blend_map(clip_area, &blend_area, grad_map_ofs, mask_buf, mask_res, LV_OPA_COVER, dsc->blend_mode);
             }
             else if(grad_dir == LV_GRAD_DIR_VER) {
                 lv_color_t c = grad_get(dsc, coords_h, bottom_y - coords_bg.y1);
@@ -283,10 +289,10 @@ LV_ATTRIBUTE_FAST_MEM static void draw_bg(const lv_area_t * coords, const lv_are
             blend_area.y1 = h;
             blend_area.y2 = h;
             if(grad_dir == LV_GRAD_DIR_NONE) {
-                 _lv_blend_fill(clip_area, &blend_area, dsc->bg_color, mask_buf, mask_res, opa, dsc->blend_mode);
+                _lv_blend_fill(clip_area, &blend_area, dsc->bg_color, mask_buf, mask_res, opa, dsc->blend_mode);
             }
             else if(grad_dir == LV_GRAD_DIR_HOR) {
-                _lv_blend_map(clip_area, &blend_area, grad_map, mask_buf, mask_res, opa, dsc->blend_mode);
+                _lv_blend_map(clip_area, &blend_area, grad_map_ofs, mask_buf, mask_res, opa, dsc->blend_mode);
             }
             else if(grad_dir == LV_GRAD_DIR_VER) {
                 lv_color_t c = grad_get(dsc, coords_h, h - coords_bg.y1);
@@ -308,7 +314,7 @@ bg_clean_up:
 }
 
 LV_ATTRIBUTE_FAST_MEM static void draw_bg_img(const lv_area_t * coords, const lv_area_t * clip,
-                                          const lv_draw_rect_dsc_t * dsc)
+                                              const lv_draw_rect_dsc_t * dsc)
 {
     if(dsc->bg_img_src == NULL) return;
     if(dsc->bg_img_opa <= LV_OPA_MIN) return;
@@ -354,7 +360,8 @@ LV_ATTRIBUTE_FAST_MEM static void draw_bg_img(const lv_area_t * coords, const lv
             area.y2 = area.y1 + header.h - 1;
 
             lv_draw_img(&area, clip, dsc->bg_img_src, &img_dsc);
-        } else {
+        }
+        else {
             lv_area_t area;
             area.y1 = coords->y1;
             area.y2 = area.y1 + header.h - 1;
@@ -420,7 +427,6 @@ LV_ATTRIBUTE_FAST_MEM static inline lv_color_t grad_get(const lv_draw_rect_dsc_t
 LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv_area_t * clip,
                                               const lv_draw_rect_dsc_t * dsc)
 {
-
     /*Check whether the shadow is visible*/
     if(dsc->shadow_width == 0) return;
     if(dsc->shadow_opa <= LV_OPA_MIN) return;
@@ -495,7 +501,6 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
     shadow_draw_corner_buf(&core_area, (uint16_t *)sh_buf, dsc->shadow_width, r_sh);
 #endif
 
-
     /*Skip a lot of masking if the background will cover the shadow that would be masked out*/
     bool mask_any = lv_draw_mask_is_any(&shadow_area);
     bool simple = true;
@@ -539,7 +544,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
         sh_buf_tmp += clip_area_sub.x1 - (shadow_area.x2 - corner_size + 1);
 
         /*Do not mask if out of the bg*/
-        if(!mask_any && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
+        if(simple && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
         else simple_sub = simple;
         mask_act = simple_sub ? &sh_buf_tmp : &mask_buf;
         if(w > 0) {
@@ -575,7 +580,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
         sh_buf_tmp += (blend_area.y2 - clip_area_sub.y2) * corner_size;
         sh_buf_tmp += clip_area_sub.x1 - (shadow_area.x2 - corner_size + 1);
         /*Do not mask if out of the bg*/
-        if(!mask_any && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
+        if(simple && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
         else simple_sub = simple;
         mask_act = simple_sub ? &sh_buf_tmp : &mask_buf;
 
@@ -601,6 +606,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
     blend_area.x2 = shadow_area.x2 - corner_size;
     blend_area.y1 = shadow_area.y1;
     blend_area.y2 = shadow_area.y1 + corner_size - 1;
+    blend_area.y2 = LV_MIN(blend_area.y2, h_half);
 
     if(_lv_area_intersect(&clip_area_sub, &blend_area, clip) && !_lv_area_is_in(&clip_area_sub, &bg_area, r_bg)) {
         lv_coord_t w = lv_area_get_width(&clip_area_sub);
@@ -608,7 +614,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
         sh_buf_tmp += (clip_area_sub.y1 - blend_area.y1) * corner_size;
 
         /*Do not mask if out of the bg*/
-        if(!mask_any && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
+        if(simple && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
         else simple_sub = simple;
 
         if(w > 0) {
@@ -622,9 +628,11 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
                     mask_res = lv_draw_mask_apply(mask_buf, clip_area_sub.x1, y, w);
                     if(mask_res == LV_DRAW_MASK_RES_FULL_COVER) mask_res = LV_DRAW_MASK_RES_CHANGED;
                     _lv_blend_fill(&clip_area_sub, &blend_area, dsc->shadow_color, mask_buf, mask_res, dsc->shadow_opa, dsc->blend_mode);
-                } else {
+                }
+                else {
                     lv_opa_t line_opa = opa == LV_OPA_COVER ? sh_buf_tmp[0] : (sh_buf_tmp[0] * dsc->shadow_opa) >> 8;
-                    _lv_blend_fill(&clip_area_sub, &blend_area, dsc->shadow_color, NULL, LV_DRAW_MASK_RES_FULL_COVER, line_opa, dsc->blend_mode);
+                    _lv_blend_fill(&clip_area_sub, &blend_area, dsc->shadow_color, NULL, LV_DRAW_MASK_RES_FULL_COVER, line_opa,
+                                   dsc->blend_mode);
                 }
                 sh_buf_tmp += corner_size;
             }
@@ -636,6 +644,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
     blend_area.x2 = shadow_area.x2 - corner_size;
     blend_area.y1 = shadow_area.y2 - corner_size + 1;
     blend_area.y2 = shadow_area.y2;
+    blend_area.y1 = LV_MAX(blend_area.y1, h_half + 1);
 
     if(_lv_area_intersect(&clip_area_sub, &blend_area, clip) && !_lv_area_is_in(&clip_area_sub, &bg_area, r_bg)) {
         lv_coord_t w = lv_area_get_width(&clip_area_sub);
@@ -648,7 +657,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
                 blend_area.y2 = y;
 
                 /*Do not mask if out of the bg*/
-                if(!mask_any && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
+                if(simple && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
                 else simple_sub = simple;
 
                 if(!simple_sub) {
@@ -656,9 +665,11 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
                     mask_res = lv_draw_mask_apply(mask_buf, clip_area_sub.x1, y, w);
                     if(mask_res == LV_DRAW_MASK_RES_FULL_COVER) mask_res = LV_DRAW_MASK_RES_CHANGED;
                     _lv_blend_fill(&clip_area_sub, &blend_area, dsc->shadow_color, mask_buf, mask_res, dsc->shadow_opa, dsc->blend_mode);
-                } else {
+                }
+                else {
                     lv_opa_t line_opa = opa == LV_OPA_COVER ? sh_buf_tmp[0] : (sh_buf_tmp[0] * dsc->shadow_opa) >> 8;
-                    _lv_blend_fill(&clip_area_sub, &blend_area, dsc->shadow_color, NULL, LV_DRAW_MASK_RES_FULL_COVER, line_opa, dsc->blend_mode);
+                    _lv_blend_fill(&clip_area_sub, &blend_area, dsc->shadow_color, NULL, LV_DRAW_MASK_RES_FULL_COVER, line_opa,
+                                   dsc->blend_mode);
 
                 }
                 sh_buf_tmp += corner_size;
@@ -674,15 +685,16 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
     /*Do not overdraw the other corners*/
     blend_area.y1 = LV_MIN(blend_area.y1, h_half + 1);
     blend_area.y2 = LV_MAX(blend_area.y2, h_half);
+    blend_area.x1 = LV_MAX(blend_area.x1, w_half);
 
     if(_lv_area_intersect(&clip_area_sub, &blend_area, clip) && !_lv_area_is_in(&clip_area_sub, &bg_area, r_bg)) {
         lv_coord_t w = lv_area_get_width(&clip_area_sub);
         sh_buf_tmp = sh_buf;
         sh_buf_tmp += (corner_size - 1) * corner_size;
-        sh_buf_tmp += clip_area_sub.x1 - blend_area.x1;
+        sh_buf_tmp += clip_area_sub.x1 - (shadow_area.x2 - corner_size + 1);
 
         /*Do not mask if out of the bg*/
-        if(!mask_any && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
+        if(simple && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
         else simple_sub = simple;
         mask_act = simple_sub ? &sh_buf_tmp : &mask_buf;
 
@@ -719,7 +731,6 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
         sh_buf_tmp += corner_size;
     }
 
-
     /*Left side*/
     blend_area.x1 = shadow_area.x1;
     blend_area.x2 = shadow_area.x1 + corner_size - 1;
@@ -728,6 +739,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
     /*Do not overdraw the other corners*/
     blend_area.y1 = LV_MIN(blend_area.y1, h_half + 1);
     blend_area.y2 = LV_MAX(blend_area.y2, h_half);
+    blend_area.x2 = LV_MIN(blend_area.x2, w_half - 1);
 
     if(_lv_area_intersect(&clip_area_sub, &blend_area, clip) && !_lv_area_is_in(&clip_area_sub, &bg_area, r_bg)) {
         lv_coord_t w = lv_area_get_width(&clip_area_sub);
@@ -736,7 +748,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
         sh_buf_tmp += clip_area_sub.x1 - blend_area.x1;
 
         /*Do not mask if out of the bg*/
-        if(!mask_any && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
+        if(simple && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
         else simple_sub = simple;
         mask_act = simple_sub ? &sh_buf_tmp : &mask_buf;
         if(w > 0) {
@@ -771,7 +783,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
         sh_buf_tmp += clip_area_sub.x1 - blend_area.x1;
 
         /*Do not mask if out of the bg*/
-        if(!mask_any && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
+        if(simple && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
         else simple_sub = simple;
         mask_act = simple_sub ? &sh_buf_tmp : &mask_buf;
 
@@ -809,7 +821,7 @@ LV_ATTRIBUTE_FAST_MEM static void draw_shadow(const lv_area_t * coords, const lv
         sh_buf_tmp += clip_area_sub.x1 - blend_area.x1;
 
         /*Do not mask if out of the bg*/
-        if(!mask_any && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
+        if(simple && _lv_area_is_out(&clip_area_sub, &bg_area, r_bg)) simple_sub = true;
         else simple_sub = simple;
         mask_act = simple_sub ? &sh_buf_tmp : &mask_buf;
         if(w > 0) {
@@ -1071,7 +1083,9 @@ void draw_border_generic(const lv_area_t * clip_area, const lv_area_t * outer_ar
 {
     opa = opa >= LV_OPA_COVER ? LV_OPA_COVER : opa;
 
-    if(rout == 0 || rin == 0) {
+    bool mask_any = lv_draw_mask_is_any(outer_area);
+
+    if(!mask_any && rout == 0 && rin == 0) {
         draw_border_simple(clip_area, outer_area, inner_area, color, opa);
         return;
     }
@@ -1082,8 +1096,6 @@ void draw_border_generic(const lv_area_t * clip_area, const lv_area_t * outer_ar
     lv_area_t draw_area;
     if(!_lv_area_intersect(&draw_area, outer_area, clip_area)) return;
     int32_t draw_area_w = lv_area_get_width(&draw_area);
-
-    bool mask_any = lv_draw_mask_is_any(outer_area);
 
     /*Create a mask if there is a radius*/
     lv_opa_t * mask_buf = lv_mem_buf_get(draw_area_w);
@@ -1120,7 +1132,7 @@ void draw_border_generic(const lv_area_t * clip_area, const lv_area_t * outer_ar
     if(mask_any) {
         blend_area.x1 = draw_area.x1;
         blend_area.x2 = draw_area.x2;
-        for(h = draw_area.y1; h < draw_area.y2; h++) {
+        for(h = draw_area.y1; h <= draw_area.y2; h++) {
             if(!top_side && h < core_area.y1) continue;
             if(!bottom_side && h > core_area.y2) break;
 
@@ -1134,8 +1146,10 @@ void draw_border_generic(const lv_area_t * clip_area, const lv_area_t * outer_ar
 
         lv_draw_mask_free_param(&mask_rin_param);
         lv_draw_mask_remove_id(mask_rin_id);
-        lv_draw_mask_free_param(&mask_rout_param);
-        lv_draw_mask_remove_id(mask_rout_id);
+        if(mask_rout_id != LV_MASK_ID_INV) {
+            lv_draw_mask_free_param(&mask_rout_param);
+            lv_draw_mask_remove_id(mask_rout_id);
+        }
         lv_mem_buf_release(mask_buf);
         return;
     }
@@ -1146,8 +1160,7 @@ void draw_border_generic(const lv_area_t * clip_area, const lv_area_t * outer_ar
 
     bool split_hor = true;
     if(left_side && right_side && top_side && bottom_side &&
-       core_w < SPLIT_LIMIT)
-    {
+       core_w < SPLIT_LIMIT) {
         split_hor = false;
     }
 
@@ -1213,7 +1226,8 @@ void draw_border_generic(const lv_area_t * clip_area, const lv_area_t * outer_ar
                 _lv_blend_fill(clip_area, &blend_area, color, mask_buf, mask_res, opa, blend_mode);
             }
         }
-    } else {
+    }
+    else {
         /*Left corners*/
         blend_area.x1 = draw_area.x1;
         blend_area.x2 = LV_MIN(draw_area.x2, core_area.x1 - 1);
@@ -1284,7 +1298,7 @@ void draw_border_generic(const lv_area_t * clip_area, const lv_area_t * outer_ar
 }
 
 static void draw_border_simple(const lv_area_t * clip, const lv_area_t * outer_area, const lv_area_t * inner_area,
-        lv_color_t color, lv_opa_t opa)
+                               lv_color_t color, lv_opa_t opa)
 {
     bool top_side = outer_area->y1 <= inner_area->y1 ? true : false;
     bool bottom_side = outer_area->y2 >= inner_area->y2 ? true : false;
@@ -1325,3 +1339,5 @@ static void draw_border_simple(const lv_area_t * clip, const lv_area_t * outer_a
     }
 
 }
+
+#endif
