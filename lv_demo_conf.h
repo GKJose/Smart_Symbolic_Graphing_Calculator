@@ -50,6 +50,7 @@
 #define LV_DEMO_MUSIC_AUTO_PLAY  0
 #endif
 
+#define USE_LV_ANIMATION 1
 #endif /*LV_EX_CONF_H*/
 
 #endif /*End of "Content enable"*/
