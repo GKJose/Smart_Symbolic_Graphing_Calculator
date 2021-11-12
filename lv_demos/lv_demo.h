@@ -7,6 +7,11 @@
 #define LV_DEMO_H
 
 #ifdef __cplusplus
+#include "src/lv_demo_calculator/lv_demo_calculator.h"
+#endif
+
+
+#ifdef __cplusplus
 extern "C" {
 #endif
 

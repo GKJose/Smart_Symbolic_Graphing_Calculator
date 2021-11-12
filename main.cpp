@@ -9,8 +9,11 @@
 
 #define DISP_BUF_SIZE (64 * 320)
 
+using namespace lv_demo_calculator;
+
 int main(void)
 {
+    int a = 4;
     /*LittlevGL init*/
     lv_init();
 
@@ -40,11 +43,13 @@ int main(void)
     indev_drv.read_cb = evdev_read;
     lv_indev_drv_register(&indev_drv);
     /*Create a Demo*/
-    lv_demo_widgets();
+    //lv_demo_widgets();
+     createTextArea();
 
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {
         lv_task_handler();
+        //fetchAndSolve();
         usleep(5000);
     }
 
