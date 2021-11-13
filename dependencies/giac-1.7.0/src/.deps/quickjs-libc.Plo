@@ -1,0 +1,1 @@
+quickjs-libc.lo: quickjs-libc.c

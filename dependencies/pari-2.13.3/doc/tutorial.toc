@@ -1,0 +1,22 @@
+{\hskip 0.5cm1. Greetings!\dotfill4}
+{\hskip 0.5cm2. Warming up\dotfill7}
+{\hskip 0.5cm3. The Remaining PARI Types\dotfill9}
+{\hskip 0.5cm4. Elementary Arithmetic Functions\dotfill14}
+{\hskip 0.5cm5. Performing Linear Algebra\dotfill15}
+{\hskip 0.5cm6. Using Transcendental Functions\dotfill17}
+{\hskip 0.5cm7. Using Numerical Tools\dotfill20}
+{\hskip 0.5cm8. Polynomials\dotfill22}
+{\hskip 0.5cm9. Power series\dotfill25}
+{\hskip 0.5cm10. Working with Elliptic Curves\dotfill25}
+{\hskip 0.5cm11. Working in Quadratic Number Fields\dotfill30}
+{\hskip 0.5cm12. Working in General Number Fields\dotfill35}
+{\sevenrm \hskip 1cm12.1. Elements\dotfill35}
+{\sevenrm \hskip 1cm12.2. Ideals\dotfill39}
+{\sevenrm \hskip 1cm12.3. Class groups and units, {\fam \ttfam \tentt bnf}\dotfill41}
+{\sevenrm \hskip 1cm12.4. Class field theory, {\fam \ttfam \tentt bnr}\dotfill43}
+{\sevenrm \hskip 1cm12.5. Galois theory over ${\fam \bffam \tenbf Q}$\dotfill44}
+{\hskip 0.5cm13. Working with associative algebras\dotfill45}
+{\sevenrm \hskip 1cm13.1. Arbitrary associative algebras\dotfill45}
+{\sevenrm \hskip 1cm13.2. Central simple algebras over number fields\dotfill48}
+{\hskip 0.5cm14. Plotting\dotfill51}
+{\hskip 0.5cm15. GP Programming\dotfill58}

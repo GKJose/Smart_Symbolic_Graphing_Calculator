@@ -1,0 +1,29 @@
+Function: dirpowerssum
+Section: number_theoretical
+C-Name: dirpowerssum0
+Prototype: GGp
+Help: dirpowerssum(n,x): return 1^x + 2^x + ... + n^x.
+Doc: for positive integer $n$ and complex number $x$, return the sum
+ $1^x + 2^x + \dots + n^x$. This is the same as \kbd{vecsum(dirpowers(n,x))},
+ but faster and using only $O(\sqrt{n})$ memory instead of $O(n)$.
+ \bprog
+ ? dirpowers(5, 2)
+ %1 = [1, 4, 9, 16, 25]
+ ? vecsum(%)
+ %2 = 55
+ ? dirpowerssum(5, 2)
+ %3 = 55
+ ? \p200
+ ? dirpowerssum(10^7, 1/2 + I * sqrt(3));
+ time = 29,884 ms.
+ ? vecsum(dirpowers(10^7, 1/2 + I * sqrt(3)))
+ time = 41,894 ms.
+
+ @eprog\noindent The penultimate command works with default stack size, the
+ last one requires a stacksize of at least 5GB.
+
+ When $n \le 0$, the function returns $0$.
+
+Variant: Also available is
+ \fun{GEN}{dirpowerssum}{ulong n, GEN x, long prec}.
+

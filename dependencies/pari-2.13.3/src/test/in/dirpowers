@@ -1,0 +1,16 @@
+default(realprecision,38);
+dirpowers(-1,1)
+dirpowers(0,1)
+dirpowers(4,0)
+dirpowers(4,1)
+dirpowers(4,2)
+dirpowers(4,3)
+dirpowers(4,1/2)
+
+dirpowerssum(-1,1)
+dirpowerssum(0,1)
+dirpowerssum(4,1)
+dirpowerssum(10^5,-1.)
+
+\\ ERRORS
+dirpowerssum('x,1)

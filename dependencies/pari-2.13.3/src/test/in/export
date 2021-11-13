@@ -1,0 +1,16 @@
+export(f=i->i^2+1);
+parsum(i=1,1,f(i))
+parsum(i=1,10,f(i))
+
+\\ errors
+f(i)=z=3;i^2+1;
+export(f);
+parsum(i=1,10,f(i))
+
+f(i)=local(z);i^2+1;
+export(f);
+parsum(i=1,10,f(i))
+
+f(i)=local(z=3);i^2+1;
+export(f);
+parsum(i=1,10,f(i))

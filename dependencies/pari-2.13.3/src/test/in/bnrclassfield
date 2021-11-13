@@ -1,0 +1,188 @@
+default(realprecision,38);
+default(parisize,40000000);
+count = 0;
+check(K,f,sol,flag)=
+{
+  if (!sol, return(0));
+  if (exponent(f) > exponent(sol) + 32, return(0));
+  if (flag != 2, sol = rnfequation(K,sol); f = rnfequation(K,f));
+  !(nfisisom(sol,f)===0);
+}
+checkvec(K,f,~sol,flag)=
+{
+  for(j=1,#sol, if (check(K,f,sol[j],flag), sol[j]=0; return(1)));
+  return(0);
+}
+do(nf,f = 1, H = 0, flag = 0, sol = 0) =
+{ my(K = bnfinit(nf), T);
+  setrand(1); print(count++); T=liftpol(bnrclassfield(bnrinit(K,f), H, flag));
+  if (!sol, return(T));
+  if (type(T) != "t_VEC", return(check(K,T,sol,flag)));
+  [checkvec(K,t,~sol,flag) | t<-T];
+}
+
+do(y^2+6) \\1
+do(y^2+30)
+do(y^2-y+10)
+do(y^2-y+22)
+s=x^6+(2*y-4)*x^5+(-2*y-49)*x^4+(-40*y+38)*x^3+(-22*y+456)*x^2+(168*y+288)*x+(180*y-611);
+do(y^2-y+22,,,1,s) \\5
+
+s=[x^8+(-2*y+2)*x^7+(-y-36)*x^6+(12*y-16)*x^5+(3*y+21)*x^4+(6*y+16)*x^3+(-4*y+12)*x^2+(2*y-18)*x+(2*y-7)];
+do(y^2-y+24,,,,s)
+s=[x^2+(-y-2),x^5+(101464750*y+192858990)*x^3+(-108719876266494185*y+152155420535969655)*x^2+(2694338662186141731750*y-14807033089517485684890)*x+(18862914098615255705031752813*y-410373474000278666208453327219)];
+do(y^2-y+30,,,,s)
+s=x^10+(-2*y-4)*x^9+(4*y-50)*x^8+(40*y-36)*x^7+(56*y+653)*x^6+(-242*y+1802)*x^5+(-818*y-408)*x^4+(-692*y-8486)*x^3+(1302*y-11876)*x^2+(3188*y-1340)*x+(2420*y+7577);
+do(y^2-y+30,,,1,s)
+s=[x^9-24*x^7+(-2*y+1)*x^6+495*x^5+(12*y-6)*x^4-30*x^3+(-18*y+9)*x^2+18*x+(2*y-1)];
+do(y^2-y+50,,,,s)
+do(y^2-y+58) \\10
+
+s=x^12-2*x^11+(-4*y-5)*x^10+(8*y-28)*x^9+(9*y-308)*x^8+(100*y+482)*x^7+(-132*y+429)*x^6+(1082*y-294)*x^5+(-1617*y+15083)*x^4+(-1770*y+18798)*x^3+(-2764*y-60684)*x^2+(15996*y-16436)*x+(-2045*y-11529);
+do(y^2-y+58,,,1,s)
+do(y^2-y+595)
+do(y^2-y+174)
+do(y^2-y+1007)
+do(y^2+105) \\15
+
+s=[x^3-12*x+(-74*y+37),x^9+(-7092*y+69207)*x^7+(-3247027560*y+31571865310)*x^6+(-11890922712*y-99060659256)*x^5+(-317088513803700*y-10781102886343314)*x^4+(-64879783644251312960*y-2564351133270601051795)*x^3+(43620892991639172984*y-13740685452835868559864)*x^2+(3940344205375546098928236*y-218881615124414950462787349)*x+(718122008211767536460336847508*y-28337620893536150501910726837356)];
+do(y^2-y+825,,,,s)
+s=[x^16+6*x^15+7*x^14+(2*y-78)*x^13+(9*y-318)*x^12+(2*y-110)*x^11+(-119*y+1388)*x^10+(-338*y+1248)*x^9+(116*y-4804)*x^8+(1844*y+328)*x^7+(1471*y+29005)*x^6+(-3194*y+12792)*x^5+(-2580*y-54159)*x^4+(4304*y-39034)*x^3+(2303*y+33060)*x^2+(-2220*y+9738)*x+(-540*y-8965)];
+do(y^2-y+102,,,,s)
+do(y^2+974)
+do(y,[15,[1]])
+do(y,[97,[1]]) \\20
+
+do(y^3-y^2+3*y+6)
+s=[x^2+(-28*y^2+36*y-25),x^4+(y^2+8*y-10)*x^2+(27*y^2-37*y+16)];
+do(y^3-y^2+1,[6545,1333,2018;0,1,0;0,0,1],,,s)
+
+\\do(y^2-y+33515) \\~4 seconds
+\\do(y^2-y+246) \\~9 seconds
+
+\\Bill's bug (internal rnfkummer needs optimal conductor)
+do(a^4+392*a^2+64*a+37456,[31,8,5,29;0,1,0,0;0,0,1,0;0,0,0,1],Mat(4)) \\23
+s=[x^2+7,x^2+19,x^3-21*x+7,x^9-8436*x^7-26087*x^6+130131*x^5+282036*x^4-551760*x^3-293265*x^2+703836*x-241129];
+do(y,[19*7,[1]],,,s)
+
+print("sanitize");
+do(a^4+392*a^2+64*a+37456,[31,8,5,29;0,1,0,0;0,0,1,0;0,0,0,1],Mat(3)) \\25
+bnrclassfield(bnfinit(y^2+6),Mat(2))
+
+print("hard DLs (#2228)");
+p = 1624384359015881850161120870813;
+bnf = bnfinit('y); bnr = bnrinit(bnf,p);
+L = bnrclassfield(bnr,2);
+[#L,poldegree(L[1]),nfdisc(L[1])]
+p = 1519276421662273577;
+bnr = bnrinit(bnf,p);
+L = bnrclassfield(bnr,4);
+[#L,poldegree(L[1]),nfdisc(L[1])]
+
+bnf=bnfinit('y^2-5); p=1594287814679644276013; bnr=bnrinit(bnf,p,,2);
+bnrclassfield(bnr,2)
+
+\\large compositum
+do(y,[vecprod(primes(8)),[1]],2,1)
+
+\\flag 2
+do(y^2+6,,,2)
+s=x^12-6*x^11-4*x^10+162*x^9-111*x^8-2160*x^7+3880*x^6+21270*x^5-33936*x^4-161652*x^3+116306*x^2+927816*x+976141;
+do(y^2-y+22,,,2,s)
+s=x^24-4*x^23-10*x^22-20*x^21+462*x^20-1082*x^19+2961*x^18-31722*x^17+247117*x^16-882980*x^15+1842308*x^14-1544496*x^13+3211657*x^12-39314820*x^11+152409044*x^10-232536070*x^9+320758771*x^8+178913634*x^7+1263026049*x^6-5148649720*x^5+744537336*x^4-4090769680*x^3+17058701456*x^2-3566396096*x+399052096;
+do(y^2-y+58,,,2,s)
+do(y^2-y+10,,,2) \\30
+do(y^2-y+24,,,2)
+s=x^18-48*x^16+1566*x^14-23621*x^12+244113*x^10-19818*x^8-3170*x^6+17427*x^4-3258*x^2+199;
+do(y^2-y+50,,,2,s)
+
+\\bug: correct absolute field, wrong extension
+print("correct absolute, incorrect relative extension");
+setrand(1);
+bnf = bnfinit(y^2+7);
+dec = idealprimedec(bnf,37);
+bnr = bnrinit(bnf,dec[1]);
+pol1 = bnrclassfield(bnr,9)[1]
+idealval(bnf,rnfdisc(bnf,pol1)[1],dec[1])
+bnr = bnrinit(bnf,dec[2]);
+pol2 = bnrclassfield(bnr,9)[1]
+idealval(bnf,rnfdisc(bnf,pol2)[1],dec[2])
+pol1 != pol2
+
+\\bug: corrupted bnr
+bnf = bnfinit(y^3-y^2+1);
+bnr = bnrinit(bnf,[6545,1333,2018;0,1,0;0,0,1]);
+bnrclassfield(bnr,[2,0;0,2])
+bnrclassfield(bnr,[2,1;0,1])
+
+print("segfault bug with character input");
+poldegree(bnrclassfield(bnfinit(a^2+23),[1],2))==6
+
+print("bug: relative polynomial instead of absolute");
+bnf = bnfinit(y^3 - y^2 - 2*y + 1,1);
+bnr = bnrinit(bnf,[Mat([idealprimedec(bnf,2)[1],3]),[1,1,1]]);
+poldegree(bnrclassfield(bnr,[2, 0, 0, 0; 0, 2, 1, 0; 0, 0, 1, 0; 0, 0, 0, 1],2))
+
+\\#2146
+bnf=bnfinit(y^3-7*y-7,1);
+bnr=bnrinit(bnf,[[13729,0,0;0,13729,0;0,0,13729],[0,0,0]]);
+bnrclassfield(bnr,4,1);
+
+print("examples from doc");
+bnf = bnfinit(y^3+14*y-1); bnf.cyc
+pol = bnrclassfield(bnf,,1) \\Hilbert class field
+rnfdisc(bnf,pol)[1]
+bnr = bnrinit(bnf,3*5*7); bnr.cyc
+bnrclassfield(bnr,2) \\maximal 2-elementary subextension
+
+R=bnrinit(bnfinit(t^2+115),7); bnrclassfield(R,[1,0;0,3])
+
+print("tough discrete log");
+p=406969676467377719018888256331;
+bnr=bnrinit(bnfinit(a^2+1),p^2);
+bnrclassfield(bnr,3)
+
+print("tough factorization for structure of k(pr)^*");
+setrand(1);p = randomprime(10^200,3);
+bnrclassfield(bnrinit(bnfinit(y), p,, 3), 3)
+
+print("tough conductor factorization");
+setrand(1);
+p=randomprime(2^200,7);
+q=randomprime(2^200,7); bnf=bnfinit(polsubcyclo(7,2,a));
+M=matconcat([idealfactor(bnf,p),idealfactor(bnf,q)]~);
+bnr=bnrinit(bnf,M,,7); bnrclassfield(bnr)
+
+print("vector of subgroups");
+filter(v)=[if (cmp(a,b=-subst(a,x,-x)) < 0,b,a)| a<-v][^1]; \\ avoid 32-bit differences
+pol=y^2+3299;
+setrand(1);bnr=bnrinit(bnfinit(pol), 3,, 3);
+L=subgrouplist(bnr, [3], 1);
+filter(bnrclassfield(bnr, L, 0))
+filter(bnrclassfield(bnr, L, 1))
+filter(bnrclassfield(bnr, L, 2))
+bnrclassfield(bnr,[])
+bnrclassfield(bnfinit(y^2+31),[Mat(3)])
+
+\\ bnf.Ge contains t_FRAC
+setrand(1);bnf=bnfinit(y^4+394*y^2+197);bnr=bnrinit(bnf,1,,5);f=bnrclassfield(bnr);
+s=x^5+(-2349980/7*y^2-925002340/7)*x^3+(49550643842275363355/7*y^2+19498113719555868395685/7)*x^2+(1746603558382375785229605/14*y^2+321242974266101824080279155/14)*x+(-5046922430979180236843378133620866307/14*y^2-1986375600660391162873839261584212464823/14);
+check(bnr,f[1],s)
+
+\\ test rnfkummersimple for ell > 2
+setrand(1);bnrclassfield(bnfinit(y^4 - y^3 - 5*y^2 - 6*y + 36))
+
+print("bad inputs");
+bnrclassfield(y^2+6,Mat(2))
+K = bnfinit(y^2+6);
+bnr=bnrinit(K,2^66);m=matdiagonal(bnr.cyc);
+bnrclassfield(bnr,m)
+bnrclassfield(bnr,[m])
+bnrclassfield(K,Mat(1/2))
+bnrclassfield(K,1/2)
+bnrclassfield(K,matid(2))
+bnrclassfield(K,Mat(2),3)
+bnrclassfield(K,Mat(2),-1)
+bnrclassfield(vector(6),Mat(2))
+bnrclassfield(bnrinit(bnfinit(y,1),[73786976294838212093,[1]]))
+bnrclassfield(bnfinit(x));

@@ -1,0 +1,10 @@
+Function: lambertw
+Section: transcendental
+C-Name: glambertW
+Prototype: Gp
+Help: lambertw(y): solution of the implicit equation x*exp(x)=y.
+Doc: Lambert $W$ function, solution of the implicit equation $xe^x=y$,
+ for a positive real number $y$. This is the restriction to the positive
+ reals of the complex principal branch $W_0$, which is not implemented
+ outside of $\R^*_+$. Other branches $W_k$ for $k\neq 0$ are not implemented
+ either.

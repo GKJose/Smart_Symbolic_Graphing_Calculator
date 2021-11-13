@@ -1,0 +1,1254 @@
+kadd.lo: kadd.cc config.h giacPCH.h first.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstddef \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/version \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/stddef.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/__stddef_max_align_t.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__nullptr \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gmp.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iosfwd \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/wchar.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stddef.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/wchar.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_symbol_aliasing.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_posix_availability.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Availability.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityVersions.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternal.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_null.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_size_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_mbstate_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_int8_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_int16_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_int32_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_int64_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_int8_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_int16_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_int32_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_int64_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_intptr_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_uintptr_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_ct_rune_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_rune_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_wchar_t.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/stdarg.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdio.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/stdio.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_stdio.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_va_list.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/stdio.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_ctermid.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_off_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_ssize_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/time.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_clock_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_time_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_timespec.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_wctype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__wctype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_wint_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_wctype_t.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/ctype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/ctype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_ctype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/runetype.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstdio \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/limits.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/limits.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/limits.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/limits.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/limits.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/_limits.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/syslimits.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cassert \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/assert.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdlib.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/stdlib.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/wait.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_pid_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_id_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/signal.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/appleapiopts.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/signal.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/signal.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/_mcontext.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/_mcontext.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/mach/machine/_structs.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/mach/i386/_structs.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_attr_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_sigaltstack.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_ucontext.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_sigset_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_uid_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/resource.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdint.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/stdint.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/stdint.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_uint8_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_uint16_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_uint32_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_uint64_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_intmax_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_uintmax_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_timeval.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/endian.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/endian.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_endian.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/libkern/_OSByteOrder.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/libkern/i386/_OSByteOrder.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/alloca.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/malloc/_malloc.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_dev_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_mode_t.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cmath \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/math.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/math.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/type_traits \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/limits \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__undef_macros \
+  index.h vector.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/string.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/strings.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__bit_reference \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/bit \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__debug \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/algorithm \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/initializer_list \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstring \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/utility \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__tuple \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstdint \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/typeinfo \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/exception \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstdlib \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/new \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__functional_base \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/tuple \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/atomic \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__threading_support \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/chrono \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/ctime \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/ratio \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/climits \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/errno.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/errno.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/errno.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread/sched.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread/pthread_impl.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_cond_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_condattr_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_key_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_mutex_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_mutexattr_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_once_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_rwlock_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread/qos.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/qos.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_mach_port_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sched.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/functional \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__split_buffer \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iostream \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/ios \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__locale \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string_view \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__string \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cwchar \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cwctype \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cctype \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/wctype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/wctype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_wctrans_t.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/mutex \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__mutex_base \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/system_error \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__errc \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cerrno \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/locale.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/locale.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_locale.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_xlocale.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_ctype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/__wctype.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_stdio.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_stdlib.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_string.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_time.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_wchar.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_wctype.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/streambuf \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/istream \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/ostream \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/locale \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/nl_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_char.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_short.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_int.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_caddr_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_blkcnt_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_blksize_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_gid_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_in_addr_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_in_port_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_ino_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_ino64_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_key_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_nlink_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_useconds_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_suseconds_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_rsize_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_errno_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_def.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_setsize.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_set.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_clr.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_zero.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_isset.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_copy.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fsblkcnt_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fsfilcnt_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_nl_item.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__bsd_locale_defaults.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/bitset \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/unordered_map \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__hash_table \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__node_handle \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/optional \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/map \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__tree \
+  gen.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/mpfr.h \
+  /usr/local/include/gmpxx.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cfloat \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/float.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/float.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/float.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/mpfi.h \
+  dispatch.h global.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/unistd.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/unistd.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_posix_vdisable.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_seek_set.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/select.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_select.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_uuid_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/gethostuuid.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/times.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/semaphore.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/fcntl.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_o_sync.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_o_dsync.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_s_ifmt.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_filesec_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/semaphore.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/signal.h \
+  help.h tinymt32.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/inttypes.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/inttypes.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/inttypes.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_inttypes.h \
+  vecteur.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/complex \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/sstream \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_complex_long_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_types.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_errno.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_complex.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_check_range.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_long_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_inline.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_long_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_complex.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_complex_long_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_complex_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_complex_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_complex_float.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_float.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_float.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_complex_float.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_ulong.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_ulong.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_long.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_long.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_uint.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_uint.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_int.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_int.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_ushort.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_ushort.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_short.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_short.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_uchar.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_uchar.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_char.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_char.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_complex_long_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_blas_types.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_cblas.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_complex_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_complex_float.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_long_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_double.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_float.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_ulong.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_long.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_uint.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_int.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_ushort.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_short.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_uchar.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_char.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_permutation.h \
+  fraction.h poly.h monomial.h threaded.h giacintl.h \
+  /usr/local/include/libintl.h identificateur.h symbolic.h unary.h \
+  usual.h series.h sym2poly.h gausspol.h static.h moyal.h subst.h \
+  ifactor.h prog.h rpn.h plot.h plot3d.h pari.h tex.h intg.h ti89.h \
+  solve.h alg_ext.h lin.h derive.h misc.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/time.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_timeval64.h \
+  desolve.h ezgcd.h gauss.h maple.h mathml.h intgab.h csturm.h modpoly.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZXFactoring.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZX.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_ZZ.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZ.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/lip.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ctools.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/config.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/mach_desc.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ALL_FEATURES.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_ALIGNED_ARRAY.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_BUILTIN_CLZL.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_LL_TYPE.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_SSSE3.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_AVX.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_PCLMUL.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_AVX2.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_FMA.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_AVX512F.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_COPY_TRAITS1.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_COPY_TRAITS2.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_CHRONO_TIME.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_MACOS_TIME.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_POSIX_TIME.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_AES_NI.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_KMA.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/PackageInfo.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/gmp_aux.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/tools.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/new.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vector.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/SmartPtr.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/thread.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/sp_arith.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/lzz_pX.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/lzz_p.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/FFT.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_long.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/LazyTable.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_lzz_p.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/Lazy.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/mat_lzz_p.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/matrix.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_vec_lzz_p.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZ_pX.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZ_p.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZVec.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_ZZ_p.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/mat_ZZ_p.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_vec_ZZ_p.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/pair_ZZX_long.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/pair.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/GF2X.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/WordVector.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_GF2.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/GF2.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/pair_GF2X_long.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/GF2XFactoring.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/pair_ZZ_pX_long.h \
+  /Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZ_pXFactoring.h \
+  permu.h risch.h static_extern.h
+
+config.h:
+
+giacPCH.h:
+
+first.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstddef:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/version:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/stddef.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/__stddef_max_align_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__nullptr:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gmp.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iosfwd:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/wchar.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stddef.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/wchar.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_symbol_aliasing.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_posix_availability.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/_types.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/_types.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_types.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Availability.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityVersions.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternal.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_null.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_size_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_mbstate_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/types.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/types.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_int8_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_int16_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_int32_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_int64_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_int8_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_int16_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_int32_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_int64_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_intptr_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_uintptr_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_ct_rune_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_rune_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_wchar_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/stdarg.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdio.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/stdio.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_stdio.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_va_list.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/stdio.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_ctermid.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_off_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_ssize_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/time.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_clock_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_time_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_timespec.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_wctype.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__wctype.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_wint_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_wctype_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/ctype.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/ctype.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_ctype.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/runetype.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstdio:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/limits.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/limits.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/limits.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/limits.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/limits.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/_limits.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/syslimits.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cassert:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/assert.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdlib.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/stdlib.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/wait.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_pid_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_id_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/signal.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/appleapiopts.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/signal.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/signal.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/_mcontext.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/_mcontext.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/mach/machine/_structs.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/mach/i386/_structs.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_attr_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_sigaltstack.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_ucontext.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_sigset_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_uid_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/resource.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdint.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/stdint.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/stdint.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_uint8_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_uint16_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_uint32_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_uint64_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_intmax_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_uintmax_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_timeval.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/machine/endian.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/i386/endian.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_endian.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/libkern/_OSByteOrder.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/libkern/i386/_OSByteOrder.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/alloca.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/malloc/_malloc.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_dev_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_mode_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cmath:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/math.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/math.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/type_traits:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/limits:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__undef_macros:
+
+index.h:
+
+vector.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/string.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/strings.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__bit_reference:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/bit:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__debug:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/algorithm:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/initializer_list:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstring:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/utility:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__tuple:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstdint:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/typeinfo:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/exception:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstdlib:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/new:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__functional_base:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/tuple:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/atomic:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__threading_support:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/chrono:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/ctime:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/ratio:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/climits:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/errno.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/errno.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/errno.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread/sched.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread/pthread_impl.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_cond_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_condattr_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_key_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_mutex_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_mutexattr_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_once_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_rwlock_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_rwlockattr_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread/qos.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/qos.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_mach_port_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sched.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/functional:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__split_buffer:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iostream:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/ios:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__locale:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string_view:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__string:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cwchar:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cwctype:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cctype:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/wctype.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/wctype.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_wctrans_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/mutex:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__mutex_base:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/system_error:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__errc:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cerrno:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/locale.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/locale.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_locale.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_xlocale.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_ctype.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/__wctype.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_stdio.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_stdlib.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_string.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_time.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_wchar.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_wctype.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/streambuf:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/istream:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/ostream:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/locale:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/nl_types.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/types.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_char.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_short.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_int.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_caddr_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_blkcnt_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_blksize_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_gid_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_in_addr_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_in_port_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_ino_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_ino64_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_key_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_nlink_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_useconds_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_suseconds_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_rsize_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_errno_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_def.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_setsize.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_set.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_clr.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_zero.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_isset.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_copy.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fsblkcnt_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fsfilcnt_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types/_nl_item.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__bsd_locale_defaults.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/bitset:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/unordered_map:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__hash_table:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__node_handle:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/optional:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/map:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__tree:
+
+gen.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/mpfr.h:
+
+/usr/local/include/gmpxx.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cfloat:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/float.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/float.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/float.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/mpfi.h:
+
+dispatch.h:
+
+global.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/unistd.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/unistd.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_posix_vdisable.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_seek_set.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/select.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_select.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_uuid_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/gethostuuid.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/times.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/semaphore.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/fcntl.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_o_sync.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_o_dsync.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_s_ifmt.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_filesec_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/semaphore.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/signal.h:
+
+help.h:
+
+tinymt32.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/inttypes.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include/inttypes.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/inttypes.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xlocale/_inttypes.h:
+
+vecteur.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/complex:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/sstream:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_complex_long_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_types.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_errno.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_complex.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_check_range.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_long_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_inline.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_long_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_complex.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_complex_long_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_complex_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_complex_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_complex_float.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_float.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_float.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_complex_float.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_ulong.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_ulong.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_long.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_long.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_uint.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_uint.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_int.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_int.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_ushort.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_ushort.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_short.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_short.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_uchar.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_uchar.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_vector_char.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_block_char.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_complex_long_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_blas_types.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_cblas.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_complex_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_complex_float.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_long_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_double.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_float.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_ulong.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_long.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_uint.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_int.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_ushort.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_short.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_uchar.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_matrix_char.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/gsl/gsl_permutation.h:
+
+fraction.h:
+
+poly.h:
+
+monomial.h:
+
+threaded.h:
+
+giacintl.h:
+
+/usr/local/include/libintl.h:
+
+identificateur.h:
+
+symbolic.h:
+
+unary.h:
+
+usual.h:
+
+series.h:
+
+sym2poly.h:
+
+gausspol.h:
+
+static.h:
+
+moyal.h:
+
+subst.h:
+
+ifactor.h:
+
+prog.h:
+
+rpn.h:
+
+plot.h:
+
+plot3d.h:
+
+pari.h:
+
+tex.h:
+
+intg.h:
+
+ti89.h:
+
+solve.h:
+
+alg_ext.h:
+
+lin.h:
+
+derive.h:
+
+misc.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/time.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_timeval64.h:
+
+desolve.h:
+
+ezgcd.h:
+
+gauss.h:
+
+maple.h:
+
+mathml.h:
+
+intgab.h:
+
+csturm.h:
+
+modpoly.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZXFactoring.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZX.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_ZZ.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZ.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/lip.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ctools.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/config.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/mach_desc.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ALL_FEATURES.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_ALIGNED_ARRAY.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_BUILTIN_CLZL.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_LL_TYPE.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_SSSE3.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_AVX.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_PCLMUL.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_AVX2.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_FMA.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_AVX512F.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_COPY_TRAITS1.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_COPY_TRAITS2.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_CHRONO_TIME.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_MACOS_TIME.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_POSIX_TIME.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_AES_NI.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/HAVE_KMA.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/PackageInfo.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/gmp_aux.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/tools.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/new.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vector.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/SmartPtr.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/thread.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/sp_arith.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/lzz_pX.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/lzz_p.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/FFT.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_long.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/LazyTable.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_lzz_p.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/Lazy.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/mat_lzz_p.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/matrix.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_vec_lzz_p.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZ_pX.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZ_p.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZVec.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_ZZ_p.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/mat_ZZ_p.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_vec_ZZ_p.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/pair_ZZX_long.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/pair.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/GF2X.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/WordVector.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/vec_GF2.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/GF2.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/pair_GF2X_long.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/GF2XFactoring.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/pair_ZZ_pX_long.h:
+
+/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include/NTL/ZZ_pXFactoring.h:
+
+permu.h:
+
+risch.h:
+
+static_extern.h:

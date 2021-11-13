@@ -1,0 +1,5 @@
+Function: _ellQ_factorback_worker
+C-Name: ellQ_factorback_worker
+Section: programming/internals
+Prototype: GGGG
+Help: ellmul(E,z,n): n times the point z on elliptic curve E (n in Z).

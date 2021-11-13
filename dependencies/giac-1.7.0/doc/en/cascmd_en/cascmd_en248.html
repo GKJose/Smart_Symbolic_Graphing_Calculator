@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="hevea 2.29+5 of 2017-05-18">
+<link rel="stylesheet" type="text/css" href="cascmd_en.css">
+<title>Simplifying trigonometric expressions: trigsimplify
+</title>
+</head>
+<body >
+<a href="cascmd_en247.html"><img src="previous_motif.gif" alt="Previous"></a>
+<a href="index.html"><img src="contents_motif.gif" alt="Up"></a>
+<a href="cascmd_en249.html"><img src="next_motif.gif" alt="Next"></a>
+<hr>
+<h3 id="sec308" class="subsection">6.23.6  Simplifying trigonometric expressions: <span style="font-family:monospace">trigsimplify</span>
+<a id="hevea_default449"></a></h3>
+<p>The <span style="font-family:monospace">trigsimplify</span> command simplifies trigonometric expressions
+by combining <span style="font-family:monospace">simplify</span> (see Section <a href="cascmd_en188.html#ssec%3Asimplify">6.12.14</a>),
+<span style="font-family:monospace">texpand</span> (see Section <a href="cascmd_en278.html#ssec%3Atexpand">6.25.1</a>), <span style="font-family:monospace">tlin</span> (see
+Section <a href="cascmd_en244.html#ssec%3Atlin">6.23.2</a>), <span style="font-family:monospace">tcollect</span> (see Section <a href="cascmd_en246.html#ssec%3Atcollect">6.23.4</a>),
+<span style="font-family:monospace">trigsin</span> (see Section <a href="cascmd_en265.html#ssec%3Atrigsin">6.23.23</a>), <span style="font-family:monospace">trigcos</span> (see
+Section <a href="cascmd_en266.html#ssec%3Atrigcos">6.23.24</a>) and <span style="font-family:monospace">trigtan</span> (see
+Section <a href="cascmd_en267.html#ssec%3Atrigtan">6.23.25</a>) commands in a certain order.
+</p><ul class="itemize"><li class="li-itemize">
+<span style="font-family:monospace">trigsimplify</span> takes one argument:<br>
+ <span style="font-style:italic">expr</span>, an argument containing trigonometric functions.
+</li><li class="li-itemize"><span style="font-family:monospace">trigsimplify(</span><span style="font-style:italic">expr</span><span style="font-family:monospace">)</span> returns the
+simplified form of <span style="font-style:italic">expr</span>.
+</li></ul><p><br>
+</p><p><span style="font-weight:bold">Examples.</span>
+</p><ul class="itemize"><li class="li-itemize">
+<span style="font-style:italic">Input:</span>
+<div class="center">
+<span style="font-family:monospace">trigsimplify((sin(x+y)-sin(x-y))/(cos(x+y)+cos(x-y)))</span>
+</div>
+<span style="font-style:italic">Output:</span>
+<table class="display dcenter"><tr style="vertical-align:middle"><td class="dcell">tan<span style="font-style:italic">y</span>
+</td></tr>
+</table>
+</li><li class="li-itemize"><span style="font-style:italic">Input:</span>
+<div class="center">
+<span style="font-family:monospace">trigsimplify(1-1/4*sin(2a)^2-sin(b)^2-cos(a)^4)</span>
+</div>
+<span style="font-style:italic">Output:</span>
+<table class="display dcenter"><tr style="vertical-align:middle"><td class="dcell">sin<sup>2</sup><span style="font-style:italic">a</span>−sin<sup>2</sup><span style="font-style:italic">b</span>
+</td></tr>
+</table>
+</li></ul>
+<hr>
+<a href="cascmd_en247.html"><img src="previous_motif.gif" alt="Previous"></a>
+<a href="index.html"><img src="contents_motif.gif" alt="Up"></a>
+<a href="cascmd_en249.html"><img src="next_motif.gif" alt="Next"></a>
+</body>
+</html>

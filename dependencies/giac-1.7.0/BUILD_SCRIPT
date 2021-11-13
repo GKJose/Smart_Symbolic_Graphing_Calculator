@@ -1,0 +1,7 @@
+export CFLAGS="-I/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib"
+export CXXFLAGS="-std=c++11 -I/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/include"
+export LDFLAGS="-L/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos/lib"
+export CC="clang"
+export CXX="clang++"
+./configure --disable-gui --disable-micropy --disable-quickjs --disable-shared  \
+    --prefix=/Users/julianalvarez/Documents/VSCODE/Smart_Symbolic_Graphing_Calculator/tools/macos \

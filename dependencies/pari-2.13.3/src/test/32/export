@@ -1,0 +1,12 @@
+2
+395
+  ***   at top-level: parsum(i=1,10,f(i))
+  ***                 ^-------------------
+  *** parsum: mt: attempt to change exported variable 'z'.
+  ***   at top-level: parsum(i=1,10,f(i))
+  ***                 ^-------------------
+  *** parsum: mt: attempt to change exported variable 'z'.
+  ***   at top-level: parsum(i=1,10,f(i))
+  ***                 ^-------------------
+  *** parsum: mt: attempt to change exported variable 'z'.
+Total time spent: 0

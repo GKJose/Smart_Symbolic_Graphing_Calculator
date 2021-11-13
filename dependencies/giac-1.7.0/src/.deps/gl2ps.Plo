@@ -1,0 +1,3 @@
+gl2ps.lo: gl2ps.c config.h
+
+config.h:

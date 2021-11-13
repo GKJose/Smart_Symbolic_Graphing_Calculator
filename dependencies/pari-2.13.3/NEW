@@ -1,0 +1,322 @@
+This file highlights some of the novelties in PARI/GP 2.13 compared to
+latest stable branch 2.11.*. The detailed Changelog is in CHANGES.
+Incompatible changes are described in COMPAT.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.13 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+[The GP language]
+  - support call by reference in GP functions: f(~L,x) = L[1] = x;
+    This allows to modify the contents of a vector / list argument and avoids
+    unnecessary copies of arguments
+    For clarity, built-in functions handling lists/maps should now use the ~
+    prefix to indicate mutable containers, e.g. listput(~L,x), mapput(~M,x)
+  - lexical variables names can now reuse builtin functions names as in
+    f(theta) = my(gamma=1/3); sum(omega=1,10, exp(2*I*Pi*gamma*theta*omega);
+  - GP closures improvement: no longer copy the full context, only the
+    variables actually accessed by the function.
+  - allow holes in multi-assignements: [a,,c]=[1,2,3].
+  - new parallel GP function parplothexport, parforprimestep, parforeach.
+  - new GP functions export, unexport, exportall, unexportall simplify
+    writing code for parallel execution (allowing simple access to "global"
+    variable in parallel threads)
+  - new GP functions getlocalprec, getlocalbitprec: to replace obscure
+    idiomatic constructs such as bitprecision(1.)
+  - new GP functions to simplify string handling: strsplit (split into a
+    vector of strings with respect to a given separator), strjoin (join a
+    vector of strings using a given separator), strtime (format a 'time')
+  - new GP function arity, returns the number of arguments of a function
+  - improve extended help: ??? output now include double quotes when needed
+    (e.g. ???conductor); support all symbolic operators using the _
+    placeholder syntax: ?? _+_, ?? !_, ?? _+=_, ?? _++, etc.
+  - natural extensions to the syntax of t_LISTS: allow L[a..b] and L[^i];
+    allow listinsert(L, x, n) for n > #L, as in listput
+  - allow forsquarefree(n = a, b) with a*b < 0
+  - allow subst(e, x, vector v) for vector(subst(e, x, v[i]))
+  - new GP function matreduce, to convert a multiset to a vector of distinct
+    elements together with their multiplicities:
+    ? matreduce([x,y,z,x,x,y])
+    %2 =
+    [x 3]
+
+    [y 2]
+
+    [z 1]
+
+    Can also be used to merge factorizations:
+    F1 = factor(12);
+    F2 = factor(20);
+    matreduce(matconcat([F1,F2]~)) -> factor(12 * 20)
+  - support plotinit/plotexport even when no graphic engine is available
+    (Configure --graphic=none).
+
+[Number Fields, Local Fields, Finite Fields]
+  - Number fields functions now allow compact representations of algebraic
+    numbers, as factorization matrices: products of "small" elements possibly
+    raised to huge powers. This is very useful for units and S-units or
+    principal ideals generators, which may be huge in expanded form. Functions
+    transparently process such objects but, for compatibility reasons, they are
+    not created by default, this must be specified as follows:
+    * bnf = bnfinit(pol, 1) now constructs an algebraic bnf structure
+      containing all data (including units) in exact compact form.
+      This is the critical step. Class field theoretic functions involving bnf
+      will process units in compact form, allowing them to succeed
+      independently of their size or the working precision.
+    * new GP function bnfunits(bnf, optional S) returns the fundamental
+      S-units in compact form [ bnf.fu returns the units in expanded form
+      which can be expensive ].
+    * bnfisprincipal(bnf,id,4) or bnrisprincipal(bnr,id,4) return
+      the principal part of the discrete logarithm in compact form.
+    Without optional flags, nothing changes: old programs should run
+    without modification and fail when units are large. New programs should
+    use the new flags.
+
+  - The old bnrinit(, 1) flag [ include explicit bnr generators in the output ]
+    was mandatory in many class field theoretic functions. Not anymore: their
+    internal compact representation is always sufficient. You can still use
+    them for debugging but they are expensive and no longer needed elsewhere.
+
+  - The bnrinit function computes general ray class groups G = Cl_f(K) but we
+    are often interested in simpler quotients G/H, e.g., G/G^N for abelian
+    extensions of exponent N. The function bnrinit now accepts an optional
+    argument to specify N; later calls to bnrisprincipal solve the discrete
+    logarithm in this quotient group and are now only correct modulo N, which
+    is adequate if we actually want to work in G/H for any congruence subgroup
+    of index dividing N. This trick avoids expensive discrete logarithms if the
+    modulus f is large. This is used intensively in PARI internals, speeding
+    up all class field theoretic functions.
+
+    The rnfconductor function, which computes a pair (f,H) attached to an
+    abelian extension K[X]/(T) of the base field K together with a bnr
+    structure for G = Cl_f(K), now accepts a new flag to return G / G^deg(T),
+    which is less expensive and usually sufficient.
+
+    The same trick is available in idealstar for the group G = (Z_K/f)^*,
+    allowing to compute in G/G^N; ideallog then returns results which are
+    correct modulo N.
+
+  - new GP function bnrclassfield, generalizing rnfkummer (which only
+    supported relative extensions of prime degree)
+  - new GP function idealdown(nf,A) to return A \cap Q
+  - new GP function idealismaximal
+  - new GP function bnrmap to map ray class groups Cl_A -> Cl_B when B | A.
+    This also works with ray class groups modulo N provided the exponent of
+    Cl_A divides N
+
+  - nfsubfields: add van Hoeij-Klueners-Novocin algorithm to the existing
+    algorithms of Klueners (doesn't run in polynomial time) and Allombert
+    (not always applicable). The running time is polynomial in the output size.
+    New GP functions nfsubfieldsmax (maximal subfields) and nfsubfieldscm
+    (maximal CM subfield), both of which always run in polynomial time
+    because their output is provably small.
+
+  - new GP member function nf.p returning rational ramified primes;
+    rnf.p returns rational primes dividing the norm of the relative
+    discriminant ideal.
+
+  - allow nfinit([T, Z_K basis, ramified primes]) when all arithmetic
+    invariants are known.
+
+  - galoisinit: the definition of "weakly super-solvable" groups, supported
+    by the function, is less restrictive. For instance, there are no
+    exceptions in order < 48 and 23 exceptions in order < 144, 40% of them in
+    order 96. There were 29 such exceptions in 2.12.0.
+
+  - nfbasis now accepts an optional argument &dK to recover the field
+    discriminant
+  - rnfinit(nf, [T,B]) for orders that are maximal at a certain set of primes
+    only; allow B a list of primes and maximal ideals (same for rnfbasis,
+    rnfdisc, rnfconductor, rnfpseudobasis)
+  - new GP function nfdiscfactors to return the field discriminant in
+    factored form
+  - new GP function polteichmuller to define nice models of p-adic extensions
+    (see ??polteichmuller)
+  - new GP function ffmaprel(m, t) to express the finite field element t as
+    an algebraic element over the codomain of the map m; this allows for
+    instance to compute the relative minimal polynomial, trace and norm of t
+
+
+[Transcendental functions]
+  - new GP function hypergeom() for general hypergeometric functions;
+    airy() for Airy Ai and Bi functions. As a consequence, hyperu(), the
+    U-confluent hypergeometric function is now implemented for arbitrary
+    complex parameters.
+  - new GP functions ellK and ellE (complete elliptic integrals of the first
+    and second kind)
+  - new GP function dirpowers(n,x) = [1^x, ..., n^x]
+  - faster exp(small rational number) using binary splitting. E.g, at 10^6
+    decimal digits of accuracy, exp(1/3) is now computed in 0.2s, about 50
+    times faster than in pari-2.11.
+  - faster formulas for Catalan() and log(2)
+  - x^s: faster and more precise when s is a t_COMPLEX
+  - improve gamma-related functions:
+    . n!, factorial(n), lngamma(n), psi(n) for integral n
+    . gamma and lngamma(t_FRAC) use direct formula when denom | 24
+    . lngamma and psi near 1 [ cache values of zeta(odd integers) ]
+  - fast algorithm for zeta([a + b*n | n<-[0..N]]). Compare:
+    ? \p2000
+    ? zeta(vector(1000,i,i+1));
+    time = 787 ms.
+    ? vector(1000,i,zeta(1+i));
+    time = 3,334 ms.
+    Also fix tuning problems for zeta(small even integer), slow at huge
+    accuracy.
+  - add optional argument to sqrtint to obtain the remainder as well
+  - gammamellininvinit(A): allow A to be an L-function; this also allowed
+    in gammamellininv and gammamellininvasymp.
+  - besseli, besselj, besselk, besseln(nu, z), eint1(z): now use asymptotic
+    expansion for large z
+  - fix cancellation in acosh / asinh for huge t_COMPLEX and in cos(z) and
+    sin(z) when Im(z) is nonzero but tiny
+  - improved zetahurwitz: faster & use less memory.
+
+[Multiple Zeta Values]
+  - new GP function polylogmult for multiple polylogarithm values and their
+    Yamamoto interpolation.
+  - new GP function zetamultdual: zetamultdual([4]) -> [2,1,1]
+    (the corresponding Muliple Zeta Value is the same).
+  - zetamult now accepts an optional parameter t for Yamamoto's
+    interpolation; in particular for t = 1, we obtain star MZVs and for
+    t = 'x, Yamamoto's polynomial.
+  - zetamultall: add optional flag to compute only values of given weight,
+    and/or up to duality, and/or star values.
+
+[Numerical summation and integration]
+  - limitnum/asympnum: allow closures of the form N->[u(1),...,u(N)],
+    which allows to handle efficiently sums, recursions, continued
+    fractions, etc.
+  - new GP function asympnumraw: extrapolate the first terms of the asymptotic
+    expansion of some expression; more robust and versatile than asympnum
+    (which only supports rational expansions). E.g.,
+      f(n) = n! / (sqrt(n) * (n/exp(1))^n);
+      \p100
+      v = asympnumraw(f, 10);
+      bestappr(v/v[1])
+    returns 10 terms of Stirling's expansion without needing to identify
+    v[1] = sqrt(2*Pi); asympnum would fail because of the v[1] 'period'.
+  - new GP function derivn for (formal or numerical) n-th derivative
+  - faster derivnum; f'...' (n quotes) now always uses derivnum which is
+    about 2^n/n faster, and more accurate.
+  - fix numerical derivative of functions with optional argument: e.g.,
+    f(x, y = 1) = x*y;
+    f'(1) used to return 0 [ instead of 1 ].
+  - improve intnumgaussinit (use direct Newton instead of calling polrootsreal)
+
+[Elementary Number Theory]
+  - improvements to the MPQS factoring algorithm: better sieve, faster
+    linear algebra (block Lanczos), better tunings, no longer write temporary
+    files to disk
+  - rewrite the Bernoulli number cache using zeta(2n) = (*) B_{2n}
+    and power recycling for zeta(2n) + additive Clausen-von Staudt:
+    simpler and orders of magnitude faster than the old iteration. We now
+    always store Bernoulli numbers in rational form. The GP function
+    bernvec() is no longer obsolete (now faster than computing Bernoulli
+    numbers individually).
+  - qfbsolve(Q,n) now supports arbitrary integer n (was limited to primes)
+    and return all solutions modulo units.
+  - new GP function eulerianpol (eulerian polynomials), eulerpol (Euler
+    polynomials), eulerfrac (Euler numbers), eulervec ([E_0, ..., E_2n]).
+  - new GP function halfgcd: given polynomials or integers [x,y], compute an
+    invertible matrix M such that M * [x,y]~ = [a,b]~ with b small (half the
+    "size" of [x,y]).
+  - qfbsolve: new optional flag to ask for all solutions modulo units (vs. a
+    single solution) or to allow non-primitive solutions.
+  - randomprime: new optional argument to specify a congruence class.
+    E.g. randomprime([2^31, 2^32-1], 7) -> a 32-bit prime congruent to 1 mod 7.
+         randomprime([a, b], Mod(2,3)) -> a prime = 2 mod 3 in [a,b]
+
+[Polynomials and Power series]
+  - new GP function rootsof1(N): complex roots of unity of order N.
+  - new GP functions fft, fftinv: Fast Fourier Transform of order 2^n and its
+    inverse, given roots of unity. Supports general base rings,
+    e.g., finite rings.
+  - new GP function pollaguerre for Laguerre polynomials. Add an
+    optional flag to pollegendre and polhermite to return P_{n-1}(a) and P_n(a)
+  - polinterpolate over Z/pZ is now asymptotically fast
+  - polrootsreal: faster due to asymptotically fast P(X) -> P(X+a) algorithm
+  - power series and truncated polynomials: systematic use of Newton division
+  - polrootspadic: allow computing roots in unramified extensions of Q_p
+    E.g. T = y^2+y+1; p = 2;
+         polrootspadic(x^3-x^2+64*y, [T,p], 5);
+
+[Linear Algebra]
+  - generic fast linear algebra using CUP decomposition
+  - improve linear systems over Q [treat contents sensibly]
+  - fix inefficiency in LLL (not present in original fplll code)
+  - matsnf(integral matrix): now uses a modular algorithm.
+  - matrixqz(,-1 or -2): faster implementation.
+  - matrank, matker over the integers: faster implementation for large
+    rectangular matrices.
+  - qflll(x, 3) in place reduction: return x * qflll(x) [faster].
+
+[Curves]
+  - hyperellpadicfrobenius: allow X defined over a number field and
+    compute Frobenius over unramified extension of Q_p. E.g.,
+      M = hyperellpadicfrobenius(x^5 + 'a  * x + 1, ['a^2+1,3], 10);
+    (over Q_9, to 10 3-adic digits of accuracy)
+  - new GP function ellpadiclambdamu: Iwasawa invariants lambda and mu for
+    the p-adic L function L_p(E), where p is a prime of good or bad
+    multiplicative reduction for the elliptic curve E/Q.
+  - make ellheight(E) return the Faltings height of E (over Q or a number field)
+    make ellheight(E, torsion point) return an exact 0
+  - support for non-integral models in ellratpoints and hyperellratpoints
+
+[L-functions]
+  - lfuncreate(v) can now correctly handle non-rational data: instead of
+    v = [a, asta, Vga, k, N, eps, poles], v can now be a closure (without
+    arguments) evaluating to such a vector at current working precision.
+  - lfuncreate([G,v]): where G is (Z/NZ)^* or a ray class group and v a
+    vector of characters with the same conductor. This vector-valued L-function
+    allows fast simultaneous evaluation for multiple characters. E.g.,
+      F = [Mat(160), [1]];
+      G = bnrinit(bnfinit(x), F); \\ ray class group
+      \\ vector of all primitive characters
+      v = [ c | c <- bnrchar(G, [1]), bnrconductor(G, c) == F ];
+      L = lfuncreate([G, v]);
+      lfun(L,1); \\ evaluate all L(chi, 1) simultaneously
+  - parallel support for lfuninit.
+  - lfun now allows non-integral weights; in particular, lfunqf is no longer
+    restricted to even dimensions.
+  - new GP function lfundual (to manipulate the dual L-function) and
+    lfunshift (to manipulate L(s + a))
+  - new GP function dirpowerssum for fast computation of 1^s + 2^s + ... + N^s
+  - exact (fast!) rational formulas for quadratic Dirichlet L-functions at
+    non-positive integers. E.g.
+      lfun(1, -7) -> 1/240 [ = zeta(-7) ]
+      lfun(-691, -2) -> -175118   [ = L(chi_{-691}, -2) ]
+
+[Modular forms]
+  - mffromlfun now supports forms of half-integral weight, e.g. from lfunqf.
+  - lfunmfspec is now implemented in all integral weights
+  - new GP function mfgaloisprojrep (projective Artin representation attached
+    to a modular form of weight 1 by Deligne-Serre)
+  - new GP function mfisetaquo(f): can f be represented as a meromorphic eta
+    quotient ?
+
+[Miscellaneous]
+  - new GP function permcycles to return the decomposition of a permutation
+    as a product of disjoint cycles.
+  - new GP function mscosets to construct H\G given generators for
+    a group G and a description of a subgroup H
+
+    ? PSL2 = [[0,1;-1,0], [1,1;0,1]];  \\ S and T
+    \\ G = PSL2, H = Gamma0(2)
+    ? [C] = mscosets(PSL2, g -> g[2,1] % 2 == 0);
+    ? C \\ three cosets
+    %3 = [[1, 0; 0, 1], [0, 1; -1, 0], [0, 1; -1, -1]]
+
+    The function also returns the right action of G on H\G.
+
+  - new GP function msfarey to build subgroups H of G = PSL_2(Z) (as Farey
+    symbols) given an oracle deciding whether an element of G belongs to H.
+
+    \\ Gamma_0(N) is built-in
+    G0(N) = mspolygon(N);
+
+    \\ Gamma_1(N) via Gamma_0(N)
+    G1(N) = msfarey(G0(N), g -> my(a = g[1,1] % N); a == 1 || a == N-1);
+
+    \\ Gamma(N)
+    G(N) = msfarey(G1(N), g -> g[1,2] % N == 0);
+
+  - better Windows support: allow install() in all cases + no longer crash
+    on deep recursion [ (dive(n) = dive(n+1)); dive(0) ]

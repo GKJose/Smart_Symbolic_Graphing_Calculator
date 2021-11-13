@@ -1,0 +1,170 @@
+!t_CLOSURE!tt!5!
+!closure!rm!5!
+!closure_arity!tt!5!
+!closure_get_code!tt!5!
+!closure_codestr!tt!5!
+!closure_get_oper!tt!5!
+!closure_get_data!tt!5!
+!closure_get_dbg!tt!5!
+!closure_get_text!tt!6!
+!closure_get_\EFF {}rame!tt!6!
+!t_LIST!tt!6!
+!list!rm!6!
+!gunclone_deep!tt!6!
+!gunclone!tt!6!
+!list_nmax!tt!6!
+!list_data!tt!6!
+!listcopy!tt!7!
+!mklistcopy!tt!7!
+!mklist_typ!tt!7!
+!mklist!tt!7!
+!mkmap!tt!7!
+!list_typ!tt!7!
+!listpop!tt!7!
+!listput!tt!7!
+!mapdomain!tt!7!
+!mapdomain_shallow!tt!7!
+!maptomat!tt!7!
+!maptomat_shallow!tt!8!
+!BLOCK_SIGINT_START!tt!8!
+!BLOCK_SIGALRM_START!tt!8!
+!BLOCK_SIGINT_END!tt!8!
+!PARI_SIGINT_block!tt!8!
+!PARI_SIGINT_pending!tt!8!
+!MT_SIGINT_BLOCK!tt!8!
+!MT_SIGINT_UNBLOCK!tt!8!
+!mt_sigint_block!tt!8!
+!mt_sigint_unblock!tt!8!
+!Fl2_equal1!tt!8!
+!Fl2_mul_pre!tt!8!
+!Fl2_sqr_pre!tt!8!
+!Fl2_inv_pre!tt!8!
+!Fl2_pow_pre!tt!8!
+!Fl2_sqrtn_pre!tt!8!
+!Fl2_norm_pre!tt!8!
+!Flx_Fl2_eval_pre!tt!9!
+!toser_i!tt!9!
+!RgX_to_ser!tt!9!
+!r\EFF {}rac_to_ser!tt!9!
+!listinit!tt!9!
+!print0!tt!9!
+!\EFF {}_RAW!tt!9!
+!\EFF {}_PRETTYMAT!tt!9!
+!\EFF {}_TEX!tt!9!
+!out_print0!tt!10!
+!print0!tt!10!
+!printsep!tt!10!
+!out_print0!tt!10!
+!pariOut!tt!10!
+!printsep1!tt!10!
+!out_print0!tt!10!
+!pariOut!tt!10!
+!pari_sprint0!tt!10!
+!print!tt!10!
+!printp!tt!10!
+!print1!tt!10!
+!pari_print\EFF {}!tt!10!
+!output!tt!10!
+!printtex!tt!10!
+!GENtoTeXstr!tt!10!
+!pari_print\EFF {}!tt!10!
+!write0!tt!10!
+!write1!tt!10!
+!writetex!tt!10!
+!GENtoTeXstr!tt!10!
+!print\EFF {}0!tt!10!
+!pari_print\EFF {}!tt!10!
+!strprint\EFF {}!tt!10!
+!pari_sprint\EFF {}!tt!10!
+!pari_in\EFF {}ile!tt!10!
+!switchin!tt!10!
+!gp_read_\EFF {}ile!tt!10!
+!break0!tt!10!
+!next0!tt!10!
+!return0!tt!10!
+!error0!tt!10!
+!warning0!tt!10!
+!vecslice0!tt!10!
+!matslice0!tt!10!
+!apply0!tt!10!
+!genapply!tt!11!
+!select0!tt!11!
+!genselect!tt!11!
+!vecapply!tt!11!
+!veccatapply!tt!11!
+!vecselect!tt!11!
+!vecselapply!tt!11!
+!push_localprec!tt!11!
+!push_localbitprec!tt!11!
+!pop_localprec!tt!11!
+!get_localprec!tt!11!
+!get_localbitprec!tt!11!
+!localprec!tt!11!
+!localbitprec!tt!11!
+!getlocalbitprec!tt!11!
+!getlocalprec!tt!11!
+!localvars_read_str!tt!11!
+!geval_gp!tt!11!
+!localvars_\EFF {}ind!tt!11!
+!os_getenv!tt!12!
+!getenv!tt!12!
+!os_signal!tt!12!
+!sigaction!tt!12!
+!SA_NODEFER!tt!12!
+!signal!tt!12!
+!SIG_IGN!tt!12!
+!sigaction!tt!12!
+!gp_embedded_init!tt!12!
+!gp_embedded!tt!12!
+!pari_completion_matches!tt!12!
+!pari_completion!tt!12!
+!pari_completion_matches!tt!13!
+!rl_attempted_completion_\EFF {}unction!tt!13!
+!pari_init_bu\EFF {}\EFF {}ers!tt!13!
+!pari_init_compiler!tt!13!
+!pari_init_de\EFF {}aults!tt!13!
+!pari_init_evaluator!tt!13!
+!pari_init_\EFF {}iles!tt!13!
+!pari_init_\EFF {}loats!tt!13!
+!pari_init_graphics!tt!13!
+!pari_init_homedir!tt!13!
+!pari_init_parser!tt!13!
+!pari_init_paths!tt!13!
+!pari_init_primetab!tt!13!
+!pari_init_rand!tt!13!
+!pari_init_seadata!tt!13!
+!pari_close_compiler!tt!13!
+!pari_close_evaluator!tt!13!
+!pari_close_\EFF {}iles!tt!13!
+!pari_close_\EFF {}loats!tt!14!
+!pari_close_homedir!tt!14!
+!pari_close_m\EFF {}!tt!14!
+!pari_close_parser!tt!14!
+!pari_close_paths!tt!14!
+!pari_close_primes!tt!14!
+!pari_thread_close!tt!14!
+!pari_thread_close_\EFF {}iles!tt!14!
+!sa\EFF {}egel!tt!16!
+!sa\EFF {}eel!tt!16!
+!sa\EFF {}elistel!tt!16!
+!sa\EFF {}egcoe\EFF {}\EFF {}!tt!16!
+!mt_queue_start!tt!17!
+!mt_queue_start_lim!tt!17!
+!mt_queue_submit!tt!17!
+!mt_queue_get!tt!17!
+!mt_queue_end!tt!17!
+!mt_queue_end!tt!17!
+!mt_nbthreads!tt!17!
+!mt_queue_start!tt!18!
+!mt_nbthreads!tt!18!
+!mt_broadcast!tt!18!
+!gpinstall!tt!18!
+!pari_mt_init!tt!18!
+!pari_init_opts!tt!18!
+!INIT_noIMTm!tt!18!
+!pari_mt_init!tt!18!
+!pari_mt_close!tt!18!
+!pari_close!tt!18!
+!pari_close_opts!tt!18!
+!INIT_noIMTm!tt!18!
+The End
