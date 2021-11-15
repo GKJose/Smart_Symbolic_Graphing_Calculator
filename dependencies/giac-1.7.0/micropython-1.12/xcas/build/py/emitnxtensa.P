@@ -1,4 +1,0 @@
-build/py/emitnxtensa.o: ../py/emitnxtensa.c ../py/mpconfig.h \
-  mpconfigport.h
-../py/emitnxtensa.c ../py/mpconfig.h :
-  mpconfigport.h :

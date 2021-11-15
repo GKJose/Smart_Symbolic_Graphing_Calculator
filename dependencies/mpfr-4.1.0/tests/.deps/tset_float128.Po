@@ -1,1 +1,0 @@
-tset_float128.o: tset_float128.c

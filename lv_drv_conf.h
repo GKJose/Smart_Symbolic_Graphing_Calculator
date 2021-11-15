@@ -12,7 +12,9 @@
 #ifndef LV_DRV_CONF_H
 #define LV_DRV_CONF_H
 
+#include "calc_conf.h"
 #include "lv_conf.h"
+
 
 /*********************
  * DELAY INTERFACE
@@ -87,11 +89,11 @@
 #endif
 
 #if USE_MONITOR
-#  define MONITOR_HOR_RES     480
-#  define MONITOR_VER_RES     320
+#  define MONITOR_HOR_RES     320
+#  define MONITOR_VER_RES     240
 
 /* Scale window by this factor (useful when simulating small screens) */
-#  define MONITOR_ZOOM        1
+#  define MONITOR_ZOOM        2
 
 /* Used to test true double buffering with only address changing.
  * Use 2 draw buffers, bith with MONITOR_HOR_RES x MONITOR_VER_RES size*/

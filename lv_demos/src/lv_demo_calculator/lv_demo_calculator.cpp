@@ -3,7 +3,9 @@
 #include <sstream>
 #include <unistd.h>
 
+#if ENABLE_GIAC
 using namespace giac;
+#endif
 using namespace std;
 
 static lv_obj_t* ta;
@@ -11,6 +13,7 @@ static lv_obj_t* ta2;
 static lv_obj_t* kb;
 
 void lv_demo_calculator::fetchAndSolve(){
+  #if ENABLE_GIAC
   static context ct;
   static gen g;
   static string line;
@@ -30,6 +33,9 @@ void lv_demo_calculator::fetchAndSolve(){
   output << "\n";
   lv_textarea_set_text(ta2,output.str().c_str());
   lv_textarea_set_text(ta,"");
+  #else 
+  
+  #endif
 } 
 
 
@@ -62,6 +68,5 @@ void lv_demo_calculator::textArea_cb(lv_event_t* e){
        int length = strlen(txt);
        if(txt[length-1] == '='){
         fetchAndSolve();
-        
         }
 }

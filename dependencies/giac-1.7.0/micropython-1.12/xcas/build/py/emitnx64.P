@@ -1,2 +1,0 @@
-build/py/emitnx64.o: ../py/emitnx64.c ../py/mpconfig.h mpconfigport.h
-../py/emitnx64.c ../py/mpconfig.h mpconfigport.h :
