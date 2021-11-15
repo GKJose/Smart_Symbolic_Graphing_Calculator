@@ -65,6 +65,8 @@ calc_conf_template = f"""#ifndef SMART_CALC_H
 
 #if ENABLE_WINDOWS
 #define USE_WIN32DRV 1
+#define USE_FBDEV 0
+#define USE_EVDEV 0
 #endif
 
 #if ENABLE_LINUX

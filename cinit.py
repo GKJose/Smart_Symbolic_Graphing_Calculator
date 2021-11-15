@@ -77,7 +77,8 @@ if len(args) >= 1 and args[0] == 'init':
             print("Invalid input. Try again. (yes/no): ")
 
 
-    calc_conf_template = f"""#ifndef SMART_CALC_H
+    calc_conf_template = f"""
+    #ifndef SMART_CALC_H
     #define SMART_CALC_H
 
     #define ENABLE_GIAC {btn(enable_giac)}
@@ -87,6 +88,8 @@ if len(args) >= 1 and args[0] == 'init':
 
     #if ENABLE_WINDOWS
     #define USE_WIN32DRV 1
+    #define USE_FBDEV 0
+    #define USE_EVDEV 0
     #endif
 
     #if ENABLE_LINUX
