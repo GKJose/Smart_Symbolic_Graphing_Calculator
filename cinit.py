@@ -124,6 +124,9 @@ elif len(args) >= 1 and args[0] == "make":
 
     if is_linux or is_pi:
         liblist += '-lm '
+
+    if is_windows:
+        liblist += '-DUNICODE '
     
     searchdir = lambda p, s: functools.reduce(lambda acc, b: acc+b+' ', getListOfFiles(p, s))
     csrcs = []
