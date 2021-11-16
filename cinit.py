@@ -59,7 +59,6 @@ def main():
     enable_giac = False
     enable_sdl2 = is_linux or is_windows
     executable_suffix = "" if is_linux or is_pi else ".exe"
-    #object_suffix = "o" if is_linux or is_pi else "obj"
     object_suffix = "o"
 
     parser = argparse.ArgumentParser()
@@ -161,11 +160,18 @@ def main():
         cargs = [(f"gcc {cflags} -c {src[0]} -o {src[1]}.{object_suffix} ", src[1]) for src in csrcs]
         cxxargs = [(f"g++ {cxxflags} -c {src[0]} -o {src[1]}.{object_suffix}", src[1]) for src in cxxsrcs]
 
-        with ThreadPoolExecutor(max_workers=num_threads) as executor:
+        if num_threads == 1:
             for arg in cargs:
-                executor.submit(sync_system, arg[0], arg[1])
+                sync_system(arg[0], arg[1])
+
             for arg in cxxargs:
-                executor.submit(sync_system, arg[0], arg[1])
+                sync_system(arg[0], arg[1])
+        else:
+            with ThreadPoolExecutor(max_workers=num_threads) as executor:
+                for arg in cargs:
+                    executor.submit(sync_system, arg[0], arg[1])
+                for arg in cxxargs:
+                    executor.submit(sync_system, arg[0], arg[1])
 
             
         
