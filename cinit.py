@@ -1,4 +1,3 @@
-from posixpath import splitdrive
 import sys
 import re
 import platform
@@ -55,36 +54,6 @@ def getListOfFiles2(dirName, suffix):
                 
     return allFiles
 
-<<<<<<< HEAD
-plat = platform.platform()
-
-is_pi = re.search(r'armv6', plat) != None
-is_linux = (platform.system() == 'Linux') and not is_pi
-is_windows = platform.system() == 'Windows'
-enable_giac = False
-enable_sdl2 = is_linux or is_windows
-executable_suffix = "" if is_linux or is_pi else ".exe"
-object_suffix = "o" if is_linux or is_pi else "o"
-
-pwd = os.path.dirname(os.path.abspath(__file__))
-# pwd = sys.argv[0]
-if not is_pi and not is_linux and not is_windows:
-    print(f"Unsupported system detected. {platform.system()}")
-    print("Currently supported systems are Linux and Windows")
-else:
-    print("Supported system detected.")
-
-
-if len(args) >= 1 and args[0] == 'init':
-    print("Enable GIAC library? (not reccommended unless building for pi) (yes/no) : ")
-    while True:
-        v = input()
-        if v == 'yes' or v == 'YES':
-            enable_giac = True 
-            break
-        elif v == 'no' or v == 'NO':
-            break
-=======
 def sync_system(cmd, src):
     print(f"CC {src}")
     os.system(cmd)
@@ -118,7 +87,6 @@ def precompiled_filter(srcs):
         if src[0] not in file_data.keys():
             file_data[src[0]] = srcs_data[src[0]]
             new_list.append(src)
->>>>>>> 6adfdd48d5ba097cf54f86d4c04b453fcce1bd1a
         else:
             if file_data[src[0]] != srcs_data[src[0]]:
                 file_data[src[0]] = srcs_data[src[0]]
@@ -234,21 +202,8 @@ def main():
         for file in getListOfFiles(os.path.join(pwd, 'lv_demos'), ".cpp"):
             cxxsrcs.append(file)
 
-<<<<<<< HEAD
-    if is_linux or is_pi:
-        liblist += '-lm -lpthread'
-    if is_windows:
-        liblist += '-lgdi32'
-    
-    csrcs = []
-    cxxsrcs = []
-    xtra = "-DUNICODE" if is_windows else ""
-    cflags = f"-O3 -g0 -I{pwd} -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifiers -Wall -Wextra -Wno-unused-function -Wno-error=strict-prototypes -Wpointer-arith -fno-strict-aliasing -Wno-error=cpp -Wuninitialized -Wmaybe-uninitialized -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wformat-security -Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated -Wempty-body -Wtype-limits -Wshift-negative-value -Wstack-usage=2048 -Wno-unused-value -Wno-unused-parameter -Wno-missing-field-initializers -Wuninitialized -Wmaybe-uninitialized -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wpointer-arith -Wno-cast-qual -Wmissing-prototypes -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wno-discarded-qualifiers -Wformat-security -Wno-ignored-qualifiers -Wno-sign-compare {xtra}"
-    cxxflags = f"-std=c++14 -O3 -g0 -I{pwd} -Wall {xtra}"
-=======
         target_csrcs = precompiled_filter(csrcs)
         target_cxxsrcs = precompiled_filter(cxxsrcs)
->>>>>>> 6adfdd48d5ba097cf54f86d4c04b453fcce1bd1a
 
         cobjs = set([x[1]+".o" for x in csrcs])
         cxxobjs = set([x[1]+".o" for x in cxxsrcs])
