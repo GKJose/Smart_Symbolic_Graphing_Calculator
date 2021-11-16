@@ -121,6 +121,9 @@ elif len(args) >= 1 and args[0] == "make":
 
     if is_linux or is_pi:
         liblist += '-lm -lpthread'
+
+    if is_windows:
+        liblist += '-lgdi32'
     
     csrcs = []
     cxxsrcs = []
