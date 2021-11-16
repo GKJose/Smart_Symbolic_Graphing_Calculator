@@ -2,7 +2,6 @@ import sys
 import re
 import platform
 import os
-import functools
 
 args = sys.argv[1:]
 
@@ -101,14 +100,11 @@ if len(args) >= 1 and args[0] == 'init':
 
     #endif"""
 
-    
-
-    
-
     with open('calc_conf.h', 'w') as f:
         f.write(calc_conf_template)
-
+    # END OF INIT
 elif len(args) >= 1 and args[0] == "make":
+
     with open('calc_conf.h', 'r') as f:
         for line in f:
             if re.search(r'#define ENABLE_GIAC 1', line):
@@ -123,9 +119,8 @@ elif len(args) >= 1 and args[0] == "make":
         liblist += '-lSDL2 '
 
     if is_linux or is_pi:
-        liblist += '-lm '
+        liblist += '-lm -lpthread'
     
-    searchdir = lambda p, s: functools.reduce(lambda acc, b: acc+b+' ', getListOfFiles(p, s))
     csrcs = []
     cxxsrcs = []
     xtra = "-DUNICODE" if is_windows else ""
@@ -160,9 +155,18 @@ elif len(args) >= 1 and args[0] == "make":
     string = f"g++ {cxxflags} -c main.cpp -o main.{object_suffix}"
     print(string)
     os.system(string)
-    string = f"g++ {cxxflags} -o demo{executable_suffix} main.{object_suffix} {' '.join(cobjs)} {' '.join(cxxobjs)} {liblist}"
+
+    with open("target.objs", 'w') as f:
+        f.write(' '.join(cobjs) + ' ' + ' '.join(cxxobjs) + f' main.{object_suffix}')
+
+    string = f"g++ {cxxflags} @target.objs {liblist} -o demo{executable_suffix}"
     print(string)
     os.system(string)
+    os.remove("target.objs")
+    # string = f"g++ {cxxflags} -o demo{executable_suffix} main.{object_suffix} {' '.join(cobjs)} {' '.join(cxxobjs)} {liblist}"
+    # print(string)
+    # os.system(string)
+    # END OF MAKE
 elif len(args) >= 1 and args[0] == "clean":
     files = getListOfFiles2(pwd, object_suffix)
     for file in files:
