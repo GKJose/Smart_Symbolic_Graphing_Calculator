@@ -1,11 +1,20 @@
+from posixpath import splitdrive
 import sys
 import re
 import platform
 import os
 import argparse
+import json
+import hashlib
 from concurrent.futures.thread import ThreadPoolExecutor
 
 #args = sys.argv[1:]
+
+class TempArgs:
+    option = "make"
+    threads = 4
+    joball = False
+    
 
 def btn(val):
     if val:
@@ -51,6 +60,45 @@ def sync_system(cmd, src):
     os.system(cmd)
 
 
+def precompiled_filter(srcs):
+    CHUNK_SIZE = 65535
+    srcs_data = {}
+    file_data = {}
+    new_list = []
+    for src in srcs:
+        md5_hash = hashlib.md5()
+        with open(src[0], 'r', encoding='utf-8') as f:
+            while True:
+                data = f.read(CHUNK_SIZE).encode('utf-8')
+                if not data:
+                    break
+                md5_hash.update(data)
+
+            srcs_data[src[0]] = md5_hash.hexdigest()
+    try:
+        with open('.pclist', 'r') as f:
+            try: 
+                file_data = json.loads(''.join(f.readlines()))
+            except json.decoder.JSONDecodeError:
+                ...
+    except:
+        ...
+    
+    for src in srcs:
+        if src[0] not in file_data.keys():
+            file_data[src[0]] = srcs_data[src[0]]
+            new_list.append(src)
+        else:
+            if file_data[src[0]] != srcs_data[src[0]]:
+                file_data[src[0]] = srcs_data[src[0]]
+                new_list.append(src)
+    with open('.pclist', 'w') as f:
+        f.write(json.dumps(file_data))
+    return new_list
+
+
+
+
 def main():
     plat = platform.platform()
     is_pi = re.search(r'armv6', plat) != None
@@ -67,6 +115,7 @@ def main():
     group.add_argument("-t", "--threads", help="Sets the number of threads used during compilation.", type=int, default=1)
     group.add_argument("-j", "--joball", help="Sets the total number of threads used during compilation to the maximum amount available.", action="store_true")
     args = parser.parse_args()
+    #args = TempArgs()
     num_threads = args.threads if not args.joball else os.cpu_count()
 
     pwd = os.path.dirname(os.path.abspath(__file__))
@@ -154,11 +203,17 @@ def main():
         for file in getListOfFiles(os.path.join(pwd, 'lv_demos'), ".cpp"):
             cxxsrcs.append(file)
 
+        target_csrcs = precompiled_filter(csrcs)
+        target_cxxsrcs = precompiled_filter(cxxsrcs)
+
         cobjs = set([x[1]+".o" for x in csrcs])
         cxxobjs = set([x[1]+".o" for x in cxxsrcs])
 
-        cargs = [(f"gcc {cflags} -c {src[0]} -o {src[1]}.{object_suffix} ", src[1]) for src in csrcs]
-        cxxargs = [(f"g++ {cxxflags} -c {src[0]} -o {src[1]}.{object_suffix}", src[1]) for src in cxxsrcs]
+        cargs = [(f"gcc {cflags} -c {src[0]} -o {src[1]}.{object_suffix} ", src[1]) for src in target_csrcs]
+        cxxargs = [(f"g++ {cxxflags} -c {src[0]} -o {src[1]}.{object_suffix}", src[1]) for src in target_cxxsrcs]
+        
+        
+
 
         if num_threads == 1:
             for arg in cargs:
@@ -194,6 +249,8 @@ def main():
             os.remove(file)
         if os.path.exists(os.path.join(pwd, 'demo' + executable_suffix )):
             os.remove(os.path.join(pwd, 'demo' + executable_suffix))
+        if os.path.exists(os.path.join(pwd, '.pclist')):
+            os.remove(os.path.join(pwd, '.pclist'))
     else:
         print("Unknown argument.")
         print("Valid arguments are: init, make, clean.")
