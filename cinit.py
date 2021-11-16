@@ -52,7 +52,8 @@ is_windows = platform.system() == 'Windows'
 enable_giac = False
 enable_sdl2 = is_linux or is_windows
 executable_suffix = "" if is_linux or is_pi else ".exe"
-object_suffix = "o" if is_linux or is_pi else "obj"
+#object_suffix = "o" if is_linux or is_pi else "obj"
+object_suffix = "o"
 
 pwd = os.path.dirname(os.path.abspath(__file__))
 # pwd = sys.argv[0]
