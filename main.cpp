@@ -58,7 +58,7 @@ using namespace lv_demo_calculator;
 int main(void)
 {
     calc_init();
-    createTextArea();
+    createDemo();
 
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {

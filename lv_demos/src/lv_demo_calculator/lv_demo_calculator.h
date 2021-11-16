@@ -9,9 +9,14 @@
 #include "../../lv_demo.h"
 
 namespace lv_demo_calculator{
+        void createDemo();
 	void fetchAndSolve();
 	void createTextArea();
+        void createMenu();
+        void menu_cb(lv_event_t* e);
 	void textArea_cb(lv_event_t* e);
+        void createOperatorWindow();
+        void operatorWindow_cb(lv_event_t* e);
 }
 
 #endif
