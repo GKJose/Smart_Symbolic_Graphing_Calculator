@@ -1,1 +1,0 @@
-tget_set_d64.o: tget_set_d64.c
