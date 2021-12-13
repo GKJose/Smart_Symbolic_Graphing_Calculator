@@ -36,7 +36,7 @@
 
 #endif
 
-#if ENABLE_LINUX 
+#if ENABLE_LINUX || ENABLE_MACOS
 #include <SDL2/SDL.h>
 #include "lv_drivers/display/monitor.h"
 #include "lv_drivers/indev/mouse.h"
@@ -84,7 +84,7 @@ static void calc_init(void){
     lv_win32_init(GetModuleHandleW(NULL), SW_SHOW, 320, 240, LoadIconW(GetModuleHandleW(NULL), MAKEINTRESOURCE(IDI_LVGL)));
     lv_win32_add_all_input_devices_to_group(NULL);
     #else
-    #if ENABLE_LINUX
+    #if ENABLE_LINUX || ENABLE_MACOS
     monitor_init();
     SDL_CreateThread((SDL_ThreadFunction)custom_tick_get, "tick", nullptr);
     #elif ENABLE_PI 
@@ -107,7 +107,7 @@ static void calc_init(void){
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
     disp_drv.draw_buf   = &disp_buf;
-    #if ENABLE_LINUX
+    #if ENABLE_LINUX || ENABLE_MACOS
     disp_drv.flush_cb   = monitor_flush;
     disp_drv.hor_res    = MONITOR_HOR_RES;
     disp_drv.ver_res    = MONITOR_VER_RES;
@@ -120,7 +120,7 @@ static void calc_init(void){
     
     lv_disp_drv_register(&disp_drv);
 
-    #if ENABLE_LINUX
+    #if ENABLE_LINUX || ENABLE_MACOS
     lv_group_t* g = lv_group_create();
     lv_group_set_default(g);
 
