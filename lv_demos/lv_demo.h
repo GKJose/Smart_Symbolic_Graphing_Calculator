@@ -6,9 +6,10 @@
 #ifndef LV_DEMO_H
 #define LV_DEMO_H
 
-#ifdef __cplusplus
-#include "src/lv_demo_calculator/lv_demo_calculator.h"
-#endif
+// #ifdef __cplusplus
+// #include "src/lv_demo_calculator/lv_demo_calculator.h"
+// #include "src/lv_demo_graphing/lv_demo_graphing.hxx"
+// #endif
 
 
 #ifdef __cplusplus
