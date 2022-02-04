@@ -1,6 +1,6 @@
 #include "calc_conf.h"
 #include "lvgl/lvgl.h"
-#include "lv_demos/lv_demo.h"
+//#include "lv_demos/lv_demo.h"
 #include <chrono>
 #include <thread>
 
@@ -49,16 +49,20 @@
 #include "lv_drivers/indev/evdev.h"
 #endif
 
+#include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
+
 #define DISP_BUF_SIZE (64 * 320)
+typedef void* (*VeryCoolFunction)(int* a, int* b);
 
 static void calc_init(void);
 
-using namespace lv_demo_calculator;
+//using namespace lv_demo_calculator;
 
 int main(void)
 {
     calc_init();
-    createDemo();
+    lv_demo_graphing::create_graph();
+    //createDemo();
 
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {

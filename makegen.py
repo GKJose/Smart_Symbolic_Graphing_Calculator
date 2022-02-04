@@ -78,7 +78,7 @@ calc_conf_template = f"""#ifndef SMART_CALC_H
 
 #endif"""
 
-liblist = ''
+liblist = '-lgmpxx -lgmp'
 
 if enable_giac:
     liblist += '-lgiac -lgmp '
