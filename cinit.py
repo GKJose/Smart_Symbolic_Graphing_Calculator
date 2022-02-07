@@ -177,10 +177,10 @@ def main():
                 if re.search(r'#define ENABLE_GIAC 1', line):
                     enable_giac = True
 
-        liblist = ''
+        liblist = '-lgmpxx -lgmp '
 
         if enable_giac:
-            liblist += '-lgiac -lgmp '
+            liblist += '-lgiac '
 
         if enable_sdl2:
             liblist += '-lSDL2 '

@@ -61,7 +61,7 @@ static void calc_init(void);
 int main(void)
 {
     calc_init();
-    lv_demo_graphing::create_graph();
+    create_graph();
     //createDemo();
 
     /*Handle LitlevGL tasks (tickless mode)*/
