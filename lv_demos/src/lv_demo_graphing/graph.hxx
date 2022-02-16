@@ -44,7 +44,7 @@ namespace graphing {
     using graph_function = std::function<mpf_class(mpf_class)>;
 
     
-    constexpr double calculate_hyp(double a, double b) {
+    inline double calculate_hyp(double a, double b) {
         return sqrt(a*a + b*b);
     }
 

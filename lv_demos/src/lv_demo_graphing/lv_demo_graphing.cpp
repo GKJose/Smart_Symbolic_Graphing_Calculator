@@ -3,18 +3,20 @@
 #include <math.h>
 
 static mpf_class plot_sin(mpf_class x) {
-    return mpf_class(sin(x.get_d()) * 50.0);
+    return mpf_class(sin(x.get_d()*0.1) * 50.0);
 }
 
 void create_graph(void){
 
     graphing::Graph graph(lv_scr_act());
-    //graph.set_scale(mpf_class(1.0));
+    //graph.set_scale(mpf_class(1.5));
     graph.translate_center(0,0);
+
     //mpf_class m("0.5");
     //mp_exp_t e(1);
     //std::cout << plot_sin(m).get_d() << "\n";
     graph.draw_function(plot_sin);
+    //graph.draw_function([](mpf_class x){return x;});
     //graph.draw_function([](mpf_class x){ return mpf_class(sin(x.get_d()) * 10.0);});
     //graph.translate_center(25, 25);
 

@@ -16,13 +16,13 @@ namespace graphing {
             lv_draw_line_dsc_init(&axes_style);
             axes_style.color = LV_COLOR_MAKE16(0, 0, 0);
 
-            lv_draw_line_dsc_t middlerino;
-            lv_draw_line_dsc_init(&middlerino);
-            middlerino.color = LV_COLOR_MAKE16(255, 0, 0);
+            //lv_draw_line_dsc_t middlerino;
+            //lv_draw_line_dsc_init(&middlerino);
+            //middlerino.color = LV_COLOR_MAKE16(255, 0, 0);
 
             draw_axes();
             
-            lv_canvas_draw_line(canvas, middle, 2, &middlerino);
+            //lv_canvas_draw_line(canvas, middle, 2, &middlerino);
     }
 
     Point Graph::bottom_left_real() const {
@@ -45,19 +45,19 @@ namespace graphing {
             //auto blr = bottom_left_real();
             //auto tlr = top_left_real();
             //return Point{(x - blr.x)*scale, VIEWPORT_HEIGHT - (blr.y - y)*scale};
-            return Point{(x-offset.x)*scale, (y-offset.y)*scale};
+            return Point{(x+offset.x), -(y-offset.y) + VIEWPORT_HEIGHT};
     }
 
     Point Graph::viewport_to_real(mpf_class x, mpf_class y) const {
             //auto blr = bottom_left_real();
             //return Point{blr.x + x/scale, blr.y + (VIEWPORT_HEIGHT - y)/scale};
-            return Point{(x+offset.x)*scale, (y+offset.y)*scale};
+            return Point{(x+offset.x), -(y+offset.y)};
     }
 
     std::pair<mpf_class, mpf_class> Graph::viewport_real_domain() const {
             // mpf_class left_x = center.x - VIEWPORT_WIDTH/2;
             // mpf_class right_x = center.x + VIEWPORT_WIDTH/2;
-            return std::pair<mpf_class, mpf_class>(offset.x, offset.x + VIEWPORT_WIDTH);
+            return std::pair<mpf_class, mpf_class>(-offset.x, offset.x);
     }
 
     std::pair<mpf_class, mpf_class> Graph::viewport_real_range() const {
@@ -105,7 +105,7 @@ namespace graphing {
         }
 
         void Graph::draw_function(graph_function func){
-            const int number_of_points = 100;
+            const int number_of_points = 1000;
             auto domain = viewport_real_domain();
             auto range = viewport_real_range();
             mpf_class step = (domain.second - domain.first)/number_of_points;
