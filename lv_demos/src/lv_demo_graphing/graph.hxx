@@ -10,39 +10,17 @@
 #include <functional>
 #include <array>
 #include <math.h>
-#include <limits>  
+#include <limits> 
+#include <vector>
+#include <chrono>
 
 namespace graphing {
-
-    // namespace Detail
-    // {
-    //     double constexpr sqrtNewtonRaphson(double x, double curr, double prev)
-    //     {
-    //         return curr == prev
-    //             ? curr
-    //             : sqrtNewtonRaphson(x, 0.5 * (curr + x / curr), curr);
-    //     }
-    // }
-
-    // /*
-    // * Constexpr version of the square root
-    // * Return value:
-    // *   - For a finite and non-negative value of "x", returns an approximation for the square root of "x"
-    // *   - Otherwise, returns NaN
-    // */
-    // double constexpr sqrt(double x)
-    // {
-    //     return x >= 0 && x < std::numeric_limits<double>::infinity()
-    //         ? Detail::sqrtNewtonRaphson(x, x, 0)
-    //         : std::numeric_limits<double>::quiet_NaN();
-    // }
 
     constexpr int MPF_PRECISION = 200;
 
     #define CREATE_MPF(x) mpf_class(x, MPF_PRECISION)
     
     using graph_function = std::function<mpf_class(mpf_class)>;
-
     
     inline double calculate_hyp(double a, double b) {
         return sqrt(a*a + b*b);
@@ -62,6 +40,8 @@ namespace graphing {
 
         Point(mpf_class x, mpf_class y):x(x),y(y){}
 
+        Point(lv_point_t point):x(point.x),y(point.y){}
+
         std::string to_string() const {
             std::stringstream str;
             str << "(" << x.get_d() << " " << y.get_d() << ")";
@@ -73,6 +53,16 @@ namespace graphing {
             return point;
         }
 
+    };
+
+    struct Plot{
+        graph_function func;
+        lv_draw_line_dsc_t style;
+
+        Plot(graph_function func, lv_color_t color):func(func){
+            lv_draw_line_dsc_init(&style);
+            style.color = color;
+        }
     };
 
     class Graph{
@@ -89,6 +79,8 @@ namespace graphing {
 
         lv_obj_t* canvas;
         lv_draw_line_dsc_t axes_style;
+        
+        std::vector<Plot> plot_list;
     public:
 
         Graph(lv_obj_t* parent);
@@ -96,16 +88,14 @@ namespace graphing {
         void translate_center(Point vec){
             offset.x += vec.x;
             offset.y += vec.y;
-            fill_background();
-            draw_axes();
+            update();
         }
 
         template<typename T>
         void translate_center(T x, T y){
             offset.x += x;
             offset.y += y;
-            fill_background();
-            draw_axes();
+            update();
         }
         // a^2 + b^2 = c^2
         // c = hyp*scale
@@ -149,6 +139,13 @@ namespace graphing {
         std::pair<mpf_class, mpf_class> viewport_real_range() const;
 
         void draw_function(graph_function);
+        void draw_function(Plot const&);
+        void draw_function(graph_function, lv_color_t);
+        
+        void add_function(graph_function);
+        void add_function(Plot const&);
+        void add_function(graph_function, lv_color_t);
+        void update();
     private:
 
         void draw_axes();
