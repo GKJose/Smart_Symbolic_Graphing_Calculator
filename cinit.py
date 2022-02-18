@@ -105,7 +105,7 @@ def main():
     is_windows = platform.system() == 'Windows'
     is_mac = platform.system() == "Darwin"
     enable_giac = False
-    enable_sdl2 = is_linux or is_windows or is_mac
+    enable_sdl2 = is_linux or is_mac
     executable_suffix = "" if is_linux or is_pi or is_mac else ".exe"
     object_suffix = "o"
 
@@ -183,7 +183,7 @@ def main():
             liblist += '-lgiac '
 
         if enable_sdl2:
-            liblist += '-lSDL2 '
+           liblist += '-lSDL2 '
 
         if is_linux or is_pi or is_mac:
             liblist += '-lm -lpthread '
