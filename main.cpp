@@ -50,6 +50,9 @@
 #endif
 
 #include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
+//temporary for testing
+#include "lv_demos/src/lv_demo_calculator/lv_demo_calculator.h"
+#include "lv_demos/src/lv_demo_screens/calculator_screens.h"
 
 #define DISP_BUF_SIZE (64 * 320)
 typedef void* (*VeryCoolFunction)(int* a, int* b);
@@ -61,9 +64,9 @@ static void calc_init(void);
 int main(void)
 {
     calc_init();
-    create_graph();
-    //createDemo();
-
+    //create_graph();
+    //lv_demo_calculator::createDemo();
+    main_screen_driver();
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {
         lv_task_handler();
