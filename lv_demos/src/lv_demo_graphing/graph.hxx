@@ -14,6 +14,11 @@
 #include <vector>
 #include <chrono>
 
+#if ENABLE_WINDOWS == 1
+#define MONITOR_HOR_RES 320
+#define MONITOR_VER_RES 240
+#endif
+
 namespace graphing {
 
     constexpr int MPF_PRECISION = 200;
@@ -67,6 +72,7 @@ namespace graphing {
 
     class Graph{
         // Change this to fit your needs.
+        
         static const int GRAPH_BUF_SIZE = LV_CANVAS_BUF_SIZE_TRUE_COLOR(MONITOR_HOR_RES, MONITOR_VER_RES);
         static const int VIEWPORT_WIDTH = MONITOR_HOR_RES;
         static const int VIEWPORT_HEIGHT = MONITOR_VER_RES;
