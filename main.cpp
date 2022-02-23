@@ -51,6 +51,10 @@
 
 #include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
 #include "lv_demos/src/lv_demo_calculator/lv_demo_calculator.h"
+//#include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
+//temporary for testing
+#include "lv_demos/src/lv_demo_calculator/lv_demo_calculator.h"
+#include "lv_demos/src/lv_demo_screens/calculator_screens.hxx"
 
 #define DISP_BUF_SIZE (64 * 320)
 typedef void* (*VeryCoolFunction)(int* a, int* b);

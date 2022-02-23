@@ -1,7 +1,8 @@
 #include "lvgl/examples/lv_examples.h"
-#include "calculator_screens.h"
+#include "calculator_screens.hxx"
 #include <stdio.h>
-#include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
+//#include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
+#include "../lv_demo_graphing/lv_demo_graphing.hxx"
 #if LV_USE_TABVIEW && LV_BUILD_EXAMPLES
 
 void lv_main_screen_tabs(void)
@@ -35,7 +36,7 @@ void lv_main_screen_tabs(void)
 
     //lv_obj_t* label = lv_label_create(tab2);
     //lv_label_set_text(label, "Second tab");
-    //create_graph();
+    create_graph(tab2);
     lv_obj_t* label = lv_label_create(tab3);
     lv_label_set_text(label, "Third tab");
 
