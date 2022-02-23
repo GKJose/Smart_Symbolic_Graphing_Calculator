@@ -66,7 +66,8 @@ int main(void)
     calc_init();
     //create_graph();
     //lv_demo_calculator::createDemo();
-    main_screen_driver();
+    //main_screen_driver();
+    lv_main_screen_tabs();
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {
         lv_task_handler();

@@ -2,30 +2,32 @@
 #if LV_USE_TEXTAREA && LV_BUILD_EXAMPLES
 
 //Declarations
-lv_obj_t* lv_textarea_input(void);
-void lv_textarea_output(void);
+lv_obj_t* lv_textarea_input(lv_obj_t* parent);
+void lv_textarea_output(lv_obj_t* parent);
 static void kb_event_cb(lv_event_t* e);
 static void toggle_kb_event_handler(lv_event_t* e);
 //void keyboard(lv_obj_t* ta);
-void main_screen_driver(void);
+void main_screen_driver(lv_obj_t* parent);
 
 lv_obj_t* areas[100];       
 int total = 0;
 static lv_obj_t* kb;
 static lv_obj_t* toggle_kb_btn;
 
-void main_screen_driver(void)
+void main_screen_driver(lv_obj_t* parent)
 {
     /*Create a keyboard*/
-    kb = lv_keyboard_create(lv_scr_act());
+    //kb = lv_keyboard_create(lv_scr_act());
+    kb = lv_keyboard_create(parent);
     lv_obj_set_size(kb, LV_HOR_RES, LV_VER_RES / 3);
     //lv_keyboard_set_textarea(kb, first_ta); /*Focus it on one of the text areas to start*/
     lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_event_cb(kb, kb_event_cb, LV_EVENT_ALL, kb);
 
 
-    lv_obj_t* first_ta = lv_textarea_input();
-    toggle_kb_btn = lv_btn_create(lv_scr_act());
+    lv_obj_t* first_ta = lv_textarea_input(parent);
+    //lv_scr_act()
+    toggle_kb_btn = lv_btn_create(parent);
     lv_obj_add_flag(toggle_kb_btn,LV_OBJ_FLAG_CHECKABLE);
     lv_obj_align(toggle_kb_btn, LV_ALIGN_TOP_RIGHT, 0, 0);
     lv_color_t grey = lv_palette_main(LV_PALETTE_GREY);
@@ -55,8 +57,8 @@ static void textarea_event_handler(lv_event_t* e)
         for (int i = 0; i < total; i++) {
             lv_obj_set_y(areas[i], lv_obj_get_y_aligned(areas[i]) - 70);
         }
-        lv_textarea_output();
-        lv_textarea_input();
+        lv_textarea_output(lv_obj_get_parent(ta));
+        lv_textarea_input(lv_obj_get_parent(ta));
     }
 
 }
@@ -110,9 +112,9 @@ static void btnm_event_handler(lv_event_t* e)
 */
 
 //Graphical widget functions
-lv_obj_t* lv_textarea_input(void)
+lv_obj_t* lv_textarea_input(lv_obj_t* parent)
 {
-    lv_obj_t* ta = lv_textarea_create(lv_scr_act());
+    lv_obj_t* ta = lv_textarea_create(parent);
     areas[total] = ta;
     total++;
     lv_textarea_set_one_line(ta, true);
@@ -127,9 +129,9 @@ lv_obj_t* lv_textarea_input(void)
 
 }
 
-void lv_textarea_output(void)
+void lv_textarea_output(lv_obj_t* parent)
 {
-    lv_obj_t* ta = lv_textarea_create(lv_scr_act());
+    lv_obj_t* ta = lv_textarea_create(parent);
     areas[total] = ta;
     total++;
     char str[50];
