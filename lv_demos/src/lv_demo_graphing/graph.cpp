@@ -36,7 +36,6 @@ namespace graphing {
             axes_style.color = LV_COLOR_MAKE16(0, 0, 0);
 
             lv_obj_add_event_cb(canvas, graph_event_cb, LV_EVENT_HIT_TEST, this);
-
             //lv_draw_line_dsc_t middlerino;
             //lv_draw_line_dsc_init(&middlerino);
             //middlerino.color = LV_COLOR_MAKE16(255, 0, 0);
@@ -63,31 +62,23 @@ namespace graphing {
     }
 
     Point Graph::real_to_viewport(mpf_class x, mpf_class y) const {
-            //auto blr = bottom_left_real();
-            //auto tlr = top_left_real();
-            //return Point{(x - blr.x)*scale, VIEWPORT_HEIGHT - (blr.y - y)*scale};
-            return Point{(x+offset.x), -(y-offset.y) + VIEWPORT_HEIGHT};
+            return Point{(x+offset.x)/scale, (-y+offset.y)/scale + VIEWPORT_HEIGHT};
     }
 
     Point Graph::viewport_to_real(mpf_class x, mpf_class y) const {
-            //auto blr = bottom_left_real();
-            //return Point{blr.x + x/scale, blr.y + (VIEWPORT_HEIGHT - y)/scale};
-            return Point{-(x+offset.x), -(y+offset.y)};
+            return Point{x*scale - offset.x, -(y-VIEWPORT_HEIGHT)*scale + offset.y};//-(y+offset.y)*scale};
     }
 
     std::pair<mpf_class, mpf_class> Graph::viewport_real_domain() const {
-            // mpf_class left_x = center.x - VIEWPORT_WIDTH/2;
-            // mpf_class right_x = center.x + VIEWPORT_WIDTH/2;
             auto left = viewport_to_real(0, 0).x;
             auto right = viewport_to_real(VIEWPORT_WIDTH, 0).x;
-            return std::pair<mpf_class, mpf_class>(left, -right - 2*offset.x);
-            //return std::pair<mpf_class, mpf_class>(-offset.x, 2*offset.x);
+            return std::pair<mpf_class, mpf_class>(left, right);
     }
 
     std::pair<mpf_class, mpf_class> Graph::viewport_real_range() const {
-        // mpf_class top_y = center.y - VIEWPORT_HEIGHT/2;
-        // mpf_class bottom_y = center.y + VIEWPORT_HEIGHT/2;
-        return std::pair<mpf_class, mpf_class>(offset.y + VIEWPORT_HEIGHT, offset.y);
+        auto top = viewport_to_real(0, 0).y;
+        auto bottom = viewport_to_real(0, VIEWPORT_HEIGHT).y;
+        return std::pair<mpf_class, mpf_class>(top, bottom);
     }
 
     void Graph::draw_axes() {

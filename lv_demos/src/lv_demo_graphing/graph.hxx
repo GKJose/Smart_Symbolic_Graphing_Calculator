@@ -92,8 +92,8 @@ namespace graphing {
         Graph(lv_obj_t* parent);
 
         void translate_center(Point vec){
-            offset.x += vec.x;
-            offset.y += vec.y;
+            offset.x += vec.x*scale;
+            offset.y += vec.y*scale;
             update();
         }
 
@@ -129,8 +129,22 @@ namespace graphing {
             return VIEWPORT_HYP*vertical_scale();
         }
 
+        inline mpf_class get_scale() const {
+            return scale;
+        }
+
         inline void set_scale(mpf_class s){
+            translate_center(Point{offset.x*(s - scale), offset.y*(s - scale)});
             scale = s;
+        }
+
+        inline void scale_delta(mpf_class s){
+            set_scale(get_scale()+s);
+            update();
+        }
+
+        lv_obj_t* get_canvas() const {
+            return canvas;
         }      
 
         Point bottom_left_real() const;
