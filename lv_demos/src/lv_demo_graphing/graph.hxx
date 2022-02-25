@@ -63,10 +63,23 @@ namespace graphing {
     struct Plot{
         graph_function func;
         lv_draw_line_dsc_t style;
+        std::string name;
 
         Plot(graph_function func, lv_color_t color):func(func){
+            //static int cur = 1;
             lv_draw_line_dsc_init(&style);
             style.color = color;
+            //name = "f" + std::to_string(gen_next_plot_num()) + "(x)";
+            std::stringstream n;
+            n << "f" << "(x)";
+            name = n.str();
+            //Plot(func, color, " ");
+        }
+
+        Plot(graph_function func, lv_color_t color, std::string name):func(func){
+            lv_draw_line_dsc_init(&style);
+            style.color = color;
+            this->name = std::move(name);
         }
     };
 
@@ -83,13 +96,13 @@ namespace graphing {
 
         lv_color_t buf[GRAPH_BUF_SIZE];
 
-        lv_obj_t* canvas;
+        lv_obj_t* canvas, *function_button;
         lv_draw_line_dsc_t axes_style;
         
         std::vector<Plot> plot_list;
     public:
-
         Graph(lv_obj_t* parent);
+        Graph(lv_obj_t* parent, lv_obj_t* function_button);
 
         void translate_center(Point vec){
             offset.x += vec.x*scale;
@@ -166,11 +179,13 @@ namespace graphing {
         void add_function(Plot const&);
         void add_function(graph_function, lv_color_t);
         void update();
+
+        void set_function_button(lv_obj_t* button);
+        std::string get_plots_fmt_str() const;
     private:
 
         void draw_axes();
         void fill_background();
-        
 
     };
     // blr.y - (blr.y - y) = blr.y - blry + y = y

@@ -22,28 +22,47 @@ namespace graphing {
     }
 
     Graph::Graph(lv_obj_t* parent){
-            offset = Point(VIEWPORT_WIDTH/2, -VIEWPORT_HEIGHT/2);
-            //offset = Point("0", "0");
-            scale = CREATE_MPF("1");
-            VIEWPORT_HYP = calculate_hyp(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+        offset = Point(VIEWPORT_WIDTH/2, -VIEWPORT_HEIGHT/2);
+        scale = CREATE_MPF("1");
+        VIEWPORT_HYP = calculate_hyp(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 
-            canvas = lv_canvas_create(parent);
-            lv_canvas_set_buffer(canvas, buf, VIEWPORT_WIDTH, VIEWPORT_HEIGHT, LV_IMG_CF_TRUE_COLOR);
-            lv_obj_align(canvas, LV_ALIGN_CENTER, 0, 0);
-            lv_canvas_fill_bg(canvas, LV_COLOR_MAKE16(255, 255, 255), LV_OPA_COVER);
+        canvas = lv_canvas_create(parent);
+        lv_canvas_set_buffer(canvas, buf, VIEWPORT_WIDTH, VIEWPORT_HEIGHT, LV_IMG_CF_TRUE_COLOR);
+        lv_obj_align(canvas, LV_ALIGN_CENTER, 0, 0);
+        lv_canvas_fill_bg(canvas, LV_COLOR_MAKE16(255, 255, 255), LV_OPA_COVER);
 
-            lv_draw_line_dsc_init(&axes_style);
-            axes_style.color = LV_COLOR_MAKE16(0, 0, 0);
+        lv_draw_line_dsc_init(&axes_style);
+        axes_style.color = LV_COLOR_MAKE16(0, 0, 0);
 
-            lv_obj_add_event_cb(canvas, graph_event_cb, LV_EVENT_HIT_TEST, this);
-            //lv_draw_line_dsc_t middlerino;
-            //lv_draw_line_dsc_init(&middlerino);
-            //middlerino.color = LV_COLOR_MAKE16(255, 0, 0);
+        lv_obj_add_event_cb(canvas, graph_event_cb, LV_EVENT_HIT_TEST, this);
 
-            draw_axes();
-            
-            //lv_canvas_draw_line(canvas, middle, 2, &middlerino);
+        //this->function_button = nullptr;
+
+        draw_axes();
     }
+
+    // Graph::Graph(lv_obj_t* parent, lv_obj_t* function_button){
+    //         offset = Point(VIEWPORT_WIDTH/2, -VIEWPORT_HEIGHT/2);
+    //         //offset = Point("0", "0");
+    //         scale = CREATE_MPF("1");
+    //         VIEWPORT_HYP = calculate_hyp(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+
+    //         canvas = lv_canvas_create(parent);
+    //         lv_canvas_set_buffer(canvas, buf, VIEWPORT_WIDTH, VIEWPORT_HEIGHT, LV_IMG_CF_TRUE_COLOR);
+    //         lv_obj_align(canvas, LV_ALIGN_CENTER, 0, 0);
+    //         lv_canvas_fill_bg(canvas, LV_COLOR_MAKE16(255, 255, 255), LV_OPA_COVER);
+
+    //         lv_draw_line_dsc_init(&axes_style);
+    //         axes_style.color = LV_COLOR_MAKE16(0, 0, 0);
+
+    //         lv_obj_add_event_cb(canvas, graph_event_cb, LV_EVENT_HIT_TEST, this);
+
+    //         this->function_button = function_button;
+
+    //         draw_axes();
+            
+    //         //lv_canvas_draw_line(canvas, middle, 2, &middlerino);
+    // }
 
     Point Graph::bottom_left_real() const {
         return Point{offset.x-real_width()/2, offset.y - real_height()/2};
@@ -182,13 +201,30 @@ namespace graphing {
 
     void Graph::add_function(graph_function func) {
         plot_list.push_back(Plot(func, axes_style.color));
+        if (function_button != nullptr)
+            lv_dropdown_set_options(function_button, get_plots_fmt_str().c_str());
     }
 
     void Graph::add_function(Plot const& plot) {
         plot_list.push_back(plot);
+        if (function_button != nullptr)
+            lv_dropdown_set_options(function_button, get_plots_fmt_str().c_str());
     }
 
     void Graph::add_function(graph_function func, lv_color_t color){
         add_function(Plot(func, color));
+    }
+
+    std::string Graph::get_plots_fmt_str() const {
+        std::string formatted = "";
+        for (int i = 0; i < plot_list.size() - 1; i++){
+            formatted += plot_list[i].name + "\n";
+        }
+        formatted += plot_list.back().name;
+        return formatted;
+    }
+
+    void Graph::set_function_button(lv_obj_t* button){
+        function_button = button;
     }
 }
