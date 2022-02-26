@@ -1,8 +1,8 @@
-#include "lvgl/examples/lv_examples.h"
 #include "calculator_screens.hxx"
 #include <stdio.h>
-#include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
-//#if LV_USE_TABVIEW && LV_BUILD_EXAMPLES
+#include "main_screen.hxx"
+#include "../lv_demo_graphing/lv_demo_graphing.hxx"
+#if LV_USE_TABVIEW && LV_BUILD_EXAMPLES
 
 //Disable Scroll Animation Between Tabs
 static void scroll_begin_event(lv_event_t * e)
@@ -40,4 +40,4 @@ void lv_main_screen_tabs(void)
     lv_label_set_text(label, "Settings");
 
 }
-//#endif
+#endif

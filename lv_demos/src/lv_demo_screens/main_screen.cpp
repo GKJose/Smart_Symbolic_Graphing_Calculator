@@ -1,9 +1,12 @@
-#include "lvgl/examples/lv_examples.h"
+//#include "../../../lvgl/examples/lv_examples.h"
+#include "calculator_screens.hxx"
+#include "tabs.hxx"
+#include <stdio.h>
 //#if LV_USE_TEXTAREA && LV_BUILD_EXAMPLES
 
 /*Declarations*/
 lv_obj_t* lv_textarea_input(lv_obj_t* parent);
-void lv_textarea_output(lv_obj_t* parent);
+lv_obj_t* lv_textarea_output(lv_obj_t* parent);
 static void kb_event_cb(lv_event_t* e);
 static void toggle_kb_event_handler(lv_event_t* e);
 void main_screen_driver(lv_obj_t* parent);
@@ -12,7 +15,7 @@ void main_screen_driver(lv_obj_t* parent);
   (1 Input, 1 Output) = 1 Entry to the calculator.
   After 25 Entries the main screen clears to prevent memory overfill*/
 lv_obj_t* areas[50];
-int total = 0;
+int total;
 
 static lv_obj_t* kb;
 static lv_obj_t* toggle_kb_btn;
@@ -21,7 +24,7 @@ static lv_obj_t* toggle_kb_btn;
 void main_screen_driver(lv_obj_t* parent)
 {
 
-
+    total = 0;
     /*Create a keyboard*/
     kb = lv_keyboard_create(parent);
     lv_obj_set_size(kb, LV_HOR_RES, LV_VER_RES / 3);
@@ -64,16 +67,15 @@ static void textarea_event_handler(lv_event_t* e)
             for(uint32_t i = 0; i < lv_obj_get_child_cnt(parent); i++)
             {
                 lv_obj_clean(parent);
-                total = 0;
                 main_screen_driver(parent);
                 return;
             }
         }
         LV_LOG_USER("Ready, current text: %s", lv_textarea_get_text(ta));
-
+        /*Create the new text areas*/
         lv_textarea_output(parent);
         lv_textarea_input(parent);
-       // int num_enter = total / 2;
+
         for (int i = 0; i < total; i++)
         {
             lv_obj_align_to(areas[i], parent, LV_ALIGN_BOTTOM_MID, 0, 35 * i);
@@ -142,7 +144,7 @@ lv_obj_t* lv_textarea_input(lv_obj_t* parent)
 
 }
 
-void lv_textarea_output(lv_obj_t* parent)
+lv_obj_t* lv_textarea_output(lv_obj_t* parent)
 {
     lv_obj_t* ta = lv_textarea_create(parent);
     areas[total] = ta;
@@ -151,7 +153,7 @@ void lv_textarea_output(lv_obj_t* parent)
     sprintf(str, "Answer: %d", total/2);
     lv_textarea_set_one_line(ta, true);
     lv_obj_set_width(ta, 320);
-    lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, 10);
+    lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, 0);
     lv_obj_add_event_cb(ta, textarea_event_handler, LV_EVENT_READY, NULL);
     lv_obj_add_state(ta, LV_STATE_DEFAULT); /*To be sure the cursor is visible*/
     lv_obj_set_style_text_align(ta, LV_TEXT_ALIGN_RIGHT, 0);
@@ -161,7 +163,7 @@ void lv_textarea_output(lv_obj_t* parent)
     {
         lv_obj_set_y(ta, lv_obj_get_y_aligned(ta) - 80);
     }
-
+    return ta;
 }
 
 //#endif
