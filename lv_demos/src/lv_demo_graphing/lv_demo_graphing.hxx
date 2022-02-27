@@ -13,7 +13,7 @@
 // }
 // #endif
 
-void create_graph(lv_obj_t* parent);
+void create_graph(lv_obj_t *parent);
 //void create_graph(void);
 
 

@@ -32,6 +32,10 @@ void lv_main_screen_tabs(void)
     lv_obj_t *tab2 = lv_tabview_add_tab(tabview, "Graphing");
     lv_obj_t *tab3 = lv_tabview_add_tab(tabview, "Settings");
 
+    lv_obj_set_scrollbar_mode(tab1, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_scrollbar_mode(tab2, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_scrollbar_mode(tab3, LV_SCROLLBAR_MODE_OFF);
+
     /*Add content to the tabs*/
     main_screen_driver(tab1);
 

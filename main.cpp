@@ -53,7 +53,7 @@
 #include "lv_demos/src/lv_demo_calculator/lv_demo_calculator.h"
 //#include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
 //temporary for testing
-#include "lv_demos/src/lv_demo_calculator/lv_demo_calculator.h"
+//#include "lv_demos/src/lv_demo_calculator/lv_demo_calculator.h"
 #include "lv_demos/src/lv_demo_screens/calculator_screens.hxx"
 
 #define DISP_BUF_SIZE (64 * 320)
@@ -66,7 +66,11 @@ static void calc_init(void);
 int main(void)
 {
     calc_init();
+<<<<<<< HEAD
     create_graph();
+=======
+    //create_graph(lv_scr_act());
+>>>>>>> 53f39f08 (Updating the graph functionality onto tabview.)
     //lv_demo_calculator::createDemo();
 
     /*Handle LitlevGL tasks (tickless mode)*/

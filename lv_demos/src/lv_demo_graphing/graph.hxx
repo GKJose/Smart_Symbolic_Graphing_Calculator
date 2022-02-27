@@ -82,7 +82,6 @@ namespace graphing {
 
     class Graph{
         // Change this to fit your needs.
-        
         static const int GRAPH_BUF_SIZE = LV_CANVAS_BUF_SIZE_TRUE_COLOR(MONITOR_HOR_RES, MONITOR_VER_RES);
         static const int VIEWPORT_WIDTH = MONITOR_HOR_RES;
         static const int VIEWPORT_HEIGHT = MONITOR_VER_RES;

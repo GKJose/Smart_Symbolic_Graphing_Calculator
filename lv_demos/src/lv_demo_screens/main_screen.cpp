@@ -82,6 +82,7 @@ static void textarea_event_handler(lv_event_t* e)
         }
         lv_obj_align_to(kb, parent, LV_ALIGN_BOTTOM_MID, 0, 35 * total - 35);
         lv_obj_scroll_to_view(areas[total - 1], LV_ANIM_OFF);
+        lv_obj_scroll_by(parent, 0, 10, LV_ANIM_OFF);
     }
 
 }
@@ -133,7 +134,7 @@ lv_obj_t* lv_textarea_input(lv_obj_t* parent)
     total++;
     lv_textarea_set_one_line(ta, true);
     lv_obj_set_width(ta, 320);
-    lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, 10);
     lv_obj_add_event_cb(ta, textarea_event_handler, LV_EVENT_ALL, NULL);
     lv_obj_add_state(ta, LV_STATE_DEFAULT);
     if (!lv_obj_has_flag(kb, LV_OBJ_FLAG_HIDDEN))
@@ -153,7 +154,7 @@ lv_obj_t* lv_textarea_output(lv_obj_t* parent)
     sprintf(str, "Answer: %d", total/2);
     lv_textarea_set_one_line(ta, true);
     lv_obj_set_width(ta, 320);
-    lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, 10);
     lv_obj_add_event_cb(ta, textarea_event_handler, LV_EVENT_READY, NULL);
     lv_obj_add_state(ta, LV_STATE_DEFAULT); /*To be sure the cursor is visible*/
     lv_obj_set_style_text_align(ta, LV_TEXT_ALIGN_RIGHT, 0);
