@@ -35,6 +35,9 @@ namespace graphing {
         axes_style.color = LV_COLOR_MAKE16(0, 0, 0);
 
         lv_obj_add_event_cb(canvas, graph_event_cb, LV_EVENT_HIT_TEST, this);
+        #if ENABLE_GIAC == 1
+        giac::approx_mode(true, &ctx); // Change graphing to calculate approximate values.
+        #endif
 
         draw_axes();
     }
