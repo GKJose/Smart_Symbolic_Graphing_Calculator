@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "main_screen.hxx"
 #include "../lv_demo_graphing/lv_demo_graphing.hxx"
+
 #if LV_USE_TABVIEW && LV_BUILD_EXAMPLES
 
 //Disable Scroll Animation Between Tabs
@@ -13,6 +14,7 @@ static void scroll_begin_event(lv_event_t * e)
         if(a)  a->time = 0;
     }
 }
+
 
 void lv_main_screen_tabs(void)
 {
@@ -35,11 +37,19 @@ void lv_main_screen_tabs(void)
     lv_obj_set_scrollbar_mode(tab1, LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_scrollbar_mode(tab2, LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_scrollbar_mode(tab3, LV_SCROLLBAR_MODE_OFF);
+    
+    /*Clear these flags so that the layers don't interfere with each other
+    Important for enabling click and dragging the graph in tabview.*/
+    lv_obj_clear_flag(tab2, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_clear_flag(tabview, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_clear_flag(lv_tabview_get_content(tabview), LV_OBJ_FLAG_CLICKABLE);
+    /*Clear flags for graph scroll*/
 
     /*Add content to the tabs*/
     main_screen_driver(tab1);
 
     create_graph(tab2);
+    
     lv_obj_t* label = lv_label_create(tab3);
     lv_label_set_text(label, "Settings");
 
