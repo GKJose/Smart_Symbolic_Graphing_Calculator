@@ -1,4 +1,3 @@
-//#include "../../../lvgl/examples/lv_examples.h"
 #include "calculator_screens.hxx"
 #include "tabs.hxx"
 #include <stdio.h>
@@ -13,8 +12,9 @@ void main_screen_driver(lv_obj_t* parent);
 
 /*Areas holds a list of pointers to the active text areas.
   (1 Input, 1 Output) = 1 Entry to the calculator.
-  After 25 Entries the main screen clears to prevent memory overfill*/
-lv_obj_t* areas[50];
+  After 50 Entries the main screen clears to prevent memory overfill.
+  Segmentation Fault occurs at 60 Entries, 120 Working Text areas.*/
+lv_obj_t* areas[100];
 int total;
 
 static lv_obj_t* kb;
@@ -47,6 +47,9 @@ void main_screen_driver(lv_obj_t* parent)
     lv_obj_align_to(kb_img, NULL, LV_ALIGN_CENTER, 0, 0);
     lv_obj_add_event_cb(toggle_kb_btn, toggle_kb_event_handler, LV_EVENT_ALL, toggle_kb_btn);
 
+    /*Put kb in view*/
+    lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, 35);
+
 }
 
 /*Callback functions*/
@@ -62,7 +65,7 @@ static void textarea_event_handler(lv_event_t* e)
     }
     else if (code == LV_EVENT_READY)
     {
-        if(total > 50)
+        if(total > 100)
         {
             for(uint32_t i = 0; i < lv_obj_get_child_cnt(parent); i++)
             {
@@ -72,17 +75,13 @@ static void textarea_event_handler(lv_event_t* e)
             }
         }
         LV_LOG_USER("Ready, current text: %s", lv_textarea_get_text(ta));
+        
         /*Create the new text areas*/
         lv_textarea_output(parent);
         lv_textarea_input(parent);
-
-        for (int i = 0; i < total; i++)
-        {
-            lv_obj_align_to(areas[i], parent, LV_ALIGN_BOTTOM_MID, 0, 35 * i);
-        }
-        lv_obj_align_to(kb, parent, LV_ALIGN_BOTTOM_MID, 0, 35 * total - 35);
-        lv_obj_scroll_to_view(areas[total - 1], LV_ANIM_OFF);
-        lv_obj_scroll_by(parent, 0, 10, LV_ANIM_OFF);
+        
+        /*Put kb in view*/
+        lv_obj_align_to(kb, parent, LV_ALIGN_BOTTOM_MID, 0, 10);
     }
 
 }
@@ -134,9 +133,13 @@ lv_obj_t* lv_textarea_input(lv_obj_t* parent)
     total++;
     lv_textarea_set_one_line(ta, true);
     lv_obj_set_width(ta, 320);
-    lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, 10);
+    lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, ( 35 * total));
     lv_obj_add_event_cb(ta, textarea_event_handler, LV_EVENT_ALL, NULL);
     lv_obj_add_state(ta, LV_STATE_DEFAULT);
+    
+    /*Make sure the most recent Input area is in view at the bottom*/
+    lv_obj_scroll_to_view(areas[total - 1], LV_ANIM_OFF);
+    lv_obj_scroll_by(parent, 0, 10, LV_ANIM_OFF);
     if (!lv_obj_has_flag(kb, LV_OBJ_FLAG_HIDDEN))
     {
         lv_obj_set_y(ta, lv_obj_get_y_aligned(ta) - 80);
@@ -154,12 +157,11 @@ lv_obj_t* lv_textarea_output(lv_obj_t* parent)
     sprintf(str, "Answer: %d", total/2);
     lv_textarea_set_one_line(ta, true);
     lv_obj_set_width(ta, 320);
-    lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, 10);
+    lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, ( 35 * total));
     lv_obj_add_event_cb(ta, textarea_event_handler, LV_EVENT_READY, NULL);
     lv_obj_add_state(ta, LV_STATE_DEFAULT); /*To be sure the cursor is visible*/
     lv_obj_set_style_text_align(ta, LV_TEXT_ALIGN_RIGHT, 0);
     lv_textarea_add_text(ta, str);
-    lv_obj_set_y(ta, lv_obj_get_y_aligned(ta) - 35);
     if (!lv_obj_has_flag(kb, LV_OBJ_FLAG_HIDDEN))
     {
         lv_obj_set_y(ta, lv_obj_get_y_aligned(ta) - 80);
