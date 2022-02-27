@@ -38,7 +38,8 @@ namespace graphing {
         return sqrt(a*a + b*b);
     }
 
-    void create_graph(void);
+    void create_graph(lv_obj_t *parent);
+
     struct Point{
         mpf_class x, y;
 

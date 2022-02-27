@@ -58,8 +58,8 @@ static void textarea_cb(lv_event_t* event){
     graph->update();  
 }
 
-void create_graph(void){
-    static graphing::Graph graph(lv_scr_act());
+void create_graph(lv_obj_t *parent){
+    static graphing::Graph graph(parent);
     static lv_style_t zoom_style_bg;
     static lv_style_t zoom_style;
     static lv_style_t textarea_style;

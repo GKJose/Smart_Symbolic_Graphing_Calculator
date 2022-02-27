@@ -66,11 +66,7 @@ static void calc_init(void);
 int main(void)
 {
     calc_init();
-<<<<<<< HEAD
-    create_graph();
-=======
-    //create_graph(lv_scr_act());
->>>>>>> 53f39f08 (Updating the graph functionality onto tabview.)
+    create_graph(lv_scr_act());
     //lv_demo_calculator::createDemo();
 
     /*Handle LitlevGL tasks (tickless mode)*/
