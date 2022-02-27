@@ -15,6 +15,49 @@ static void zoom_btnmatrix_cb(lv_event_t* event){
     }
 }
 
+static void dropdown_button_cb(lv_event_t* event){
+    char buf[10];
+    std::cout << "DROPDOWN_BUTTON_CB\n";
+    //std::stringstream ss;
+    int id = lv_dropdown_get_selected(event->target);
+    lv_dropdown_get_selected_str(event->target, buf, sizeof(buf)); // C function, so no std::string
+    //ss << buf;
+    auto graph = static_cast<graphing::Graph*>(event->user_data);
+    // Check if user selected to add a function to the graph.
+    if (buf[0]=='+'){
+        graph->add_function("");
+        lv_dropdown_set_selected(event->target, id);
+        graph->set_function_textarea_str("");
+        return;
+    }
+    graph->switch_to_bold(id);
+    // Finds user-selected plot.
+    graphing::Plot* plot = graph->get_plot(id);
+    if (plot == nullptr)
+        graph->set_function_textarea_str("NULL");
+    else {
+        // std::cout << "ID: " << id << "\n";
+        // std::cout << "EXPR: " << plot->function_expression << "\n";
+        graph->set_function_textarea_str(plot->function_expression);
+    }
+        
+    //graph->update();
+    //std::cout << buf << "\n";
+}
+
+static void textarea_cb(lv_event_t* event){
+    auto graph = static_cast<graphing::Graph*>(event->user_data);
+    auto func_str = graph->get_function_button_selected_str();
+    auto func_id = graph->get_function_button_selected_id();
+    auto func_expression = std::string(lv_textarea_get_text(event->target));
+    auto plot = graph->get_plot(func_id);
+    std::cout << "TEXTAREA_CB: " << func_str << " " << func_expression << " " << func_id << "\n";
+    graph->update_function(func_str + "(x):=" + func_expression);
+    plot->name = std::move(func_str);
+    plot->function_expression = std::move(func_expression);
+    graph->update();  
+}
+
 void create_graph(void){
     static graphing::Graph graph(lv_scr_act());
     static lv_style_t zoom_style_bg;
@@ -69,6 +112,7 @@ void create_graph(void){
     lv_style_set_shadow_ofs_y(&textarea_style, 0);
     lv_style_set_shadow_opa(&textarea_style, LV_OPA_70);
     lv_style_set_pad_top(&textarea_style, 5);
+    lv_style_set_pad_right(&textarea_style, 40);
     //lv_style_set_pad_left(&textarea_style, 3);
     
     lv_style_set_text_align(&textarea_style, LV_ALIGN_LEFT_MID);
@@ -78,6 +122,7 @@ void create_graph(void){
     lv_obj_add_style(function_text_area, &textarea_style, 0);
     lv_obj_set_size(function_text_area, 180, 30);
     lv_obj_align(function_text_area, LV_ALIGN_TOP_MID, -20, 10);
+    lv_obj_add_event_cb(function_text_area, textarea_cb, LV_EVENT_VALUE_CHANGED, &graph);
     
     // function button setup
     lv_style_init(&function_button_style);
@@ -93,12 +138,17 @@ void create_graph(void){
     lv_obj_add_style(function_button, &function_button_style, LV_PART_ITEMS);
     lv_obj_set_size(function_button, 40, 30);
     lv_obj_align(function_button, LV_ALIGN_TOP_MID, 50, 10);
+    lv_obj_add_event_cb(function_button, dropdown_button_cb, LV_EVENT_VALUE_CHANGED, &graph);
     // graph setup
 
     graph.set_function_button(function_button);
+    graph.set_function_textarea(function_text_area);
     graph.set_scale(mpf_class("0.5"));
-    graph.add_function(plot_sin, LV_COLOR_MAKE16(255, 0, 0));
-    graph.add_function([](mpf_class x){return x;}, LV_COLOR_MAKE16(0, 255, 0));
+    graph.add_function("");
+    
+    // graph.add_function(plot_sin, LV_COLOR_MAKE16(255, 0, 0), "sin(x)");
+    // graph.add_function([](mpf_class x){return x;}, LV_COLOR_MAKE16(0, 255, 0), "x");
+
     std::cout <<"EVERYTHING ADDED\n";
     graph.update(); 
 }

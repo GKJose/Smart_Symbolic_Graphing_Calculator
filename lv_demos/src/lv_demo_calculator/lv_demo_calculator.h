@@ -1,13 +1,13 @@
 #ifndef LV_CALCULATOR_H
 #define LV_CALCULATOR_H
 
-#if ENABLE_GIAC
-#include<giac/giac.h>
-#endif
-
 #include <iostream>
 #include "../../../lv_drv_conf.h"
 #include "../../lv_demo.h"
+
+#if ENABLE_GIAC
+#include<giac/giac.h>
+#endif
 
 namespace lv_demo_calculator{
         void createDemo();
