@@ -126,15 +126,13 @@ namespace graphing {
         Plot& plot = plot_list[id];
         auto& func_name = plot.name;
         const int number_of_points = 1000;
-
+        const int input_digits = 7;
+        static char fcall_buf[128] = {0};
+        std::sprintf(fcall_buf, "%s(", func_name.c_str());
         auto giac_call = [&](auto a){
-            std::stringstream ss, ss2;
-            ss << func_name << "(" << a << ")";
-            giac::gen g(ss.str(), &ctx);
-            //std::cout << "GIAC_CALL: " << ss.str() << "\n";
-            ss2 << giac::eval(g, &ctx);
-            //std::cout << "RESULT:" << ss2.str() << "\n";
-            return mpf_class(ss2.str());
+            gmp_sprintf(fcall_buf+func_name.size()+1, "%.*Ff)", input_digits, a);
+            giac::gen g(fcall_buf, &ctx);
+            return mpf_class(giac::gen2string(giac::eval(g, &ctx)));
         };
 
         auto domain = viewport_real_domain();
