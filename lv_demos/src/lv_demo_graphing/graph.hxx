@@ -115,7 +115,7 @@ namespace graphing {
         int current_function_number = 1; // defaults to 1
     public:
         Graph(lv_obj_t* parent);
-        Graph(lv_obj_t* parent, lv_obj_t* function_button);
+        //Graph(lv_obj_t* parent, lv_obj_t* function_button);
 
         void translate_center(Point vec){
             offset.x += vec.x*scale;
