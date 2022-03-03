@@ -1,6 +1,6 @@
 #include "calc_conf.h"
 #include "lvgl/lvgl.h"
-//#include "lv_demos/lv_demo.h"
+#include "Calculator.h"
 #include <chrono>
 #include <thread>
 
@@ -36,7 +36,7 @@
 
 #endif
 
-#if ENABLE_LINUX || ENABLE_MACOS
+#if ENABLE_LINUX 
 #include <SDL2/SDL.h>
 #include "lv_drivers/display/monitor.h"
 #include "lv_drivers/indev/mouse.h"
@@ -49,29 +49,49 @@
 #include "lv_drivers/indev/evdev.h"
 #endif
 
-#include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
-#include "lv_demos/src/lv_demo_calculator/lv_demo_calculator.h"
-//#include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
-//temporary for testing
-//#include "lv_demos/src/lv_demo_calculator/lv_demo_calculator.h"
-#include "lv_demos/src/lv_demo_screens/calculator_screens.hxx"
-
 #define DISP_BUF_SIZE (64 * 320)
-typedef void* (*VeryCoolFunction)(int* a, int* b);
 
 static void calc_init(void);
 
-//using namespace lv_demo_calculator;
 
 int main(void)
 {
-    calc_init();
-    //create_graph(lv_scr_act());
-    //lv_demo_calculator::createDemo();
-    lv_main_screen_tabs();
+	
+     //calc_init();
+ /*LittlevGL init*/
+    lv_init();
 
+    /*Linux frame buffer device init*/
+    fbdev_init();
+
+    /*A small buffer for LittlevGL to draw the screen's content*/
+    static lv_color_t buf[DISP_BUF_SIZE];
+
+    /*Initialize a descriptor for the buffer*/
+    static lv_disp_draw_buf_t disp_buf;
+    lv_disp_draw_buf_init(&disp_buf, buf, NULL, DISP_BUF_SIZE);
+
+    /*Initialize and register a display driver*/
+    static lv_disp_drv_t disp_drv;
+    lv_disp_drv_init(&disp_drv);
+    disp_drv.draw_buf   = &disp_buf;
+    disp_drv.flush_cb   = fbdev_flush;
+    disp_drv.hor_res    = 320;
+    disp_drv.ver_res    = 240;
+    lv_disp_drv_register(&disp_drv);
+   //Initialize the touch screen
+    evdev_init();
+    lv_indev_drv_t indev_drv;
+    lv_indev_drv_init(&indev_drv);
+    indev_drv.type = LV_INDEV_TYPE_POINTER;
+    indev_drv.read_cb = evdev_read;
+    lv_indev_drv_register(&indev_drv);
+
+    Calculator::createDemo();
+    lv_timer_create(Calculator::update,350,NULL);
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {
+        
         lv_task_handler();
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
@@ -94,7 +114,7 @@ static void calc_init(void){
     lv_win32_init(GetModuleHandleW(NULL), SW_SHOW, 320, 240, LoadIconW(GetModuleHandleW(NULL), MAKEINTRESOURCE(IDI_LVGL)));
     lv_win32_add_all_input_devices_to_group(NULL);
     #else
-    #if ENABLE_LINUX || ENABLE_MACOS
+    #if ENABLE_LINUX
     monitor_init();
     SDL_CreateThread((SDL_ThreadFunction)custom_tick_get, "tick", nullptr);
     #elif ENABLE_PI 
@@ -117,7 +137,7 @@ static void calc_init(void){
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
     disp_drv.draw_buf   = &disp_buf;
-    #if ENABLE_LINUX || ENABLE_MACOS
+    #if ENABLE_LINUX
     disp_drv.flush_cb   = monitor_flush;
     disp_drv.hor_res    = MONITOR_HOR_RES;
     disp_drv.ver_res    = MONITOR_VER_RES;
@@ -130,7 +150,7 @@ static void calc_init(void){
     
     lv_disp_drv_register(&disp_drv);
 
-    #if ENABLE_LINUX || ENABLE_MACOS
+    #if ENABLE_LINUX
     lv_group_t* g = lv_group_create();
     lv_group_set_default(g);
 
@@ -142,7 +162,6 @@ static void calc_init(void){
     indev_drv_1.type = LV_INDEV_TYPE_POINTER;
     indev_drv_1.read_cb = mouse_read;
     lv_indev_t *mouse_indev = lv_indev_drv_register(&indev_drv_1);
-    
 
     keyboard_init();
     static lv_indev_drv_t indev_drv_2;

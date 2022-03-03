@@ -61,7 +61,7 @@ In "Project properties > C/C++ Build > Settings" set the followings:
 2. Enable the Wayland driver in `lv_drv_conf.h` with `USE_WAYLAND 1`
 3. `LV_COLOR_DEPTH` should be set either to `32` or `16` in `lv_conf.h`;
    support for `8` and `1` depends on target platform.
-4. After `lv_init()` call `wayland_init()` 
+4. After `lv_init()` call `wayland_init()`
 5. Before `lv_deinit()` call `wayland_deinit()`
 6. Add a display:
 ```c
