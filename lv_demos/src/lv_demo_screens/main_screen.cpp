@@ -89,7 +89,7 @@ void main_screen_driver(lv_obj_t* parent)
     lv_obj_add_event_cb(toggle_kb_btn, toggle_kb_event_handler, LV_EVENT_ALL, toggle_kb_btn);
 
     /*Put kb in view*/
-    lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, 35);
+    lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, 0);
     lv_obj_scroll_by(parent, 0, 10, LV_ANIM_OFF);
 
 }
