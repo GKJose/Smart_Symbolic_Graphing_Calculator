@@ -12,6 +12,35 @@ static lv_obj_t* textArea;
 static lv_obj_t* textArea2;
 static lv_obj_t* menu_btnmatrix;
 static lv_obj_t* operatorWindow;
+
+void operatorWindow_cb(lv_event_t* e){
+}
+
+void textArea_cb(lv_event_t* e){
+	const char * txt = lv_textarea_get_text(textArea);
+       int length = strlen(txt);
+       if(txt[length-1] == '='){
+        lv_demo_calculator::fetchAndSolve();
+        }
+}
+
+void menu_cb(lv_event_t* e){
+	lv_event_code_t event = lv_event_get_code(e);
+	lv_obj_t* obj = lv_event_get_target(e);
+    if(event == LV_EVENT_VALUE_CHANGED) {
+		uint32_t id = lv_btnmatrix_get_selected_btn(obj);
+        const char * txt = lv_btnmatrix_get_btn_text(obj,id);
+        if(txt == "Operators"){
+		}else if(txt == "Trig"){
+		}else if(txt == "Misc."){
+		}else if(txt == "X"){
+			lv_textarea_del_char(textArea);	
+		}else{
+			lv_textarea_add_text(textArea, txt);
+		}
+    }		
+}
+
 void lv_demo_calculator::createDemo(){
 	
 	createTextArea();
@@ -56,22 +85,7 @@ static const char * btnm_map[] = {"1", "2", "3", "4", "5", "\n",
     lv_obj_align(menu_btnmatrix, LV_ALIGN_CENTER, 0, 50);
     lv_obj_add_event_cb(menu_btnmatrix, menu_cb, LV_EVENT_ALL,NULL);								  
 }
-void lv_demo_calculator::menu_cb(lv_event_t* e){
-	lv_event_code_t event = lv_event_get_code(e);
-	lv_obj_t* obj = lv_event_get_target(e);
-    if(event == LV_EVENT_VALUE_CHANGED) {
-		uint32_t id = lv_btnmatrix_get_selected_btn(obj);
-        const char * txt = lv_btnmatrix_get_btn_text(obj,id);
-        if(txt == "Operators"){
-		}else if(txt == "Trig"){
-		}else if(txt == "Misc."){
-		}else if(txt == "X"){
-			lv_textarea_del_char(textArea);	
-		}else{
-			lv_textarea_add_text(textArea, txt);
-		}
-    }		
-}
+
 void lv_demo_calculator::createTextArea(){
    /*Create the text area for keyboard*/
     textArea = lv_textarea_create(lv_scr_act());
@@ -89,15 +103,11 @@ void lv_demo_calculator::createTextArea(){
 
 }
 
-void lv_demo_calculator::textArea_cb(lv_event_t* e){
-	const char * txt = lv_textarea_get_text(textArea);
-       int length = strlen(txt);
-       if(txt[length-1] == '='){
-        fetchAndSolve();
-        }
-}
+
 void lv_demo_calculator::createOperatorWindow(){
 	
 }
-void lv_demo_calculator::operatorWindow_cb(lv_event_t* e){
-}
+
+
+
+

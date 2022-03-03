@@ -103,9 +103,10 @@ def main():
     is_pi = re.search(r'armv6', plat) != None
     is_linux = (platform.system() == 'Linux') and not is_pi
     is_windows = platform.system() == 'Windows'
+    is_mac = platform.system() == "Darwin"
     enable_giac = False
-    enable_sdl2 = is_linux or is_windows
-    executable_suffix = "" if is_linux or is_pi else ".exe"
+    enable_sdl2 = is_linux or is_mac
+    executable_suffix = "" if is_linux or is_pi or is_mac else ".exe"
     object_suffix = "o"
 
     parser = argparse.ArgumentParser()
@@ -119,9 +120,9 @@ def main():
 
     pwd = os.path.dirname(os.path.abspath(__file__))
     # pwd = sys.argv[0]
-    if not is_pi and not is_linux and not is_windows:
+    if not is_pi and not is_linux and not is_windows and not is_mac:
         print(f"Unsupported system detected. {platform.system()}")
-        print("Currently supported systems are Linux and Windows")
+        print("Currently supported systems are Linux, Windows and MacOS")
 
     if args.option == "init":
         print("Enable GIAC library? (not reccommended unless building for pi) (yes/no) : ")
@@ -143,6 +144,7 @@ def main():
         #define ENABLE_GIAC {btn(enable_giac)}
         #define ENABLE_PI {btn(is_pi)}
         #define ENABLE_LINUX {btn(is_linux)}
+        #define ENABLE_MACOS {btn(is_mac)}
         #define ENABLE_WINDOWS {btn(is_windows)}
 
         #if ENABLE_WINDOWS
@@ -151,12 +153,17 @@ def main():
         #define USE_EVDEV 0
         #endif
 
-        #if ENABLE_LINUX
+        #if ENABLE_LINUX || ENABLE_MACOS
         #define USE_MONITOR 1
         #define USE_MOUSEWHEEL 1
         #define USE_MOUSE 1
         #define USE_KEYBOARD 1
         #endif
+
+        #if ENABLE_MACOS
+        #define USE_FBDEV 0 
+        #define USE_EVDEV 0
+        #endif 
 
         #endif"""
 
@@ -170,15 +177,15 @@ def main():
                 if re.search(r'#define ENABLE_GIAC 1', line):
                     enable_giac = True
 
-        liblist = ''
+        liblist = '-lgmpxx -lgmp '
 
         if enable_giac:
-            liblist += '-lgiac -lgmp '
+            liblist += '-lgiac '
 
         if enable_sdl2:
-            liblist += '-lSDL2 '
+           liblist += '-lSDL2 '
 
-        if is_linux or is_pi:
+        if is_linux or is_pi or is_mac:
             liblist += '-lm -lpthread '
 
         if is_windows:
@@ -187,7 +194,7 @@ def main():
         csrcs = []
         cxxsrcs = []
         xtra = "-DUNICODE" if is_windows else ""
-        cflags = f"-O3 -g0 -I{pwd} -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifiers -Wall -Wextra -Wno-unused-function -Wno-error=strict-prototypes -Wpointer-arith -fno-strict-aliasing -Wno-error=cpp -Wuninitialized -Wmaybe-uninitialized -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wformat-security -Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated -Wempty-body -Wtype-limits -Wshift-negative-value -Wstack-usage=2048 -Wno-unused-value -Wno-unused-parameter -Wno-missing-field-initializers -Wuninitialized -Wmaybe-uninitialized -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wpointer-arith -Wno-cast-qual -Wmissing-prototypes -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wno-discarded-qualifiers -Wformat-security -Wno-ignored-qualifiers -Wno-sign-compare {xtra}"
+        cflags = f"-O3 -g0 -I{pwd} -Wall -Wshadow -Wundef -Wmissing-prototypes -Wall -Wextra -Wno-unused-function -Wno-error=strict-prototypes -Wpointer-arith -fno-strict-aliasing -Wno-error=cpp -Wuninitialized -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wformat-security -Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wdeprecated -Wempty-body -Wtype-limits -Wshift-negative-value -Wno-unused-value -Wno-unused-parameter -Wno-missing-field-initializers -Wuninitialized -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wpointer-arith -Wno-cast-qual -Wmissing-prototypes -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wformat-security -Wno-ignored-qualifiers -Wno-sign-compare {xtra}"
         cxxflags = f"-std=c++14 -O3 -g0 -I{pwd} -Wall {xtra}"
 
         for file in getListOfFiles(os.path.join(pwd, 'lvgl'), ".c"):

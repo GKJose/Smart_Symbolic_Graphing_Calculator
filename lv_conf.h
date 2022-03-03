@@ -255,7 +255,7 @@ e.g. "stm32f769xx.h" or "stm32f429xx.h"*/
 #define LV_EXPORT_CONST_INT(int_value) struct _silence_gcc_warning /*The default value just prevents GCC warning*/
 
 /*Extend the default -32k..32k coordinate range to -4M..4M by using int32_t for coordinates instead of int16_t*/
-#define LV_USE_LARGE_COORD  0
+#define LV_USE_LARGE_COORD  1
 
 /*==================
  *   FONT USAGE
@@ -312,7 +312,7 @@ e.g. "stm32f769xx.h" or "stm32f429xx.h"*/
 #define LV_USE_FONT_COMPRESSED  0
 
 /*Enable subpixel rendering*/
-#define LV_USE_FONT_SUBPX       0
+#define LV_USE_FONT_SUBPX       1
 #if LV_USE_FONT_SUBPX
 /*Set the pixel order of the display. Physical order of RGB channels. Doesn't matter with "normal" fonts.*/
 #define LV_FONT_SUBPX_BGR       0  /*0: RGB; 1:BGR order*/

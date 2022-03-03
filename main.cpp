@@ -1,6 +1,6 @@
 #include "calc_conf.h"
 #include "lvgl/lvgl.h"
-#include "lv_demos/lv_demo.h"
+//#include "lv_demos/lv_demo.h"
 #include <chrono>
 #include <thread>
 
@@ -36,7 +36,7 @@
 
 #endif
 
-#if ENABLE_LINUX 
+#if ENABLE_LINUX || ENABLE_MACOS
 #include <SDL2/SDL.h>
 #include "lv_drivers/display/monitor.h"
 #include "lv_drivers/indev/mouse.h"
@@ -49,16 +49,26 @@
 #include "lv_drivers/indev/evdev.h"
 #endif
 
+#include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
+#include "lv_demos/src/lv_demo_calculator/lv_demo_calculator.h"
+//#include "lv_demos/src/lv_demo_graphing/lv_demo_graphing.hxx"
+//temporary for testing
+//#include "lv_demos/src/lv_demo_calculator/lv_demo_calculator.h"
+#include "lv_demos/src/lv_demo_screens/calculator_screens.hxx"
+
 #define DISP_BUF_SIZE (64 * 320)
+typedef void* (*VeryCoolFunction)(int* a, int* b);
 
 static void calc_init(void);
 
-using namespace lv_demo_calculator;
+//using namespace lv_demo_calculator;
 
 int main(void)
 {
     calc_init();
-    createDemo();
+    //create_graph(lv_scr_act());
+    //lv_demo_calculator::createDemo();
+    lv_main_screen_tabs();
 
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {
@@ -84,7 +94,7 @@ static void calc_init(void){
     lv_win32_init(GetModuleHandleW(NULL), SW_SHOW, 320, 240, LoadIconW(GetModuleHandleW(NULL), MAKEINTRESOURCE(IDI_LVGL)));
     lv_win32_add_all_input_devices_to_group(NULL);
     #else
-    #if ENABLE_LINUX
+    #if ENABLE_LINUX || ENABLE_MACOS
     monitor_init();
     SDL_CreateThread((SDL_ThreadFunction)custom_tick_get, "tick", nullptr);
     #elif ENABLE_PI 
@@ -107,7 +117,7 @@ static void calc_init(void){
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
     disp_drv.draw_buf   = &disp_buf;
-    #if ENABLE_LINUX
+    #if ENABLE_LINUX || ENABLE_MACOS
     disp_drv.flush_cb   = monitor_flush;
     disp_drv.hor_res    = MONITOR_HOR_RES;
     disp_drv.ver_res    = MONITOR_VER_RES;
@@ -120,7 +130,7 @@ static void calc_init(void){
     
     lv_disp_drv_register(&disp_drv);
 
-    #if ENABLE_LINUX
+    #if ENABLE_LINUX || ENABLE_MACOS
     lv_group_t* g = lv_group_create();
     lv_group_set_default(g);
 
@@ -132,6 +142,7 @@ static void calc_init(void){
     indev_drv_1.type = LV_INDEV_TYPE_POINTER;
     indev_drv_1.read_cb = mouse_read;
     lv_indev_t *mouse_indev = lv_indev_drv_register(&indev_drv_1);
+    
 
     keyboard_init();
     static lv_indev_drv_t indev_drv_2;

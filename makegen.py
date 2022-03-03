@@ -32,11 +32,12 @@ plat = platform.platform()
 is_pi = re.search(r'armv6', plat) != None
 is_linux = (platform.system() == 'Linux') and not is_pi
 is_windows = platform.system() == 'Windows'
+is_mac = platform.system() == "Darwin"
 enable_giac = False
-enable_sdl2 = is_linux or is_windows
+enable_sdl2 = is_linux or is_windows or is_mac
 pwd = os.path.dirname(os.path.abspath(__file__))
 
-if not is_pi and not is_linux and not is_windows:
+if not is_pi and not is_linux and not is_windows and not is_mac:
     print(f"Unsupported system detected. {platform.system()}")
     print("Currently supported systems are Linux and Windows")
 else:
@@ -55,12 +56,14 @@ while True:
         print("Invalid input. Try again. (yes/no): ")
 
 
-calc_conf_template = f"""#ifndef SMART_CALC_H
+calc_conf_template = f"""
+#ifndef SMART_CALC_H
 #define SMART_CALC_H
 
 #define ENABLE_GIAC {btn(enable_giac)}
 #define ENABLE_PI {btn(is_pi)}
 #define ENABLE_LINUX {btn(is_linux)}
+#define ENABLE_MACOS {btn(is_mac)}
 #define ENABLE_WINDOWS {btn(is_windows)}
 
 #if ENABLE_WINDOWS
@@ -69,25 +72,33 @@ calc_conf_template = f"""#ifndef SMART_CALC_H
 #define USE_EVDEV 0
 #endif
 
-#if ENABLE_LINUX
+#if ENABLE_LINUX || ENABLE_MACOS
 #define USE_MONITOR 1
 #define USE_MOUSEWHEEL 1
 #define USE_MOUSE 1
 #define USE_KEYBOARD 1
 #endif
 
+#if ENABLE_MACOS
+#define USE_FBDEV 0 
+#define USE_EVDEV 0
+#endif 
+
 #endif"""
 
-liblist = ''
+liblist = '-lgmpxx -lgmp '
 
 if enable_giac:
-    liblist += '-lgiac -lgmp '
+    liblist += '-lgiac '
 
 if enable_sdl2:
     liblist += '-lSDL2 '
 
-if is_linux or is_pi:
-    liblist += '-lm '
+if is_linux or is_pi or is_mac:
+    liblist += '-lm -lpthread '
+
+if is_windows:
+    liblist += '-lgdi32 '
 
 searchdir = lambda p, s: functools.reduce(lambda acc, b: acc+b+' ',getListOfFiles(p, s))
 csrcs = ""
