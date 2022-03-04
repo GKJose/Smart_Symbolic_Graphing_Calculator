@@ -82,6 +82,15 @@ void lv_group_del(lv_group_t * group)
         if((*obj)->spec_attr)(*obj)->spec_attr->group_p = NULL;
     }
 
+    /*Remove the group from any indev devices */
+    lv_indev_t * indev = lv_indev_get_next(NULL);
+    while(indev) {
+        if(indev->group == group) {
+            lv_indev_set_group(indev, NULL);
+        }
+        indev = lv_indev_get_next(indev);
+    }
+
     _lv_ll_clear(&(group->obj_ll));
     _lv_ll_remove(&LV_GC_ROOT(_lv_group_ll), group);
     lv_mem_free(group);
@@ -149,8 +158,8 @@ void lv_group_swap_obj(lv_obj_t * obj1, lv_obj_t * obj2)
     /*Do not add the object twice*/
     lv_obj_t ** obj_i;
     _LV_LL_READ(&g1->obj_ll, obj_i) {
-        if((*obj_i) == obj1)(*obj_i) =  obj2;
-        else if((*obj_i) == obj2)(*obj_i) =  obj1;
+        if((*obj_i) == obj1)(*obj_i) = obj2;
+        else if((*obj_i) == obj2)(*obj_i) = obj1;
     }
 
     if(*g1->obj_focus == obj1) lv_group_focus_obj(obj2);
@@ -364,6 +373,12 @@ static void focus_next_core(lv_group_t * group, void * (*begin)(const lv_ll_t *)
     bool can_move            = true;
     bool can_begin           = true;
 
+    if(group->obj_focus) {
+        lv_res_t res = lv_event_send(*group->obj_focus, LV_EVENT_DEFOCUSED, get_indev(group));
+        if(res != LV_RES_OK) return;
+        lv_obj_invalidate(*group->obj_focus);
+    }
+
     for(;;) {
         if(obj_next == NULL) {
             if(group->wrap || obj_sentinel == NULL) {
@@ -407,14 +422,6 @@ static void focus_next_core(lv_group_t * group, void * (*begin)(const lv_ll_t *)
 
         /*If we got her a good candidate is found*/
         break;
-    }
-
-    if(obj_next == group->obj_focus) return; /*There's only one visible object and it's already focused*/
-
-    if(group->obj_focus) {
-        lv_res_t res = lv_event_send(*group->obj_focus, LV_EVENT_DEFOCUSED, get_indev(group));
-        if(res != LV_RES_OK) return;
-        lv_obj_invalidate(*group->obj_focus);
     }
 
     group->obj_focus = obj_next;

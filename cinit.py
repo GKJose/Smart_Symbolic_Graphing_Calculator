@@ -34,7 +34,7 @@ def getListOfFiles(dirName, suffix):
         # If entry is a directory then get the list of files in this directory 
         if os.path.isdir(fullPath):
             allFiles = allFiles + getListOfFiles(fullPath, suffix)
-        elif re.search(re.compile(f".{suffix}$"), fullPath):
+        elif re.search(re.compile(f"\.{suffix}$"), fullPath):
             allFiles.append((fullPath, entry))
                 
     return allFiles        
@@ -194,19 +194,17 @@ def main():
         cflags = f"-O3 -g0 -I{pwd} -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifiers -Wall -Wextra -Wno-unused-function -Wno-error=strict-prototypes -Wpointer-arith -fno-strict-aliasing -Wno-error=cpp -Wuninitialized -Wmaybe-uninitialized -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wformat-security -Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated -Wempty-body -Wtype-limits -Wshift-negative-value -Wstack-usage=2048 -Wno-unused-value -Wno-unused-parameter -Wno-missing-field-initializers -Wuninitialized -Wmaybe-uninitialized -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wpointer-arith -Wno-cast-qual -Wmissing-prototypes -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wno-discarded-qualifiers -Wformat-security -Wno-ignored-qualifiers -Wno-sign-compare {xtra}"
         cxxflags = f"-std=c++14 -O3 -g0 -I{pwd} -Wall {xtra}"
 
-        for file in getListOfFiles(os.path.join(pwd, 'lvgl'), ".c"):
+        for file in getListOfFiles(os.path.join(pwd, 'lvgl'), "c"):
             csrcs.append(file)
 
-        for file in getListOfFiles(os.path.join(pwd, 'lv_drivers'), ".c"):
+        for file in getListOfFiles(os.path.join(pwd, 'lv_drivers'), "c"):
             csrcs.append(file)
 
         #for file in getListOfFiles(os.path.join(pwd, 'lv_demos'), ".c"):
          #   csrcs.append(file)
 
-        for file in getListOfFiles(os.path.join(pwd, ''), ".cpp"):
+        for file in getListOfFiles(os.path.join(pwd, ''), "cpp"):
             cxxsrcs.append(file)
-
-        print(csrcs)
 
         target_csrcs = precompiled_filter(csrcs)
         target_cxxsrcs = precompiled_filter(cxxsrcs)

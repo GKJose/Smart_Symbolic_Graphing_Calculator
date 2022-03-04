@@ -5,7 +5,7 @@
 # Scroll
 
 ## Overview
-In LVGL scrolling works very intuitively: if an object is outside of its parent content area (the size without padding), the parent becomes scrollable and scrollbar(s) will appear. That's it.
+In LVGL scrolling works very intuitively: if an object is outside its parent content area (the size without padding), the parent becomes scrollable and scrollbar(s) will appear. That's it.
 
 Any object can be scrollable including `lv_obj_t`, `lv_img`, `lv_btn`, `lv_meter`, etc
 
@@ -17,7 +17,7 @@ The object can either be scrolled horizontally or vertically in one stroke; diag
 Scrollbars are displayed according to a configured `mode`. The following `mode`s exist:
 - `LV_SCROLLBAR_MODE_OFF`  Never show the scrollbars
 - `LV_SCROLLBAR_MODE_ON`  Always show the scrollbars
-- `LV_SCROLLBAR_MODE_ACTIVE` Show scroll bars while a object is being scrolled
+- `LV_SCROLLBAR_MODE_ACTIVE` Show scroll bars while an object is being scrolled
 - `LV_SCROLLBAR_MODE_AUTO`  Show scroll bars when the content is large enough to be scrolled
 
 `lv_obj_set_scrollbar_mode(obj, LV_SCROLLBAR_MODE_...)` sets the scrollbar mode on an object.
@@ -51,6 +51,8 @@ If the base direction of the `LV_PART_SCROLLBAR` is RTL (`LV_BASE_DIR_RTL`) the 
 Note that, the `base_dir` style property is inherited. Therefore, it can be set directly on the `LV_PART_SCROLLBAR` part of an object
 or on the object's or any parent's main part to make a scrollbar inherit the base direction. 
 
+`pad_left/right/top/bottom` sets the spacing around the scrollbars and `width` sets the scrollbar's width. 
+
 ### Events
 The following events are related to scrolling:
 - `LV_EVENT_SCROLL_BEGIN` Scrolling begins
@@ -79,7 +81,7 @@ The following values are possible for the direction:
 - `LV_DIR_BOTTOM` only scroll down
 - `LV_DIR_RIGHT` only scroll right
 - `LV_DIR_HOR` only scroll horizontally
-- `LV_DIR_TOP` only scroll vertically
+- `LV_DIR_VER` only scroll vertically
 - `LV_DIR_ALL` scroll any directions
 
 OR-ed values are also possible. E.g. `LV_DIR_TOP | LV_DIR_LEFT`.
@@ -89,7 +91,7 @@ OR-ed values are also possible. E.g. `LV_DIR_TOP | LV_DIR_LEFT`.
 If an object can't be scrolled further (e.g. its content has reached the bottom-most position) additional scrolling is propagated to its parent. If the parent can be scrolled in that direction than it will be scrolled instead.
 It continues propagating to the grandparent and grand-grandparents as well.
 
-The propagation on scrolling is called "scroll chaining" and it can be enabled/disabled with the `LV_OBJ_FLAG_SCROLL_CHAIN` flag. 
+The propagation on scrolling is called "scroll chaining" and it can be enabled/disabled with `LV_OBJ_FLAG_SCROLL_CHAIN_HOR/VER` flag.
 If chaining is disabled the propagation stops on the object and the parent(s) won't be scrolled.
 
 ### Scroll momentum
@@ -138,6 +140,29 @@ The following API functions allow manual scrolling of objects:
 - `lv_obj_scroll_to(obj, x, y, LV_ANIM_ON/OFF)` scroll to bring the given coordinate to the top left corner
 - `lv_obj_scroll_to_x(obj, x, LV_ANIM_ON/OFF)` scroll to bring the given coordinate to the left side
 - `lv_obj_scroll_to_y(obj, y, LV_ANIM_ON/OFF)` scroll to bring the given coordinate to the top side
+
+From time to time you may need to retrieve the scroll position of an element, either to restore it later, or to display dynamically some elements according to the current scroll.
+Here is an example to see how to combine scroll event and store the scroll top position.
+```c
+static int scroll_value = 0;
+
+static void store_scroll_value_event_cb(lv_event_t* e) {
+  lv_obj_t* screen = lv_event_get_target(e);
+  scroll_value = lv_obj_get_scroll_top(screen);
+  printf("%d pixels are scrolled out on the top\n", scroll_value);
+}
+
+lv_obj_t* container = lv_obj_create(NULL);
+lv_obj_add_event_cb(container, store_scroll_value_event_cb, LV_EVENT_SCROLL, NULL);
+```
+
+Scrool coordinates can be retrieve from differents axes with these functions:
+- `lv_obj_get_scroll_x(obj)` Get the `x` coordinate of object
+- `lv_obj_get_scroll_y(obj)` Get the `y` coordinate of object
+- `lv_obj_get_scroll_top(obj)` Get the scroll coordinate from the top
+- `lv_obj_get_scroll_bottom(obj)` Get the scroll coordinate from the bottom
+- `lv_obj_get_scroll_left(obj)` Get the scroll coordinate from the left
+- `lv_obj_get_scroll_right(obj)` Get the scroll coordinate from the right
 
 ## Self size
 
