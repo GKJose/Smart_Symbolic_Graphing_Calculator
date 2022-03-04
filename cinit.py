@@ -180,7 +180,7 @@ def main():
             liblist += ''
 
         if is_pi:
-            liblist += '-lm -lpthread -li2c '
+            liblist += '-lm -lpthread -li2c -lwiringPi -lpthread'
 
         if is_linux:
             liblist += '-lm -lpthread -lSDL2'

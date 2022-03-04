@@ -48,7 +48,7 @@ lv_obj_t* lv_main_screen_tabs(void)
     Calculator::main_screen_driver(tab1);
     
     create_graph(tab2);
-    
+    createSettingsTab(tab3);
     lv_obj_t* label = lv_label_create(tab3);
     lv_label_set_text(label, "Settings");
     return tabview;

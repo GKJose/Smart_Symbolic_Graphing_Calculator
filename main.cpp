@@ -1,6 +1,7 @@
 #include "calc_conf.h"
 #include "lvgl/lvgl.h"
 #include "Calculator.h"
+#include <wiringPi.h>
 #include <chrono>
 #include <thread>
 
@@ -57,7 +58,7 @@ static void calc_init(void);
 int main(void)
 {
     calc_init();
-    
+    wiringPiSetup();
     Calculator::createDemo();
     lv_timer_create(Calculator::update,350,NULL);
     /*Handle LitlevGL tasks (tickless mode)*/
@@ -152,7 +153,7 @@ static void calc_init(void){
     lv_indev_set_group(enc_indev, g);
     #elif ENABLE_PI == 1
     evdev_init();
-    lv_indev_drv_t indev_drv;
+    static lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);
     indev_drv.type = LV_INDEV_TYPE_POINTER;
     indev_drv.read_cb = evdev_read;

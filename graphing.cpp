@@ -153,6 +153,7 @@ void create_graph(lv_obj_t *parent){
 
     std::cout <<"EVERYTHING ADDED\n";
     graph.update(); 
+	std::cout <<"Graphing updated\n";
 }
 
 lv_obj_t* get_functionTextArea()  {

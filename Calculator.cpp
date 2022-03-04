@@ -12,7 +12,6 @@ using namespace std;
 
 /*Declarations*/
 static lv_obj_t* textArea;
-static lv_obj_t* textArea2;
 #if ENABLE_PI
 static Keypad keypad;
 #endif
@@ -51,9 +50,10 @@ class Solve
 
 void Calculator::createDemo(){
 	tabview = lv_main_screen_tabs();
+	std::cout << "tabview assigned\n";
 }
 void Calculator::update(lv_timer_t * timer){
-	#if ENABLE_PI
+	#if ENABLE_PI 
 	keypad.poll();
 	if(keypad.isBothPressed(ALT_BUTTON,ALPHA_BUTTON)){
 		keypad.reset();
@@ -265,36 +265,11 @@ void Calculator::update(lv_timer_t * timer){
 			lv_textarea_add_text(textArea,"+");
 		}else if(keypad.isPressed(ENTER_BUTTON)){
 			if(strcmp(lv_textarea_get_text(textArea),"") != 0){
-				textArea2 = Calculator::lv_result_ta(lv_obj_get_parent(textArea),"");
-				Calculator::fetchAndSolve();
+				lv_event_send(textArea,LV_EVENT_ALL,NULL);
 			}
 		}
 	}
 	#endif
-}
-void Calculator::fetchAndSolve(){
-  #if ENABLE_GIAC
-  static context ct;
-  static gen g;
-  static string line;
-  stringstream output;
-
-  line = lv_textarea_get_text(textArea);
-  
-  g = gen(line, &ct);
-  line += "=";
-  output << line;
-      try {
-    output << eval(g,1,&ct);
-  } catch (...) {
-    output << "ERROR: Something went wrong!\n";
-  }
-  output << "\n";
-  lv_textarea_set_text(textArea2,output.str().c_str());
-  lv_textarea_set_text(textArea,"");
-  #else 
-  
-  #endif
 }
 void Calculator::main_screen_driver(lv_obj_t* parent)
 {
@@ -376,7 +351,7 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
         lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, ( 35 * total) + 35);
         lv_textarea_set_text(ta, "");
         lv_obj_scroll_to_view(ta, LV_ANIM_OFF);
-        //textArea = ta;
+
         /*Put kb in view*/
         lv_obj_align_to(kb, parent, LV_ALIGN_BOTTOM_MID, 0, 0);
         lv_obj_scroll_by(parent, 0, 25, LV_ANIM_OFF);
