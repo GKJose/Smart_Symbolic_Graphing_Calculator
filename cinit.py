@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 import re
 import platform
@@ -100,7 +101,7 @@ def precompiled_filter(srcs):
 
 def main():
     plat = platform.platform()
-    is_pi = re.search(r'armv6', plat) != None
+    is_pi = re.search(r'armv7', plat) != None
     is_linux = (platform.system() == 'Linux') and not is_pi
     is_windows = platform.system() == 'Windows'
     enable_giac = False
@@ -179,9 +180,9 @@ def main():
             liblist += ''
 
         if is_pi:
-            liblist += '-li2c '
+            liblist += '-lm -lpthread -li2c '
 
-        if is_linux or is_pi:
+        if is_linux:
             liblist += '-lm -lpthread -lSDL2'
 
         if is_windows:
@@ -204,6 +205,8 @@ def main():
 
         for file in getListOfFiles(os.path.join(pwd, ''), ".cpp"):
             cxxsrcs.append(file)
+
+        print(csrcs)
 
         target_csrcs = precompiled_filter(csrcs)
         target_cxxsrcs = precompiled_filter(cxxsrcs)
