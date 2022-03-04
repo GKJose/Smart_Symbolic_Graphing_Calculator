@@ -1,5 +1,5 @@
 #include "MCP23017.h"
-
+#if ENABLE_PI && !ENABLE_LINUX
 
  MCP23017::MCP23017(int bus, int address) {
     kI2CBus = bus;           // I2C bus of Jetson (1 and 8 available on Xavier)
@@ -315,3 +315,4 @@ uint8_t MCP23017::getLastInterruptPinValue(){
 
 	return MCP23017_INT_ERR;
 }
+#endif

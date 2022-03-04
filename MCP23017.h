@@ -1,7 +1,8 @@
 #ifndef _MCP23017_H
 #define _MCP23017_H
 
-
+#include "calc_conf.h"
+#if ENABLE_PI && !ENABLE_LINUX
 #include <cstddef>
 #include <cstdint>
 
@@ -110,4 +111,5 @@ private:
 #define FALLING 1
 #define RISING 2
 
+#endif
 #endif

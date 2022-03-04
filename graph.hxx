@@ -15,7 +15,9 @@
 #include <chrono>
 
 #if ENABLE_GIAC == 1
-//#include <giac/config.h>
+#if ENABLE_LINUX
+#include <giac/config.h>
+#endif
 #include <giac/gen.h>
 #include <giac/giac.h>
 #endif

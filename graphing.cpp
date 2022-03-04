@@ -66,7 +66,7 @@ void create_graph(lv_obj_t *parent){
     static lv_style_t zoom_style;
     static lv_style_t textarea_style;
     static lv_style_t function_button_style;
-    static const char* map[] = {"+", "-"};
+    static const char* map[] = {"+", "-", ""};
     static lv_obj_t* zoom_buttons = lv_btnmatrix_create(graph.get_canvas());
     function_text_area = lv_textarea_create(graph.get_canvas());
     static lv_obj_t* function_button = lv_dropdown_create(graph.get_canvas());
@@ -142,7 +142,7 @@ void create_graph(lv_obj_t *parent){
     lv_obj_align(function_button, LV_ALIGN_TOP_MID, 50, 10);
     lv_obj_add_event_cb(function_button, dropdown_button_cb, LV_EVENT_VALUE_CHANGED, &graph);
     // graph setup
-
+    
     graph.set_function_button(function_button);
     graph.set_function_textarea(function_text_area);
     graph.set_scale(mpf_class("0.5"));
