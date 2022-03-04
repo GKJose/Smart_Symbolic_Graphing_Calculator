@@ -1,5 +1,6 @@
 #ifndef KEYPAD_H
 #define KEYPAD_H
+#include "calc_conf.h"
 
 #if ENABLE_PI && !ENABLE_LINUX
 #include "MCP23017.h"
