@@ -3,19 +3,22 @@
 
 #include "calc_conf.h"
 #if ENABLE_GIAC
-#include<giac/giac.h>
+#if ENABLE_LINUX
+#include <giac/config.h>
+#endif
+#include <giac/gen.h>
+#include <giac/giac.h>
 #endif
 #include <iostream>
 
+#if ENABLE_PI == 1
 #include "Keypad.h"
+#endif
 #include "lvgl/lvgl.h"
-#include <stdio.h>
 #include <string>
 #include <sstream>
 #include <unistd.h>
 //#include <giac/config.h>
-#include <giac/gen.h>
-#include <giac/giac.h>
 #include "tabs.hxx"
 
 #include <iostream>

@@ -46,7 +46,7 @@ lv_obj_t* lv_main_screen_tabs(void)
 
     /*Add content to the tabs*/
     Calculator::main_screen_driver(tab1);
-
+    
     create_graph(tab2);
     
     lv_obj_t* label = lv_label_create(tab3);

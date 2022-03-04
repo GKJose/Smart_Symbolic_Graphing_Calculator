@@ -5,6 +5,7 @@
 
 #include "Keypad.h"
 
+#if ENABLE_PI && !ENABLE_LINUX
 
 Keypad::Keypad(){
 	// Create the MCP23017 driver.
@@ -67,4 +68,4 @@ void Keypad::reset(){
 	buttonStates = 0;
 }
 
-
+#endif

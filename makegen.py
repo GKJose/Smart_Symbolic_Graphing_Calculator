@@ -100,11 +100,18 @@ for file in getListOfFiles(os.path.join(pwd, 'lvgl'), ".c"):
 for file in getListOfFiles(os.path.join(pwd, 'lv_drivers'), ".c"):
     csrcs += f"CSRCS += {file}\n"
 
-for file in getListOfFiles(os.path.join(pwd, 'lv_demos'), ".c"):
+for file in getListOfFiles(pwd, ".cpp"):
+    if "main.cpp" not in file:
+        csrcs += f"CSRCS += {file}\n"
+
+for file in getListOfFiles(pwd, ".c"):
     csrcs += f"CSRCS += {file}\n"
 
-for file in getListOfFiles(os.path.join(pwd, 'lv_demos'), ".cpp"):
-    csrcs += f"CXXSRCS += {file}\n"
+# for file in getListOfFiles(os.path.join(pwd, 'lv_demos'), ".c"):
+#     csrcs += f"CSRCS += {file}\n"
+
+# for file in getListOfFiles(os.path.join(pwd, 'lv_demos'), ".cpp"):
+#     csrcs += f"CXXSRCS += {file}\n"
 
 makefile_template = f"""#
 # Makefile

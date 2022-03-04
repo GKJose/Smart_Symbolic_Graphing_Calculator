@@ -178,8 +178,11 @@ def main():
         if enable_sdl2:
             liblist += ''
 
+        if is_pi:
+            liblist += '-li2c '
+
         if is_linux or is_pi:
-            liblist += '-lm -lpthread -li2c  '
+            liblist += '-lm -lpthread -lSDL2'
 
         if is_windows:
             liblist += '-lgdi32 '

@@ -2,8 +2,9 @@
 #include <string>
 #include <sstream>
 #include <unistd.h>
+#if ENABLE_PI
 #include "Keypad.h"
-
+#endif
 #if ENABLE_GIAC
 using namespace giac;
 #endif
@@ -12,7 +13,9 @@ using namespace std;
 /*Declarations*/
 static lv_obj_t* textArea;
 static lv_obj_t* textArea2;
+#if ENABLE_PI
 static Keypad keypad;
+#endif
 
 /*Areas holds a list of pointers to the active text areas.
   (1 Input, 1 Output) = 1 Entry to the calculator.
@@ -50,7 +53,7 @@ void Calculator::createDemo(){
 	tabview = lv_main_screen_tabs();
 }
 void Calculator::update(lv_timer_t * timer){
-	
+	#if ENABLE_PI
 	keypad.poll();
 	if(keypad.isBothPressed(ALT_BUTTON,ALPHA_BUTTON)){
 		keypad.reset();
@@ -266,8 +269,8 @@ void Calculator::update(lv_timer_t * timer){
 				Calculator::fetchAndSolve();
 			}
 		}
-		
 	}
+	#endif
 }
 void Calculator::fetchAndSolve(){
   #if ENABLE_GIAC

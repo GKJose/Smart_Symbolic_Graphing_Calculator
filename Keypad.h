@@ -1,6 +1,7 @@
 #ifndef KEYPAD_H
 #define KEYPAD_H
 
+#if ENABLE_PI && !ENABLE_LINUX
 #include "MCP23017.h"
 
 class Keypad
@@ -73,9 +74,5 @@ private:
 #define ADD_BUTTON 37
 #define ENTER_BUTTON 38
 
-
-
-
-
-
+#endif
 #endif
