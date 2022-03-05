@@ -35,7 +35,7 @@ def getListOfFiles(dirName, suffix):
         if os.path.isdir(fullPath):
             allFiles = allFiles + getListOfFiles(fullPath, suffix)
         elif re.search(re.compile(f"\.{suffix}$"), fullPath):
-            allFiles.append((fullPath, entry))
+            allFiles.append((fullPath, entry, dirName))
                 
     return allFiles        
 
@@ -209,11 +209,11 @@ def main():
         target_csrcs = precompiled_filter(csrcs)
         target_cxxsrcs = precompiled_filter(cxxsrcs)
 
-        cobjs = set([x[1]+".o" for x in csrcs])
-        cxxobjs = set([x[1]+".o" for x in cxxsrcs])
+        cobjs = set([x[2]+x[1]+".o" for x in csrcs])
+        cxxobjs = set([x[2]+x[1]+".o" for x in cxxsrcs])
 
-        cargs = [(f"gcc {cflags} -c {src[0]} -o {src[1]}.{object_suffix} ", src[1]) for src in target_csrcs]
-        cxxargs = [(f"g++ {cxxflags} -c {src[0]} -o {src[1]}.{object_suffix}", src[1]) for src in target_cxxsrcs]
+        cargs = [(f"gcc {cflags} -c {src[0]} -o {src[2]+src[1]}.{object_suffix} ", src[1]) for src in target_csrcs]
+        cxxargs = [(f"g++ {cxxflags} -c {src[0]} -o {src[2]+src[1]}.{object_suffix}", src[1]) for src in target_cxxsrcs]
         
         
 
@@ -248,9 +248,9 @@ def main():
         
         # END OF MAKE
     elif args.option == "clean":
-        files = getListOfFiles2(pwd, object_suffix)
+        files = getListOfFiles(pwd, object_suffix)
         for file in files:
-            os.remove(file)
+            os.remove(file[0])
         if os.path.exists(os.path.join(pwd, 'demo' + executable_suffix )):
             os.remove(os.path.join(pwd, 'demo' + executable_suffix))
         if os.path.exists(os.path.join(pwd, '.pclist')):
