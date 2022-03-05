@@ -6,15 +6,17 @@ namespace graphing {
     static void graph_event_cb(lv_event_t* event){
         static lv_point_t last_point{0,0};
         static auto last_time = lv_tick_get();
+
         if (lv_tick_elaps(last_time) > 100) {
             last_point = lv_point_t{0,0};
         }
-        lv_hit_test_info_t* info = lv_event_get_hit_test_info(event);
+        static lv_point_t point;
+        lv_indev_t* indev = lv_indev_get_act();
+        lv_indev_get_point(indev, &point);
         Graph* graph = static_cast<Graph*>(event->user_data);;
-        lv_point_t point = *(info->point);
         //std::cout << "POINT: (" << point.x << " " << point.y << ")\n";
         if (last_point.x != 0 && last_point.y != 0){
-            lv_point_t delta{point.x - last_point.x, point.y - last_point.y};
+            lv_point_t delta{(lv_coord_t)(point.x - last_point.x), (lv_coord_t)(point.y - last_point.y)};
             graph->translate_center(delta);
         }
         last_point = point;
@@ -26,7 +28,7 @@ namespace graphing {
         scale = CREATE_MPF("1");
         VIEWPORT_HYP = calculate_hyp(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 
-        canvas = lv_canvas_create(parent);
+        canvas = lv_canvas_create(parent); 
         lv_canvas_set_buffer(canvas, buf, VIEWPORT_WIDTH, VIEWPORT_HEIGHT, LV_IMG_CF_TRUE_COLOR);
         lv_obj_align(canvas, LV_ALIGN_CENTER, 0, 0);
         lv_canvas_fill_bg(canvas, LV_COLOR_MAKE(255, 255, 255), LV_OPA_COVER);
@@ -34,7 +36,8 @@ namespace graphing {
         lv_draw_line_dsc_init(&axes_style);
         axes_style.color = LV_COLOR_MAKE(0, 0, 0);
 
-        lv_obj_add_event_cb(canvas, graph_event_cb, LV_EVENT_HIT_TEST, this);
+        lv_obj_add_flag(canvas, LV_OBJ_FLAG_CLICKABLE); // Allows for the canvas to be clickable and pressable
+        lv_obj_add_event_cb(canvas, graph_event_cb, LV_EVENT_PRESSING, this);
         #if ENABLE_GIAC == 1
         giac::approx_mode(true, &ctx); // Change graphing to calculate approximate values.
         #endif
@@ -121,7 +124,7 @@ namespace graphing {
     /// If giac is disable, the function does nothing.
     void Graph::draw_function(int id, lv_color_t color){
         #if ENABLE_GIAC == 1
-        if (id >= plot_list.size())
+        if ((size_t)id >= plot_list.size())
             return;
         Plot& plot = plot_list[id];
         auto& func_name = plot.name;
@@ -164,7 +167,7 @@ namespace graphing {
     void Graph::update() {
         fill_background();
         draw_axes();
-        for (int i = 0; i < plot_list.size(); i++){
+        for (size_t i = 0; i < plot_list.size(); i++){
             draw_function(i, lv_color_black());
         }
     }
@@ -174,7 +177,7 @@ namespace graphing {
     }
 
     Plot* Graph::get_plot(std::string const& name) {
-        for (auto i = 0; i < plot_list.size(); i++){
+        for (size_t i = 0; i < plot_list.size(); i++){
             int comparison = plot_list[i].name.compare(name);
             if (comparison == 0){
                 return &plot_list[i];  
@@ -184,7 +187,7 @@ namespace graphing {
     }
 
     Plot* Graph::get_plot(int id){
-        if (id < 0 || id >= plot_list.size())
+        if (id < 0 || (size_t)id >= plot_list.size())
             return nullptr;
         return &plot_list[id];
     }
@@ -215,7 +218,7 @@ namespace graphing {
 
     std::string Graph::get_plots_fmt_str() const {
         std::string formatted = "";
-        for (int i = 0; i < plot_list.size() - 1; i++){
+        for (size_t i = 0; i < plot_list.size() - 1; i++){
             formatted += plot_list[i].name + "\n";
         }
         formatted += plot_list.back().name + "\n+";
@@ -262,7 +265,7 @@ namespace graphing {
     }
 
     lv_color_t Graph::get_next_color() const{
-        static int current = 0;
+        static size_t current = 0;
         if (current == default_colors.size())
             current = 0;
         return default_colors[current++];
@@ -270,7 +273,7 @@ namespace graphing {
 
     void Graph::switch_to_bold(int id){
         static int current_bold = 0; // default to the first function being bold
-        if (id < plot_list.size()){
+        if ((size_t)id < plot_list.size()){
             plot_list[current_bold].style.width = DEFAULT_LINE_WIDTH;
             plot_list[id].style.width = BOLD_LINE_WIDTH;
             current_bold = id;

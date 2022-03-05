@@ -1,7 +1,6 @@
 #include "calc_conf.h"
 #include "lvgl/lvgl.h"
 #include "Calculator.h"
-#include <wiringPi.h>
 #include <chrono>
 #include <thread>
 
@@ -46,8 +45,12 @@
 #endif
 
 #if ENABLE_PI 
+#include <wiringPi.h>
 #include "lv_drivers/display/fbdev.h"
 #include "lv_drivers/indev/evdev.h"
+#define PI_EXEC(x) x
+#else 
+#define PI_EXEC(x)
 #endif
 
 #define DISP_BUF_SIZE (64 * 320)
@@ -58,7 +61,7 @@ static void calc_init(void);
 int main(void)
 {
     calc_init();
-    wiringPiSetup();
+    PI_EXEC(wiringPiSetup());
     Calculator::createDemo();
     lv_timer_create(Calculator::update,350,NULL);
     /*Handle LitlevGL tasks (tickless mode)*/
