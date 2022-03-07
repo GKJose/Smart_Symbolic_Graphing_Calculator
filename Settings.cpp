@@ -23,10 +23,11 @@ void createSettingsTab(lv_obj_t* parent){
     slider = lv_slider_create(parent);
     lv_obj_center(slider);
     lv_obj_add_event_cb(slider, slider_event_cb, LV_EVENT_VALUE_CHANGED, NULL);
+    lv_slider_set_value(slider,100,LV_ANIM_OFF);
 
     /*Create a label below the slider*/
     slider_label = lv_label_create(parent);
-    lv_label_set_text(slider_label, "0%");
+    lv_label_set_text(slider_label, "100%");
     lv_obj_align_to(slider_label, slider, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
     
     slider_title = lv_label_create(parent);
