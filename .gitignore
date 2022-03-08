@@ -55,4 +55,9 @@ dkms.conf
 # Generated Files
 calc_conf.h 
 Makefile
+cmake_install.cmake 
+CMakeCache.txt
+CMakeFiles/
+.settings/
+.github/
 demo

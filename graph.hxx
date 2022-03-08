@@ -25,7 +25,9 @@
 
 #define MONITOR_HOR_RES 320
 #define MONITOR_VER_RES 240
-
+#define ENABLE_EXPERIMENTAL_PLOTTING 1
+#if ENABLE_EXPERIMENTAL_PLOTTING
+#endif
 
 namespace graphing {
 
@@ -164,6 +166,7 @@ namespace graphing {
         inline void set_scale(mpf_class s){
             translate_center(Point{offset.x*(s - scale), offset.y*(s - scale)});
             scale = s;
+            update();
         }
 
         inline void scale_delta(mpf_class s){
@@ -173,6 +176,26 @@ namespace graphing {
 
         lv_obj_t* get_canvas() const {
             return canvas;
+        }
+
+        template<typename T>
+        inline mpf_class virtual_to_viewport_x(T const& x) const {
+            return (x+offset.x)/scale;
+        }
+
+        template<typename T>
+        inline mpf_class virtual_to_viewport_y(T const& y) const {
+            return (-y+offset.y)/scale + VIEWPORT_HEIGHT;
+        }
+        
+        template<typename T>
+        inline mpf_class viewport_to_virtual_x(T const& x) const {
+            return x*scale - offset.x;
+        }
+
+        template<typename T>
+        inline mpf_class viewport_to_virtual_y(T const& y) const {
+            return -(y-VIEWPORT_HEIGHT)*scale + offset.y;
         }      
 
         Point bottom_left_real() const;
@@ -180,11 +203,11 @@ namespace graphing {
         Point top_left_real() const;
         Point top_right_real() const; 
 
-        Point real_to_viewport(mpf_class x, mpf_class y) const;
-        Point viewport_to_real(mpf_class x, mpf_class y) const;
+        Point virtual_to_viewport(mpf_class x, mpf_class y) const;
+        Point viewport_to_virtual(mpf_class x, mpf_class y) const;
 
-        std::pair<mpf_class, mpf_class> viewport_real_domain() const;
-        std::pair<mpf_class, mpf_class> viewport_real_range() const;
+        std::pair<mpf_class, mpf_class> viewport_virtual_domain() const;
+        std::pair<mpf_class, mpf_class> viewport_virtual_range() const;
 
         //void draw_function(graph_function);
         //void draw_function(Plot const&);
