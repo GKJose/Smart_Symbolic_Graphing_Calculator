@@ -10,10 +10,11 @@ static mpf_class plot_sin(mpf_class x) {
 
 static void zoom_btnmatrix_cb(lv_event_t* event){
     uint32_t id = lv_btnmatrix_get_selected_btn(event->target);
+    auto graph = static_cast<graphing::Graph*>(event->user_data);
     if (id == 0) {
-        static_cast<graphing::Graph*>(event->user_data)->scale_delta(mpf_class(-0.1));
+        graph->set_scale(graph->get_scale()*0.9);
     } else {
-        static_cast<graphing::Graph*>(event->user_data)->scale_delta(mpf_class(+0.1));
+        graph->set_scale(graph->get_scale()*1.1);
     }
 }
 

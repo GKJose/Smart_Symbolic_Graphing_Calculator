@@ -51,7 +51,7 @@ def getListOfFiles2(dirName, suffix):
         fullPath = os.path.join(dirName, entry)
 
         if not os.path.isdir(fullPath) and re.search(re.compile(f"\.{suffix}$"), fullPath):
-            allFiles.append(fullPath)
+            allFiles.append((fullPath, entry, dirName))
                 
     return allFiles
 
@@ -203,7 +203,7 @@ def main():
         #for file in getListOfFiles(os.path.join(pwd, 'lv_demos'), ".c"):
          #   csrcs.append(file)
 
-        for file in getListOfFiles(os.path.join(pwd, ''), "cpp"):
+        for file in getListOfFiles2(os.path.join(pwd, ''), "cpp"):
             cxxsrcs.append(file)
 
         target_csrcs = precompiled_filter(csrcs)
