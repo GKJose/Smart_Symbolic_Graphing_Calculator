@@ -9,6 +9,7 @@
 #endif
 #include <stdlib.h>
 #include <cstdio>
+#include "utils.hxx"
 enum {
     LV_MENU_ITEM_BUILDER_VARIANT_1,
     LV_MENU_ITEM_BUILDER_VARIANT_2
