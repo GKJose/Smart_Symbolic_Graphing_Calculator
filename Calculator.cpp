@@ -266,7 +266,7 @@ void Calculator::update(lv_timer_t * timer){
 			lv_textarea_add_text(textArea,"+");
 		}else if(keypad.isPressed(ENTER_BUTTON)){
 			if(strcmp(lv_textarea_get_text(textArea),"") != 0){
-				lv_event_send(textArea,LV_EVENT_ALL,NULL);
+				lv_event_send(textArea,LV_EVENT_READY,NULL);
 			}
 		}
 	}

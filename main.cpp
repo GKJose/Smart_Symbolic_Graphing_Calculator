@@ -100,7 +100,8 @@ static void calc_init(void){
     static lv_disp_draw_buf_t disp_buf;
     #if ENABLE_PI
     static lv_color_t buf[DISP_BUF_SIZE];
-    lv_disp_draw_buf_init(&disp_buf, buf, nullptr, DISP_BUF_SIZE);
+	static lv_color_t buf2[DISP_BUF_SIZE];
+    lv_disp_draw_buf_init(&disp_buf, buf, &buf2, DISP_BUF_SIZE);
     #else 
     static lv_color_t buf1[MONITOR_HOR_RES * 100];
     static lv_color_t buf2[MONITOR_HOR_RES * 100];

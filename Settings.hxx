@@ -7,14 +7,14 @@
 #include <wiringPi.h>
 #include <softPwm.h>
 #endif
-
+#include <stdlib.h>
 #include <cstdio>
 enum {
     LV_MENU_ITEM_BUILDER_VARIANT_1,
     LV_MENU_ITEM_BUILDER_VARIANT_2
 };
 typedef uint8_t lv_menu_builder_variant_t;
-
+static void updateButton_cb(lv_event_t * e);
 static void back_event_handler(lv_event_t * e);
 static void switch_handler(lv_event_t * e);
 static lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char * txt,
@@ -24,6 +24,7 @@ static lv_obj_t * create_slider(lv_obj_t * parent,
 static lv_obj_t * create_switch(lv_obj_t * parent,
                                 const char * icon, const char * txt, bool chk);
 static void slider_event_cb(lv_event_t * e);
+static lv_obj_t * create_button(lv_obj_t * parent, const char * txt);
 void createSettingsTab(lv_obj_t* parent);
 
 
