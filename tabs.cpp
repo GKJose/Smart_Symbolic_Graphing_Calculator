@@ -1,6 +1,4 @@
-#include "Calculator.h"
-#include <stdio.h>
-#include "graphing.hxx"
+#include "tabs.hxx"
 
 #if LV_USE_TABVIEW && LV_BUILD_EXAMPLES
 
