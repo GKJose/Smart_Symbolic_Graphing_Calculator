@@ -30,7 +30,7 @@ static void slider_event_cb(lv_event_t * e)
 void createSettingsTab(lv_obj_t* parent){
   //Created menu, added callback to menu, centered menu
   menu = lv_menu_create(parent);
-  lv_menu_set_mode_root_back_btn(menu,LV_MENU_ROOT_BACK_BTN_ENABLED);
+  lv_menu_set_mode_root_back_btn(menu,LV_MENU_ROOT_BACK_BTN_DISABLED);
   lv_obj_add_event_cb(menu,back_event_handler,LV_EVENT_CLICKED,menu);
   lv_obj_set_size(menu,LV_HOR_RES,LV_VER_RES);
   lv_obj_center(menu);
@@ -61,7 +61,7 @@ void createSettingsTab(lv_obj_t* parent){
     lv_obj_set_style_pad_hor(root_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     section = lv_menu_section_create(root_page);
 	
-    cont = create_text(section, LV_SYMBOL_SETTINGS, "Brightness", LV_MENU_ITEM_BUILDER_VARIANT_1);
+    cont = create_text(section, LV_SYMBOL_SETTINGS, "Display", LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_brightness_page);
 	
     cont = create_text(section, NULL, "About", LV_MENU_ITEM_BUILDER_VARIANT_1);
@@ -83,12 +83,7 @@ void createSettingsTab(lv_obj_t* parent){
 }
 static void back_event_handler(lv_event_t * e)
 {
-    lv_obj_t * obj = lv_event_get_target(e);
 
-    if(lv_menu_back_btn_is_root(menu, obj)) {
-        lv_obj_t * mbox1 = lv_msgbox_create(NULL, "Hello", "Root back btn click.", NULL, true);
-        lv_obj_center(mbox1);
-    }
 }
 
 static void switch_handler(lv_event_t * e)

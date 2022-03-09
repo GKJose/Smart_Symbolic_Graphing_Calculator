@@ -35,6 +35,7 @@ class Solve
     std::string call_giac(std::string input)
     {      
         giac::gen g(input, &ctx);
+		giac::approx_mode(true, &ctx); // Change graphing to calculate approximate values.
         std::cout << giac::eval(g, &ctx) << "\n";    
         giac::gen args(input, &ctx);
         std::string output = input + "\n";
