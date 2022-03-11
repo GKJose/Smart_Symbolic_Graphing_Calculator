@@ -339,7 +339,7 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
 
         auto solution = static_cast<Solve*>(e->user_data);
         std::string func_expression = std::string(lv_textarea_get_text(e->target));
-        std::string output = solution->call_giac(func_expression);
+        std::string output = "Answer = " + solution->call_giac(func_expression);
         std::cout << output;
 
 
@@ -348,7 +348,7 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
         
         /*Create the new text areas*/
         Calculator::lv_input_history_ta(parent, copy_input);
-	Calculator::lv_result_ta(parent, output);
+	    Calculator::lv_result_ta(parent, output);
         lv_obj_align(ta, LV_ALIGN_BOTTOM_MID, 0, ( 35 * total) + 35);
         lv_textarea_set_text(ta, "");
         lv_obj_scroll_to_view(ta, LV_ANIM_OFF);

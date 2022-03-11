@@ -91,24 +91,10 @@ static void updateButton_cb(lv_event_t * e){
 	lv_event_code_t code = lv_event_get_code(e);
 	
 	if(code == LV_EVENT_CLICKED){
-        lv_obj_t * mbox1 = lv_msgbox_create(NULL, "Info.", "Updating in progress.", NULL, true);
+        lv_obj_t * mbox1 = lv_msgbox_create(lv_obj_get_parent(lv_event_get_target(e)), "Info.", "Updating in progress.", NULL, true);
         lv_obj_center(mbox1);
-	auto handle = run_async("./cinit.py clean");
-        while(handle.wait_for(0ms) != status::ready){
-		}
 		
-		handle = run_async("git pull origin master >> output.txt");
-		while(handle.wait_for(0ms) != status::ready){
-		}
-		
-		handle = run_async("./cinit.py make -j");
-		while(handle.wait_for(0ms) != status::ready){
-		}		
-		handle = run_async("sudo reboot");
-		while(handle.wait_for(0ms) != status::ready){
-		}
 	}
-
 }
 static void back_event_handler(lv_event_t * e)
 {
