@@ -210,7 +210,7 @@ namespace graphing {
 
         #if ENABLE_EXPERIMENTAL_PLOTTING
         // Sets the plots to be drawn by points, rather than lines.
-        #define ENABLE_DBGPLOT 0
+        #define ENABLE_DBGPLOT 1
         #define ENABLE_DBGPRINT 0
         #define GEN_RAND() ((double)(rand())/((double)RAND_MAX))
         #if ENABLE_DBGPRINT
@@ -224,7 +224,7 @@ namespace graphing {
         // https://github.com/JuliaPlots/PlotUtils.jl/blob/master/src/adapted_grid.jl
 
         const std::size_t max_recursions = 7;
-        const double max_curvature = 2;
+        const double max_curvature = 0.05; // was 2
 
         std::size_t n_points = 21;
         std::size_t n_intervals = n_points / 2;
@@ -424,7 +424,7 @@ namespace graphing {
         }
         lv_draw_rect_dsc_t rect_style;
         lv_draw_rect_dsc_init(&rect_style);
-        rect_style.bg_color = plot.style.color;
+        rect_style.bg_color = lv_color_make(0, 0, 255);
         std::vector<lv_point_t> vals;
         vals.reserve(xs.size());
         vals.clear();
