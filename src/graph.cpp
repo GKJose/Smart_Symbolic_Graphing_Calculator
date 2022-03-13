@@ -90,11 +90,6 @@ namespace graphing {
         return std::pair<mpf_class, mpf_class>(top, bottom);
     }
 
-    std::vector<double> Graph::optimize_ticks(double xmin, double xmax) const {
-        std::vector<double> result;
-        
-    }
-
     #if ENABLE_GIAC
     template<typename T>
     T Graph::giac_call(std::string& func_name, T data) const {
@@ -124,68 +119,82 @@ namespace graphing {
             auto top_point = virtual_to_viewport(domain.first + offset.x, range.first);
             auto bottom_point = virtual_to_viewport(domain.first + offset.x, range.second);
 
-            //std::cout << "DOMAIN: ("<<domain.first.get_d()<<" "<<domain.second.get_d()<<")\n";
-            //std::cout << "RANGE: ("<<range.second.get_d()<<" "<<range.first.get_d()<<")\n";
-
             // points used to draw the horizontal and vertical axes.
             lv_point_t hpoints[] = {left_point.to_lv_point(), right_point.to_lv_point()};
             lv_point_t vpoints[] = {top_point.to_lv_point(), bottom_point.to_lv_point()};
 
-            const auto marker_length_px = 10;
-            const mpf_class marker_length_virtual = viewport_to_virtual_x(marker_length_px) - viewport_to_virtual_x(0);
-
-            Ticks::TickInfo hinfo = Ticks::optimize_ticks<3, 4, 3>(domain.first.get_d(), domain.second.get_d());
-            Ticks::TickInfo vinfo = Ticks::optimize_ticks<2, 3, 3>(range.second.get_d(), range.first.get_d());
-
-            lv_draw_label_dsc_t text_label;
-            lv_draw_label_dsc_init(&text_label);
-            text_label.font = &lv_font_montserrat_10;
-            //text_label.align = LV_ALIGN_CENTER;
-            char text_buf[10];
-
-            mpf_class hmarker_width = real_width()/8, vmarker_width = real_height()/8;
-            static lv_point_t pts[2];
-            for (auto& x : hinfo.ticks){
-                auto rp1 = virtual_to_viewport(mpf_class(x), marker_length_virtual/2).to_lv_point();
-                auto rp2 = virtual_to_viewport(mpf_class(x), -marker_length_virtual/2).to_lv_point();
-                pts[0] = rp1; pts[1] = rp2;
-                sprintf(text_buf, "%.2lf", x);
-                lv_canvas_draw_line(canvas, pts, 2, &axes_style);
-                lv_canvas_draw_text(canvas, rp1.x + 10, rp1.y - 10, 100, &text_label, text_buf);
-            }
-
-            for (auto& y : vinfo.ticks){
-                if (y != 0.0){
-                    auto rp1 = virtual_to_viewport(domain.first + offset.x - marker_length_virtual/2, mpf_class(y)).to_lv_point();
-                    auto rp2 = virtual_to_viewport(domain.first + offset.x + marker_length_virtual/2, mpf_class(y)).to_lv_point();
-                    pts[0] = rp1; pts[1] = rp2;
-                    sprintf(text_buf, "%.2lf", y);
-                    lv_canvas_draw_text(canvas, rp2.x + 10, rp2.y, 100, &text_label, text_buf);
-                    lv_canvas_draw_line(canvas, pts, 2, &axes_style);
-                }
-                
-            }
-            
-            // for (mpf_class hx = domain.first; hx <= domain.second; hx += hmarker_width){
-            //     auto rp1 = virtual_to_viewport(hx, marker_length_virtual/2).to_lv_point();
-            //     auto rp2 = virtual_to_viewport(hx, -marker_length_virtual/2).to_lv_point();
-            //     //std::cout << hx.get_d() << " => " << rp1.x << "\n"; 
-            //     lv_point_t pts[] = {rp1, rp2};
-            //     lv_canvas_draw_line(canvas, pts, 2, &axes_style);
-            // }
-            // //std::cout << "----\n";
-            
-            // for (mpf_class vy = range.second; vy <= range.first; vy += vmarker_width){
-            //     auto rp1 = virtual_to_viewport(domain.first + offset.x + -marker_length_virtual/2, vy).to_lv_point();
-            //     auto rp2 = virtual_to_viewport(domain.first + offset.x + marker_length_virtual/2, vy).to_lv_point();
-            //     //std::cout << vy.get_d() << " => " << rp1.y << "\n"; 
-            //     lv_point_t pts[] = {rp1, rp2};
-            //     lv_canvas_draw_line(canvas, pts, 2, &axes_style);
-            // }
-
             lv_canvas_draw_line(canvas, hpoints, 2, &axes_style);
             lv_canvas_draw_line(canvas, vpoints, 2, &axes_style);
         }
+
+    void Graph::draw_ticks(){
+        auto domain = viewport_virtual_domain();
+        auto range = viewport_virtual_range();
+
+        // constants used for defining tick text properties.
+        const lv_coord_t tick_text_margin = 10;
+        const lv_coord_t tick_text_pt = 10;
+
+        // generate tick info based on the domain and range of the current viewport.
+        Ticks::TickInfo hinfo = Ticks::optimize_ticks<3, 4, 3>(domain.first.get_d(), domain.second.get_d());
+        Ticks::TickInfo vinfo = Ticks::optimize_ticks<2, 3, 3>(range.second.get_d(), range.first.get_d());
+
+        // tick styling
+        lv_draw_line_dsc_t ticks_style;
+        lv_draw_line_dsc_init(&ticks_style);
+        ticks_style.width = (lv_coord_t)1;
+        ticks_style.opa = LV_OPA_30;
+        lv_draw_label_dsc_t text_label;
+        lv_draw_label_dsc_init(&text_label);
+        text_label.font = &lv_font_montserrat_10; // make sure to change tick_text_pt is equal to the font's pt.
+
+        // buffer for text.
+        static char text_buf[64];
+
+        static lv_point_t pts[2];
+        for (auto& x : hinfo.ticks){
+            auto vpx = (lv_coord_t)virtual_to_viewport_x(mpf_class(x)).get_si();
+            auto vpy1 = (lv_coord_t)virtual_to_viewport_y(range.first).get_si();
+            auto vpy2 = (lv_coord_t)virtual_to_viewport_y(range.second).get_si();
+            auto y0 = (lv_coord_t)virtual_to_viewport_y(mpf_class(0)).get_si();
+
+            if (y0 < (lv_coord_t)40 + tick_text_margin) { // upper bound for text
+                y0 = (lv_coord_t)40 + tick_text_margin;
+            } else if (y0 > (lv_coord_t)VIEWPORT_HEIGHT - tick_text_margin){ // lower bound for text
+                y0 = (lv_coord_t)VIEWPORT_HEIGHT - tick_text_margin - tick_text_pt;
+            } 
+            
+            pts[0] = lv_point_t{vpx, vpy1}; pts[1] = lv_point_t{vpx, vpy2};
+            sprintf(text_buf, "%.2lf", x);
+            lv_canvas_draw_line(canvas, pts, 2, &ticks_style); // draw vertical lines
+            lv_canvas_draw_text(canvas, vpx, y0, 100, &text_label, text_buf); // draw text
+        }
+
+        for (auto& y : vinfo.ticks){
+            if (y != 0.0){
+                auto vpy = (lv_coord_t)virtual_to_viewport_y(mpf_class(y)).get_si();
+                auto vpx1 = (lv_coord_t)virtual_to_viewport_x(domain.first).get_si();
+                auto vpx2 = (lv_coord_t)virtual_to_viewport_x(domain.second).get_si();
+                auto x0 = (lv_coord_t)virtual_to_viewport_x(domain.first + offset.x).get_si();
+                
+                sprintf(text_buf, "%.2lf", y);
+                int len = strlen(text_buf);
+                lv_coord_t text_width = lv_txt_get_width(text_buf, len, text_label.font, text_label.letter_space, LV_TEXT_FLAG_NONE);
+                
+                if (x0 < tick_text_margin){ // left bound for text
+                    x0 = tick_text_margin;
+                } else if (x0 + len> (lv_coord_t)VIEWPORT_WIDTH - text_width - tick_text_margin){ // right bound for tex
+                    x0 = (lv_coord_t)VIEWPORT_WIDTH - text_width - tick_text_margin;
+                } 
+
+                pts[0] = lv_point_t{vpx1, vpy}; pts[1] = lv_point_t{vpx2, vpy};
+                
+                lv_canvas_draw_line(canvas, pts, 2, &ticks_style); // draw horizontal lines
+                lv_canvas_draw_text(canvas, x0, vpy, 100, &text_label, text_buf); // draw tex
+            }
+        }
+
+    }
 
     /// If giac is enabled, the function is drawn onto the screen.
     /// If giac is disable, the function does nothing.
@@ -477,6 +486,7 @@ namespace graphing {
         for (size_t i = 0; i < plot_list.size(); i++){
             draw_function(i, lv_color_black());
         }
+        draw_ticks();
     }
 
     std::string Graph::next_function_name(){

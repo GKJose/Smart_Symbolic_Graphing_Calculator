@@ -242,8 +242,9 @@ namespace graphing {
         template<typename T>
         T giac_call(std::string& func_name, T data) const;
         #endif
-        std::vector<double> optimize_ticks(double xmin, double xmax) const;
         void draw_axes();
+        /// Draws both the ticks and the text for the tick values.
+        void draw_ticks();
         void fill_background();
         // Cycles between colors in default_colors array.
         lv_color_t get_next_color() const;
