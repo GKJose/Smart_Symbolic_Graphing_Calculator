@@ -210,7 +210,7 @@ namespace graphing {
 
         #if ENABLE_EXPERIMENTAL_PLOTTING
         // Sets the plots to be drawn by points, rather than lines.
-        #define ENABLE_DBGPLOT 1
+        #define ENABLE_DBGPLOT 0
         #define ENABLE_DBGPRINT 0
         #define GEN_RAND() ((double)(rand())/((double)RAND_MAX))
         #if ENABLE_DBGPRINT
