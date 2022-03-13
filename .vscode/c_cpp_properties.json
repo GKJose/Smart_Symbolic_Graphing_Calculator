@@ -1,16 +1,13 @@
 {
     "configurations": [
         {
-            "name": "Mac",
+            "name": "CMake",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceRoot}/**",
+                "${workspaceRoot}/src/include"
             ],
-            "defines": [],
-            "macFrameworkPath": [],
-            "compilerPath": "/usr/bin/clang",
-            "cStandard": "gnu17",
-            "cppStandard": "gnu++17",
-            "intelliSenseMode": "macos-gcc-x64"
+            "compileCommands": "${config:cmake.buildDirectory}/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],
     "version": 4

@@ -16,6 +16,23 @@
                 "isDefault": true
             },
             "detail": "Build project using CMake."
+        },
+        {
+            "type": "cppbuild",
+            "label": "build tests",
+            "command": "make",
+            "args": [
+                "tests",
+                "-j"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}"
+            },
+            "group": {
+                "kind":"build",
+                "isDefault": true
+            },
+            "detail": "Build project using CMake."
         }
     ],
     "version": "2.0.0"

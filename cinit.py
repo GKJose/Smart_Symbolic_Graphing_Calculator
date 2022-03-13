@@ -170,7 +170,7 @@ def main():
             for line in f:
                 if re.search(r'#define ENABLE_GIAC 1', line):
                     enable_giac = True
-
+        include_list = f'-I{pwd} -I{pwd}/src/include'
         liblist = ''
 
         if enable_giac:
@@ -180,7 +180,7 @@ def main():
             liblist += ''
 
         if is_pi:
-            liblist += '-lm -lpthread -li2c -lwiringPi -lpthread'
+            liblist += '-lm -lpthread -li2c -lwiringPi'
 
         if is_linux:
             liblist += '-lm -lpthread -lSDL2'
@@ -191,8 +191,8 @@ def main():
         csrcs = []
         cxxsrcs = []
         xtra = "-DUNICODE" if is_windows else ""
-        cflags = f"-O3 -g0 -I{pwd} -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifiers -Wall -Wextra -Wno-unused-function -Wno-error=strict-prototypes -Wpointer-arith -fno-strict-aliasing -Wno-error=cpp -Wuninitialized -Wmaybe-uninitialized -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wformat-security -Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated -Wempty-body -Wtype-limits -Wshift-negative-value -Wstack-usage=2048 -Wno-unused-value -Wno-unused-parameter -Wno-missing-field-initializers -Wuninitialized -Wmaybe-uninitialized -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wpointer-arith -Wno-cast-qual -Wmissing-prototypes -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wno-discarded-qualifiers -Wformat-security -Wno-ignored-qualifiers -Wno-sign-compare {xtra}"
-        cxxflags = f"-std=c++14 -O3 -g0 -I{pwd} -Wall {xtra}"
+        cflags = f"-O3 -g0 {include_list} -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifiers -Wall -Wextra -Wno-unused-function -Wno-error=strict-prototypes -Wpointer-arith -fno-strict-aliasing -Wno-error=cpp -Wuninitialized -Wmaybe-uninitialized -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wformat-security -Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated -Wempty-body -Wtype-limits -Wshift-negative-value -Wstack-usage=2048 -Wno-unused-value -Wno-unused-parameter -Wno-missing-field-initializers -Wuninitialized -Wmaybe-uninitialized -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wtype-limits -Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wpointer-arith -Wno-cast-qual -Wmissing-prototypes -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wno-discarded-qualifiers -Wformat-security -Wno-ignored-qualifiers -Wno-sign-compare {xtra}"
+        cxxflags = f"-std=c++14 -O3 -g0 {include_list} -Wall {xtra}"
 
         for file in getListOfFiles(os.path.join(pwd, 'lvgl'), "c"):
             csrcs.append(file)
@@ -200,10 +200,13 @@ def main():
         for file in getListOfFiles(os.path.join(pwd, 'lv_drivers'), "c"):
             csrcs.append(file)
 
+        # for file in getListOfFiles(os.path.join(pwd, 'src'), 'c'):
+        #     csrcs.append(file)
+
         #for file in getListOfFiles(os.path.join(pwd, 'lv_demos'), ".c"):
          #   csrcs.append(file)
 
-        for file in getListOfFiles2(os.path.join(pwd, ''), "cpp"):
+        for file in getListOfFiles(os.path.join(pwd, 'src'), "cpp"):
             cxxsrcs.append(file)
 
         target_csrcs = precompiled_filter(csrcs)
@@ -237,22 +240,26 @@ def main():
         #print(string)
         #os.system(string)
 
+        os.makedirs("build/what", exist_ok=True)
+
         with open("target.objs", 'w') as f:
             f.write(' '.join(cobjs) + ' ' + ' '.join(cxxobjs)) 
             #f.write(' '.join(cobjs) + ' ' + ' '.join(cxxobjs) + f' main.{object_suffix}')
 
-        string = f"g++ {cxxflags} @target.objs {liblist} -o demo{executable_suffix}"
+        string = f"g++ {cxxflags} @target.objs {liblist} -o build/out/SSGC{executable_suffix}"
         print(string)
         os.system(string)
         os.remove("target.objs")
         
         # END OF MAKE
     elif args.option == "clean":
-        files = getListOfFiles(pwd, object_suffix)
+        files = getListOfFiles(f"{pwd}/src", object_suffix)
+        files += getListOfFiles(f"{pwd}/lv_drivers", object_suffix)
+        files += getListOfFiles(f"{pwd}/lvgl", object_suffix)
         for file in files:
             os.remove(file[0])
-        if os.path.exists(os.path.join(pwd, 'demo' + executable_suffix )):
-            os.remove(os.path.join(pwd, 'demo' + executable_suffix))
+        if os.path.exists(os.path.join(f"{pwd}/build/out", 'SSGC' + executable_suffix )):
+            os.remove(os.path.join(f"{pwd}/build/out", 'SSGC' + executable_suffix))
         if os.path.exists(os.path.join(pwd, '.pclist')):
             os.remove(os.path.join(pwd, '.pclist'))
     else:

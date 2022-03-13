@@ -1,0 +1,38 @@
+#ifndef SMART_CALC_H
+#define SMART_CALC_H
+
+#cmakedefine ENABLE_GIAC @ENABLE_GIAC@
+#cmakedefine ENABLE_PI @ENABLE_PI@
+#cmakedefine ENABLE_LINUX @ENABLE_LINUX@
+#cmakedefine ENABLE_WINDOWS @ENABLE_WINDOWS@
+
+#ifndef ENABLE_GIAC
+#define ENABLE_GIAC 0
+#endif
+
+#ifndef ENABLE_PI
+#define ENABLE_PI 0
+#endif 
+
+#ifndef ENABLE_LINUX
+#define ENABLE_LINUX 0
+#endif
+
+#ifndef ENABLE_WINDOWS
+#define ENABLE_WINDOWS 0
+#endif
+
+#if ENABLE_WINDOWS
+#define USE_WIN32DRV 1
+#define USE_FBDEV 0
+#define USE_EVDEV 0
+#endif
+
+#if ENABLE_LINUX
+#define USE_MONITOR 1
+#define USE_MOUSEWHEEL 1
+#define USE_MOUSE 1
+#define USE_KEYBOARD 1
+#endif
+
+#endif
