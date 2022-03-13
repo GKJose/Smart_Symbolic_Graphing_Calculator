@@ -33,8 +33,11 @@ void createSettingsTab(lv_obj_t* parent){
   menu = lv_menu_create(parent);
   lv_menu_set_mode_root_back_btn(menu,LV_MENU_ROOT_BACK_BTN_DISABLED);
   lv_obj_add_event_cb(menu,back_event_handler,LV_EVENT_CLICKED,menu);
-  lv_obj_set_size(menu,LV_HOR_RES,LV_VER_RES);
+  lv_obj_set_size(menu,LV_HOR_RES,LV_VER_RES - 20);
   lv_obj_center(menu);
+
+  lv_color_t bg_color = lv_obj_get_style_bg_color(menu, 0);
+  lv_obj_set_style_bg_color(menu, lv_color_darken(bg_color, 10), 0);
   
   /* create sub pages */
   sub_display_page = lv_menu_page_create(menu,NULL);

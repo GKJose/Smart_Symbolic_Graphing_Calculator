@@ -136,8 +136,8 @@ namespace graphing {
         const lv_coord_t tick_text_pt = 10;
 
         // generate tick info based on the domain and range of the current viewport.
-        Ticks::TickInfo hinfo = Ticks::optimize_ticks<3, 4, 3>(domain.first.get_d(), domain.second.get_d());
-        Ticks::TickInfo vinfo = Ticks::optimize_ticks<2, 3, 3>(range.second.get_d(), range.first.get_d());
+        Ticks::TickInfo hinfo = Ticks::optimize_ticks<2, 5, 3>(domain.first.get_d(), domain.second.get_d());
+        Ticks::TickInfo vinfo = Ticks::optimize_ticks<2, 5, 3>(range.second.get_d(), range.first.get_d());
 
         // tick styling
         lv_draw_line_dsc_t ticks_style;

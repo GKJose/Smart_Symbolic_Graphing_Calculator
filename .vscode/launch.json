@@ -49,7 +49,7 @@
             ],
             "target": "${workspaceRoot}/build/out/SmartSymbolicGraphingCalculator",
             "cwd": "${workspaceRoot}",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build SSGC",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ]
