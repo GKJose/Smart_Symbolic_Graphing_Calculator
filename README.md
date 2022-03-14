@@ -3,7 +3,7 @@
 ## UHCL Senior Projects Group 2
 
 <p align="center"> 
-<img src="media/SSGC_Graphing.gif">
+<img src="media/SSGC_Graphing.gif" width="50%">
 </p>
 
 **Greetings!** This is the repository for our Smart Symbolic Graphing Calculator. Written in C/C++, this project utilizes [LVGL](https://github.com/lvgl/lvgl) and [Giac](https://www-fourier.ujf-grenoble.fr/~parisse/giac.html) to create a free and open source and extensible symbolic calculator that is able to used in both testing environments and general calculation applications.
