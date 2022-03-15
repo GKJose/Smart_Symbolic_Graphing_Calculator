@@ -34,7 +34,7 @@ namespace RoundExt{
             return (D + d - 1) / d;
         }
         int bit_ndigits0z(std::size_t x){
-            static const std::size_t powers_of_ten[] = {
+            static const long long unsigned int powers_of_ten[] = {
             0x0000000000000001, 0x000000000000000a, 0x0000000000000064, 0x00000000000003e8,
             0x0000000000002710, 0x00000000000186a0, 0x00000000000f4240, 0x0000000000989680,
             0x0000000005f5e100, 0x000000003b9aca00, 0x00000002540be400, 0x000000174876e800,
