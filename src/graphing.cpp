@@ -57,7 +57,7 @@ static void textarea_cb(lv_event_t* event){
     std::cout << "TEXTAREA_CB: " << func_str << " " << func_expression << " " << func_id << "\n";
     graph->update_function(func_str + "(x):=" + func_expression);
     plot->name = std::move(func_str);
-    plot->function_expression = std::move(func_expression);
+    plot->change_expression(std::move(func_expression));
     graph->update();  
 }
 

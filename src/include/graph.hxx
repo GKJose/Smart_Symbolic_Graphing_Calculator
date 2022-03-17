@@ -14,6 +14,7 @@
 #include <vector>
 #include <chrono>
 
+
 #if ENABLE_GIAC == 1
 #if ENABLE_LINUX
 #include <giac/config.h>
@@ -71,17 +72,156 @@ namespace graphing {
 
     };
 
+    /// Used for cache when plotting functions.
+    struct PlotDataBlock{
+        using DataBlock = std::vector<Point>;
+        double x_min, x_max; // holds the min anx max x coords of the vector of points.
+        DataBlock data;
+
+        PlotDataBlock() = default;
+        PlotDataBlock(double x_min, double x_max, DataBlock data):
+        x_min(x_min), x_max(x_max), data(std::move(data)){}
+    };
+
+    enum PlotRecalculationType {
+        RecalculateNothing,
+        RecalculateLeft,
+        RecalculateRight,
+        RecalculateAll,
+    };
+
     struct Plot{
-        //graph_function func;
+        using DataBlock = std::vector<Point>;
+        using DataRange = std::pair<double, double>;
         lv_draw_line_dsc_t style;
         std::string name; // Ex: f1, f2, f3, f4, etc.
         std::string function_expression; // Ex: sin(x), x^2, 4x+2, etc.
+        std::vector<PlotDataBlock> cached_data;
+        double cached_scale; // used to check if the scale is the same
+        bool last_drew; // used to keep track if the last function assigned was able to draw onto the screen.
+        double block_width; // set to half of the viewport's virtual width.
+        #if ENABLE_GIAC
+        giac::context& ctx; // context from the graph
+        #endif
         
         /// Create a Plot that holds the name, expression, and color of a function being displayed on the graph.
-        Plot(std::string name, std::string function_expression, lv_color_t color):
-        name(std::move(name)), function_expression(std::move(function_expression)){
+        #if ENABLE_GIAC
+        Plot(std::string name, std::string function_expression, lv_color_t color, double viewport_virtual_width, giac::context& ctx):
+        name(std::move(name)), function_expression(std::move(function_expression)), block_width(viewport_virtual_width/2.0), ctx(ctx)
+        #else 
+        Plot(std::string name, std::string function_expression, lv_color_t color, double viewport_virtual_width):
+        name(std::move(name)), function_expression(std::move(function_expression)), block_width(viewport_virtual_width/2.0)
+        #endif
+        {
             lv_draw_line_dsc_init(&style);
             style.color = color;
+            cached_data.resize(6, PlotDataBlock{0.0, 0.0, std::vector<Point>()}); // six DataBlocks per Plot. Two for the viewport, and two on each side of the viewport.
+            last_drew = false; // first time drawing.
+        } 
+
+        #if ENABLE_GIAC
+        template<typename T>
+        T giac_call(T data) const {
+            static char fcall_buf[128] = {0};
+            constexpr int input_digits = 7;
+            std::sprintf(fcall_buf, "%s(", name.c_str());
+            if (std::is_same<T, double>::value){
+                sprintf(fcall_buf+name.size()+1, "%.7lf)", data);
+                giac::gen g(fcall_buf, &ctx);
+                return (T)std::stod(giac::gen2string(giac::eval(g, &ctx)));
+            } else if (std::is_same<T, mpf_class>::value){
+                gmp_sprintf(fcall_buf+name.size()+1, "%.*Ff)", input_digits, data);
+                giac::gen g(fcall_buf, &ctx);
+                return mpf_class(giac::gen2string(giac::eval(g, &ctx))).get_d();
+            } else {
+                throw std::runtime_error("Unsupported type in giac_call.");
+            }
+        }
+        #endif
+        /// Change the expression of the function, and set flag to enable redrawing.
+        void change_expression(std::string str){
+            function_expression = std::move(str);
+            last_drew = false;
+        }
+
+        /// Returns plot calculation for a given range.
+        std::pair<std::vector<double>, std::vector<double>> calculate(DataRange const& data_range);
+
+        /// Possibly calculate data given a certain range, scale, and center_x coordinate (of the viewport's virtual center).
+        /// If nothing needs to be calculated, no work will be done.
+        void maybe_calculate(DataRange const& data_range, double scale, double center_x){
+            PlotRecalculationType rtype = needs_recalculation(data_range, scale);
+            if (rtype == RecalculateNothing) // if no recalculation is needed, then do nothing and just return.
+                return;
+            cached_scale = scale;
+            DataRange x_range = get_calculation_range(rtype, center_x);
+            decltype(calculate(x_range)) calculation;
+            try {
+                calculation = calculate(x_range); // throws
+                last_drew = true;
+            } catch (...) {
+                last_drew = false;
+                throw 21; // doesn't really mean much, it just has to throw.
+            }
+            
+            if (rtype == RecalculateLeft){
+                for (std::size_t i = 0; i < calculation.first.size(); i++){
+                    cached_data.at(0).data.push_back(Point(std::move(calculation.first[i]), std::move(calculation.second[i])));
+                }
+            } else if (rtype == RecalculateRight){
+                for (std::size_t i = 0; i < calculation.first.size(); i++){
+                    cached_data.at(5).data.push_back(Point(std::move(calculation.first[i]), std::move(calculation.second[i])));
+                }
+            } else { // Recalculate All
+                cached_data.clear();
+                for (std::size_t i = 0; i < 6; i++){
+                    cached_data.push_back(PlotDataBlock(x_range.first+block_width*((double)i), x_range.first+block_width*((double)i+1), DataBlock()));
+                    for (std::size_t j = 0; cached_data.at(i).x_max > calculation.first[j]; j++){
+                        cached_data.at(i).data.push_back(Point(std::move(calculation.first[j]), std::move(calculation.second[j])));
+                    }
+                }
+            }
+        }
+
+        private:
+
+        /// Returns whether or not the plot needs to recalculate data depending on the range given in `data_range`
+        PlotRecalculationType needs_recalculation(DataRange const& data_range, mpf_class scale){
+            if (cached_data.at(1).x_min >= data_range.second || cached_data.at(4).x_max <= data_range.first || scale != cached_scale || !last_drew)
+                return RecalculateAll;
+            if (cached_data.at(1).x_min >= data_range.first)
+                return RecalculateLeft; 
+            if (cached_data.at(4).x_max <= data_range.second)
+                return RecalculateRight;
+            return RecalculateNothing;
+        }
+
+        /// Returns a range that will need to be calculated given a PlotReclculationType and a center x_coord in the 
+        /// case that the entire plot needs to be recalculated (which will be centered around the given coord).
+        /// SIDE EFFECTS: If recalculating, this function will shift/remove values within cached_data
+        DataRange get_calculation_range(PlotRecalculationType prt, double center_x) {
+            switch (prt){
+                case RecalculateNothing:
+                    return DataRange(0.0, 0.0); // returns (0,0) in the case that nothing needs to be recalculated.
+                case RecalculateLeft:
+                    // shift values right. Rightmost block gets replaced. Leftmost block gets recalculated
+                    for (ssize_t i = cached_data.size()-1; i > 0; i--){ 
+                        cached_data.at(i) = std::move(cached_data.at(i-1));
+                    }
+                    cached_data.at(0) = PlotDataBlock(cached_data.at(1).x_min - block_width, cached_data.at(1).x_min, DataBlock());
+                    return DataRange(cached_data.at(0).x_min, cached_data.at(0).x_max);
+                case RecalculateRight:
+                    // shift values left. Leftmost block gets replaced. Rightmost block gets recalculated.
+                    for (ssize_t i = 0; i < cached_data.size()-1; i++){
+                        cached_data.at(i) = std::move(cached_data.at(i+1));
+                    }
+                    cached_data.at(5) = PlotDataBlock(cached_data.at(4).x_max, cached_data.at(4).x_max + block_width, DataBlock());
+                    return DataRange(cached_data.at(5).x_min, cached_data.at(5).x_max);
+                case RecalculateAll:
+                    return DataRange(center_x - block_width*3, center_x + block_width*3);
+                default:
+                    return DataRange(0.0, 0.0); // Should never happen, but will return (0.0, 0.0) just in case.
+            }
         }
     };
 

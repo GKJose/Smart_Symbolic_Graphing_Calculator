@@ -28,7 +28,7 @@ public:
 
 
     Option():empty(true){}
-    explicit Option(T value):empty(false),_value(value){}
+    explicit Option(T value):empty(false),_value(std::move(value)){}
     Option(None):empty(true){}
 
     constexpr bool is_empty() const noexcept{
@@ -38,7 +38,7 @@ public:
         return _value;
     }
     constexpr T& value_ref(){
-        return &_value;
+        return _value;
     }
 
     template<typename R>
@@ -70,7 +70,7 @@ public:
     _OPTION_DEF2(equals, ==)
 
     void operator=(T value){
-        _value = value; empty = false;
+        _value = std::move(value); empty = false;
     }
     operator bool() const{
         return !empty;
