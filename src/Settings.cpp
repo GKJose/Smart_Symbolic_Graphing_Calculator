@@ -1,5 +1,7 @@
 #include <Settings.hxx>
+#include <calculator_state.hxx>
 #include <iostream>
+
 
 //Menu declarations
 static lv_obj_t * menu;
@@ -90,12 +92,15 @@ void createSettingsTab(lv_obj_t* parent){
   
 
 }
+
 static void updateButton_cb(lv_event_t * e){
 	lv_event_code_t code = lv_event_get_code(e);
 	
 	if(code == LV_EVENT_CLICKED){
-        lv_obj_t * mbox1 = lv_msgbox_create(lv_obj_get_parent(lv_event_get_target(e)), "Info.", "Updating in progress.", NULL, true);
-        lv_obj_center(mbox1);
+        state::updating::advance_update_state();
+        // lv_obj_t * mbox1 //= lv_msgbox_create(lv_obj_get_parent(lv_event_get_target(e)), "Info.", "Updating in progress.", NULL, true);
+        //     = lv_msgbox_create(nullptr, "Information", "Update in process.", nullptr, true);
+        // lv_obj_center(mbox1);
 		
 	}
 }

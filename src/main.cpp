@@ -1,6 +1,7 @@
 #include <calc_conf.h>
 #include <lvgl/lvgl.h>
 #include <Calculator.h>
+#include <calculator_state.hxx>
 #include <chrono>
 #include <thread>
 
@@ -63,7 +64,8 @@ int main(void)
     calc_init();
     PI_EXEC(wiringPiSetup());
     Calculator::createDemo();
-    lv_timer_create(Calculator::update,350,NULL);
+    lv_timer_create(Calculator::update, 350, nullptr);
+    lv_timer_create(state::updating::update_daemon_cb, 200, nullptr);
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {
         

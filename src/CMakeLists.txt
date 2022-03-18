@@ -1,5 +1,5 @@
 
-set(SOURCE_FILES main.cpp Calculator.cpp graph.cpp graphing.cpp Keypad.cpp Settings.cpp tabs.cpp)
+set(SOURCE_FILES main.cpp calculator_state.cpp Calculator.cpp graph.cpp graphing.cpp Keypad.cpp Settings.cpp tabs.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/out")

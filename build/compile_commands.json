@@ -2091,6 +2091,11 @@
 },
 {
   "directory": "/home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/build/src",
+  "command": "/usr/bin/c++ -DLV_CONF_INCLUDE_SIMPLE -DLV_LVGL_H_INCLUDE_SIMPLE -I/home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator -I/home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/lv_drivers -I/home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/src/include -isystem /home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/lvgl -g -DDEBUG -std=gnu++14 -o CMakeFiles/SSGC.dir/calculator_state.cpp.o -c /home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/src/calculator_state.cpp",
+  "file": "/home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/src/calculator_state.cpp"
+},
+{
+  "directory": "/home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/build/src",
   "command": "/usr/bin/c++ -DLV_CONF_INCLUDE_SIMPLE -DLV_LVGL_H_INCLUDE_SIMPLE -I/home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator -I/home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/lv_drivers -I/home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/src/include -isystem /home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/lvgl -g -DDEBUG -std=gnu++14 -o CMakeFiles/SSGC.dir/Calculator.cpp.o -c /home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/src/Calculator.cpp",
   "file": "/home/movrax/Documents/jose/Smart_Symbolic_Graphing_Calculator/src/Calculator.cpp"
 },

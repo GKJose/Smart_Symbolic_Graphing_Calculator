@@ -386,6 +386,7 @@ namespace graphing {
         /// Draws both the ticks and the text for the tick values.
         void draw_ticks();
         void fill_background();
+        void draw_line(lv_point_t p1, lv_point_t p2, lv_draw_line_dsc_t const& style); // handrolled line-drawing algorithm.
         // Cycles between colors in default_colors array.
         lv_color_t get_next_color() const;
 

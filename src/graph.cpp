@@ -4,6 +4,7 @@
 #include <ticks.hxx>
 #include <random>
 #include <type_traits>
+
 // #if ENABLE_EXPERIMENTAL_PLOTTING
 // #include <armadillo>
 // #endif
@@ -413,6 +414,90 @@ namespace graphing {
 
     }
 
+    void Graph::draw_line(lv_point_t p1, lv_point_t p2, lv_draw_line_dsc_t const& style){
+        lv_img_dsc_t* img = lv_canvas_get_img(canvas);
+        uint8_t* i_am_sorry = (uint8_t*)img->data;
+        auto plot = [&](int16_t x, int16_t y){
+            int32_t idx = (int32_t)x + ((int32_t)img->header.w)*((int32_t)y)*(LV_COLOR_DEPTH/8);
+            i_am_sorry[idx] = style.color.ch.blue;
+            i_am_sorry[idx+1] = style.color.ch.green;
+            i_am_sorry[idx+2] = style.color.ch.red;
+            i_am_sorry[idx+3] = style.color.ch.alpha;
+        };
+        auto draw_line_low = [&](lv_point_t _p1, lv_point_t _p2){
+            int16_t dx = _p2.x - _p1.x;
+            int16_t dy = _p2.y - _p1.y;
+            int16_t yi = 1;
+            if (dy < 0){
+                yi = -1;
+                dy = -dy;
+            }
+            int16_t D = (2*dy)-dx;
+            int16_t y = _p1.y;
+            for (int16_t x = _p1.x; x <= _p2.x; x++){
+                plot(x,y);
+                if (D > 0){
+                    y = y + yi;
+                    D = D + (2 *(dy - dx));
+                } else {
+                    D = D + 2*dy;
+                }
+            }
+        };
+        auto draw_line_high = [&](lv_point_t _p1, lv_point_t _p2){
+            int16_t dx = _p2.x - _p1.x;
+            int16_t dy = _p2.y - _p1.y;
+            int16_t xi = 1;
+            if (dx < 0){
+                xi = -1;
+                dx = -dx;
+            }
+            int16_t D = (2 * dx) - dy;
+            int16_t x = _p1.x;
+            for (int16_t y = _p1.y; y <= _p2.y; y++){
+                plot(x,y);
+                if (D > 0) {
+                    x = x + xi;
+                    D = D + (2 * (dx - dy));
+                } else {
+                    D = D + 2*dx;
+                }
+            }
+        };
+        // clipping the points to ensure that it is within bounds.
+        p1.x = LV_MAX(p1.x, 0);
+        p1.x = LV_MIN(p1.x, VIEWPORT_WIDTH-1);
+        p1.y = LV_MAX(p1.y, 0);
+        p1.y = LV_MIN(p1.y, VIEWPORT_HEIGHT-1);
+        
+        p2.x = LV_MAX(p2.x, 0);
+        p2.x = LV_MIN(p2.x, VIEWPORT_WIDTH-1);
+        p2.y = LV_MAX(p2.y, 0);
+        p2.y = LV_MIN(p2.y, VIEWPORT_HEIGHT-1);
+
+        if (std::abs(p2.y - p1.y) < std::abs(p2.x - p1.x)){
+            if (p1.x > p2.x)
+                draw_line_low(p2, p1);
+            else
+                draw_line_low(p1, p2);
+        } else {
+            if (p1.y > p2.y)
+                draw_line_high(p2, p1);
+            else
+                draw_line_high(p1, p2);
+        }
+        
+        // lv_img_dsc_t* img = lv_canvas_get_img(canvas);
+        // // kinda cursed that we coerce a const uint8_t* to a uint8_t*, but its what lvgl does...
+        // uint8_t* i_am_sorry = (uint8_t*)img->data;
+        // for (uint32_t i = 0; i < img->header.w*(LV_COLOR_DEPTH/8)*3; i += 4){ 
+        //     i_am_sorry[i] = 0;      // red
+        //     i_am_sorry[i+1] = 0xFF; // green
+        //     i_am_sorry[i+2] = 0x00; // blue
+        //     i_am_sorry[i+3] = 0xFF; // alpha
+        // }
+    }
+
     /// If giac is enabled, the function is drawn onto the screen.
     /// If giac is disable, the function does nothing.
     void Graph::draw_function(int id, lv_color_t color){
@@ -447,6 +532,7 @@ namespace graphing {
         if (vals.size() > 0){
             lv_canvas_draw_line(canvas, vals.data(), vals.size(), &plot.style);
         }
+        draw_line(lv_point_t{0,0}, lv_point_t{20, 20}, plot.style);
         #if 0
         #if ENABLE_EXPERIMENTAL_PLOTTING
         // Sets the plots to be drawn by points, rather than lines.
