@@ -13,6 +13,7 @@
 #include "../../misc/lv_gc.h"
 #include "lv_draw_sdl_mask.h"
 #include "lv_draw_sdl_utils.h"
+#include <stdio.h>
 
 /*********************
  *      DEFINES

@@ -657,9 +657,6 @@
 /*1: Enable grid navigation*/
 #define LV_USE_GRIDNAV  0
 
-/*1: Enable lv_obj fragment*/
-#define LV_USE_FRAGMENT 0
-
 /*==================
 * EXAMPLES
 *==================*/

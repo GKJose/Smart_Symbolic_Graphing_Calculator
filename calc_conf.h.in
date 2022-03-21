@@ -29,10 +29,9 @@
 #endif
 
 #if ENABLE_LINUX
-#define USE_MONITOR 1
-#define USE_MOUSEWHEEL 1
-#define USE_MOUSE 1
-#define USE_KEYBOARD 1
+#define USE_SDL 0
+#define USE_SDL_GPU 1
+#define LV_USE_GPU_SDL 1
 #endif
 
 #endif

@@ -12,6 +12,11 @@
 #include "../draw/lv_draw.h"
 #include "../core/lv_refr.h"
 
+#include <calc_conf.h>
+#if USE_SDL_GPU
+#include "../draw/sdl/lv_draw_sdl.h"
+#endif
+
 #if LV_USE_CANVAS != 0
 
 #include "../draw/sw/lv_draw_sw.h"
@@ -691,6 +696,7 @@ void lv_canvas_draw_line(lv_obj_t * canvas, const lv_point_t points[], uint32_t 
     lv_disp_drv_t driver;
     lv_area_t clip_area;
     init_fake_disp(canvas, &fake_disp, &driver, &clip_area);
+    
 
     lv_disp_t * refr_ori = _lv_refr_get_disp_refreshing();
     _lv_refr_set_disp_refreshing(&fake_disp);

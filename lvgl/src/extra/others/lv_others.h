@@ -16,7 +16,6 @@ extern "C" {
 #include "snapshot/lv_snapshot.h"
 #include "monkey/lv_monkey.h"
 #include "gridnav/lv_gridnav.h"
-#include "fragment/lv_fragment.h"
 
 /*********************
  *      DEFINES

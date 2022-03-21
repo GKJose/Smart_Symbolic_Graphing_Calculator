@@ -71,6 +71,7 @@ void create_graph(lv_obj_t *parent){
     static lv_obj_t* zoom_buttons = lv_btnmatrix_create(graph.get_canvas());
     function_text_area = lv_textarea_create(graph.get_canvas());
     static lv_obj_t* function_button = lv_dropdown_create(graph.get_canvas());
+    
     // zoom button setup
 
     lv_style_init(&zoom_style_bg);
@@ -106,7 +107,7 @@ void create_graph(lv_obj_t *parent){
 
     // function text area setup
     lv_style_init(&textarea_style);
-    lv_style_set_text_font(&textarea_style, &lv_font_montserrat_12_subpx);
+    lv_style_set_text_font(&textarea_style, &lv_font_montserrat_12);
     lv_style_set_border_width(&textarea_style, 1);
     lv_style_set_border_opa(&textarea_style, LV_OPA_50);
     lv_style_set_shadow_color(&textarea_style, lv_color_black());
@@ -129,7 +130,7 @@ void create_graph(lv_obj_t *parent){
     
     // function button setup
     lv_style_init(&function_button_style);
-    lv_style_set_text_font(&function_button_style, &lv_font_montserrat_12_subpx);
+    lv_style_set_text_font(&function_button_style, &lv_font_montserrat_12);
     lv_style_set_text_align(&function_button_style, LV_ALIGN_CENTER);
     lv_style_set_pad_all(&function_button_style, 6);
     //lv_style_set_align(&function_button_style, LV_ALIGN_TOP_MID);

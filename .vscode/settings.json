@@ -67,6 +67,11 @@
         "fstream": "cpp",
         "future": "cpp",
         "iomanip": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "calc_conf.h": "c",
+        "sdl_gpu.h": "c",
+        "sdl.h": "c",
+        "lv_drv_conf.h": "c",
+        "lv_draw_sdl_utils.h": "c"
     }
 }

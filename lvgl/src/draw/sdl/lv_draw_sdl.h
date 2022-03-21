@@ -39,6 +39,7 @@ extern "C" {
 
 struct lv_draw_sdl_context_internals_t;
 
+/// WHY DOES THIS EXIST. PLEASE NO.
 typedef struct {
     /**
      * Render for display driver

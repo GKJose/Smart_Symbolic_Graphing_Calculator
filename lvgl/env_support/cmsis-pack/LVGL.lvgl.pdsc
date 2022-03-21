@@ -36,11 +36,7 @@
   <repository type="git">https://github.com/lvgl/lvgl.git</repository>
   
   <releases>
-    <release date="2022-02-26" version="1.0.1" url="https://raw.githubusercontent.com/lvgl/lvgl/master/env_support/cmsis-pack/LVGL.lvgl.1.0.1.pack">
-      - LVGL 8.3.0-dev
-      - Monthly update for February
-    </release>
-    <release date="2022-01-31" version="1.0.0" url="https://github.com/lvgl/lvgl/blob/d851fe0528fcb920fee86c944fe9dbbaf6fbb0c9/env_support/cmsis-pack/LVGL.lvgl.1.0.0.pack?raw=true">
+    <release date="2022-01-31" version="1.0.0" url="https://raw.githubusercontent.com/lvgl/lvgl/master/env_support/cmsis-pack/LVGL.lvgl.1.0.0.pack">
       - LVGL 8.2.0
       - Enable LV_TICK_CUSTOM when perf_counter is detected.
       - Celebrate Spring Festival
@@ -153,7 +149,7 @@
   -->
 
     <components>
-        <bundle Cbundle="LVGL" Cclass="LVGL" Cversion="8.3.0-dev">
+        <bundle Cbundle="LVGL" Cclass="LVGL" Cversion="8.2.0">
             <description>LVGL (Light and Versatile Graphics Library) is a free and open-source graphics library providing everything you need to create an embedded GUI with easy-to-use graphical elements, beautiful visual effects and a low memory footprint.</description>
             <doc></doc>
             <component Cgroup="lvgl" Csub="Essential" >

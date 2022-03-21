@@ -26,7 +26,7 @@ extern "C" {
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
 #include "lvgl.h"
 #else
-#include "../../lvgl/lvgl.h"
+#include "lvgl/lvgl.h"
 #endif
 
 /*********************
@@ -55,7 +55,6 @@ bool evdev_set_file(char* dev_name);
 /**
  * Get the current position and state of the evdev
  * @param data store the evdev data here
- * @return false: because the points are not buffered, so no more data to be read
  */
 void evdev_read(lv_indev_drv_t * drv, lv_indev_data_t * data);
 

@@ -8,6 +8,7 @@
 #include <map>
 #include <functional>
 #include <cstdlib>
+#include <cassert>
 
 namespace Ticks {
 

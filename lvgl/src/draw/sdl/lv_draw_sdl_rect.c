@@ -254,15 +254,15 @@ static void draw_bg_color(lv_draw_sdl_ctx_t * ctx, const lv_area_t * coords, con
     if(radius <= 0) {
         SDL_Rect rect;
         lv_area_to_sdl_rect(draw_area, &rect);
-        SDL_SetRenderDrawColor(ctx->renderer, bg_color.r, bg_color.g, bg_color.b, dsc->bg_opa);
+        int code = SDL_SetRenderDrawColor(ctx->renderer, bg_color.r, bg_color.g, bg_color.b, dsc->bg_opa);
         SDL_SetRenderDrawBlendMode(ctx->renderer, SDL_BLENDMODE_BLEND);
         SDL_RenderFillRect(ctx->renderer, &rect);
         return;
     }
-
     /*A small texture with a quarter of the rect is enough*/
     lv_coord_t bg_w = lv_area_get_width(coords), bg_h = lv_area_get_height(coords);
     lv_coord_t real_radius = LV_MIN3(bg_w / 2, bg_h / 2, radius);
+    
     SDL_Texture * texture = lv_draw_sdl_rect_bg_frag_obtain(ctx, real_radius);
 
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
