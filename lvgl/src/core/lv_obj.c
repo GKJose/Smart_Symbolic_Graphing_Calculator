@@ -511,6 +511,9 @@ static void lv_obj_draw(lv_event_t * e)
         if(lv_obj_get_style_border_post(obj, LV_PART_MAIN)) {
             draw_dsc.border_post = 1;
         }
+        int a = 0;
+        if (obj->class_p->instance_size == 136)
+            a++;
 
         lv_obj_init_draw_rect_dsc(obj, LV_PART_MAIN, &draw_dsc);
         lv_coord_t w = lv_obj_get_style_transform_width(obj, LV_PART_MAIN);

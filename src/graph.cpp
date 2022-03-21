@@ -29,9 +29,18 @@ namespace graphing {
         if (last_point.x != 0 && last_point.y != 0){
             lv_point_t delta{(lv_coord_t)(point.x - last_point.x), (lv_coord_t)(point.y - last_point.y)};
             graph->translate_center(delta);
+            graph->update();
         }
         last_point = point;
         last_time = lv_tick_get();
+    }
+
+    static SDL_Rect lv_area_to_sdl_rect(lv_area_t& area){
+        SDL_Rect ret;
+        ret.x = (int)area.x1; ret.y = (int)area.y1;
+        ret.w = (int)std::abs(area.x1 - area.x2);
+        ret.h = (int)std::abs(area.y1 - area.y2);
+        return ret;
     }
 
     std::pair<std::vector<double>, std::vector<double>> Plot::calculate(DataRange const& data_range){
@@ -268,7 +277,7 @@ namespace graphing {
         giac::approx_mode(true, &ctx); // Change graphing to calculate approximate values.
         #endif
 
-        draw_axes();
+        //draw_axes();
     }
 
 
@@ -341,14 +350,56 @@ namespace graphing {
             lv_point_t hpoints[] = {left_point.to_lv_point(), right_point.to_lv_point()};
             lv_point_t vpoints[] = {top_point.to_lv_point(), bottom_point.to_lv_point()};
             lv_disp_t* disp = (lv_disp_t*)sdl_display;
-            auto draw_ctx = disp->driver->draw_ctx;
-            lv_area_t area = {50, 320, 0, 100};
-            draw_ctx->clip_area = &area;
-            draw_ctx->draw_line(draw_ctx, &axes_style, &hpoints[0], &hpoints[1]);
-            draw_ctx->draw_line(draw_ctx, &axes_style, &vpoints[0], &vpoints[1]);
-            draw_ctx->clip_area = nullptr;
-            //lv_canvas_draw_line(canvas, hpoints, 2, &axes_style);
-            //lv_canvas_draw_line(canvas, vpoints, 2, &axes_style);
+            lv_area_t area;
+            area.x1 = 0; area.x2 = SDL_HOR_RES;
+            area.y1 = 0; area.y2 = SDL_VER_RES;
+            SDL_Renderer* renderer = (SDL_Renderer*)disp->driver->user_data;
+            SDL_Texture* texture = (SDL_Texture*)sdl_texture;
+            SDL_Rect clip_rect, h_axes_rect, v_axes_rect;
+            lv_color_t color = lv_color_white();
+            clip_rect.h = SDL_VER_RES - 20; clip_rect.w = SDL_HOR_RES; clip_rect.x = 0; clip_rect.y = 20;
+            textarea_rect = lv_area_to_sdl_rect(function_text_area->coords);
+            buttons_rect = textarea_rect;
+            buttons_rect.x += 200;
+            buttons_rect.w = 60;
+            h_axes_rect.x = hpoints[0].x; h_axes_rect.y = hpoints[0].y; 
+            h_axes_rect.w = std::abs(hpoints[1].x - hpoints[0].x); h_axes_rect.h = 2;
+            v_axes_rect.x = vpoints[0].x; v_axes_rect.y = vpoints[0].y + 20;
+            v_axes_rect.h = std::abs(vpoints[0].y - vpoints[1].y); v_axes_rect.w = 2;
+
+            // textarea_rect.x = function_text_area->coords.x1; textarea_rect.y = function_text_area->coords.y1;
+            // textarea_rect.w = std::abs(function_text_area->coords.x1 - function_text_area->coords.x2);
+            // textarea_rect.h = std::abs(function_text_area->coords.y1 - function_text_area->coords.y2);
+            lv_disp_get_default()->refr_timer->paused = true;
+            // Create transparent texture and set clipping.
+            SDL_Texture* tt = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, SDL_HOR_RES, SDL_VER_RES);
+            SDL_SetRenderTarget(renderer, tt);
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+            //SDL_SetTextureBlendMode(tt, SDL_BLENDMODE_NONE);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_TRANSPARENT);
+            SDL_RenderClear(renderer);  // make tt a transparent texture.
+            SDL_RenderSetClipRect(renderer, &clip_rect); 
+            // Draw axes onto transparent texture.
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+            SDL_RenderFillRect(renderer, &h_axes_rect); // draw black horizontal axes.
+            SDL_RenderFillRect(renderer, &v_axes_rect); // draw horizontal black axes.
+            
+            // Remove axes that overlaps the textarea
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_TRANSPARENT);
+            SDL_RenderFillRect(renderer, &textarea_rect); // transparent wherever the textarea is located.
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_TRANSPARENT);
+            SDL_RenderFillRect(renderer, &buttons_rect);
+            SDL_SetRenderTarget(renderer, nullptr);
+
+
+            // Copy transparent texture to window and present it.
+            SDL_SetTextureBlendMode(tt, SDL_BLENDMODE_BLEND);
+            SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+            SDL_RenderCopy(renderer, tt, nullptr, nullptr);
+            SDL_RenderPresent(renderer);
+            SDL_SetRenderTarget(renderer, texture);
+
+            SDL_DestroyTexture(tt);
         }
 
     void Graph::draw_ticks(){

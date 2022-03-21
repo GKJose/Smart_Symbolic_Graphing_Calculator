@@ -16,6 +16,7 @@ static void zoom_btnmatrix_cb(lv_event_t* event){
     } else {
         graph->set_scale(graph->get_scale()*1.1);
     }
+    graph->update();
 }
 
 static void dropdown_button_cb(lv_event_t* event){
@@ -154,7 +155,7 @@ void create_graph(lv_obj_t *parent){
     // graph.add_function([](mpf_class x){return x;}, LV_COLOR_MAKE16(0, 255, 0), "x");
 
     std::cout <<"EVERYTHING ADDED\n";
-    graph.update(); 
+    //graph.update(); 
 	std::cout <<"Graphing updated\n";
 }
 

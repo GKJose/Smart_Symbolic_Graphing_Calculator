@@ -35,6 +35,9 @@
 
 #if USE_SDL_GPU
 extern void* sdl_display;
+extern void* sdl_window;
+extern void* sdl_renderer;
+extern void* sdl_texture;
 #endif
 
 #endif

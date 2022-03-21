@@ -75,6 +75,9 @@ static int tick_thread(void *data);
  *  STATIC VARIABLES
  **********************/
 monitor_t monitor;
+void* sdl_window;
+void* sdl_renderer;
+void* sdl_texture;
 
 #if SDL_DUAL_DISPLAY
 monitor_t monitor2;
@@ -111,6 +114,7 @@ void sdl_init(void)
     SDL_SetEventFilter(quit_filter, NULL);
 
     window_create(&monitor);
+
 #if SDL_DUAL_DISPLAY
     window_create(&monitor2);
     int x, y;
@@ -392,6 +396,9 @@ static void window_create(monitor_t * m)
     m->renderer = SDL_CreateRenderer(m->window, -1, SDL_RENDERER_ACCELERATED);
     m->texture = SDL_CreateTexture(m->renderer,
                                 SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, SDL_HOR_RES, SDL_VER_RES);
+    sdl_window = m->window;
+    sdl_renderer = m->renderer;
+    sdl_texture = m->texture;
     SDL_SetTextureBlendMode(m->texture, SDL_BLENDMODE_BLEND);
     /* For first frame */
     SDL_SetRenderTarget(m->renderer, m->texture);

@@ -13,6 +13,7 @@
 #include <limits> 
 #include <vector>
 #include <chrono>
+#include <SDL2/SDL.h>
 
 
 #if ENABLE_GIAC == 1
@@ -240,6 +241,8 @@ namespace graphing {
             COLOR(255, 255, 0),
             COLOR(255, 0, 255),
             COLOR(0, 255, 255)};
+
+        SDL_Rect textarea_rect, buttons_rect;
         
         double VIEWPORT_HYP;
 
@@ -264,14 +267,14 @@ namespace graphing {
         void translate_center(Point vec){
             offset.x += vec.x*scale;
             offset.y += vec.y*scale;
-            update();
+            //update();
         }
 
         template<typename T>
         void translate_center(T x, T y){
             offset.x += x;
             offset.y += y;
-            update();
+            //update();
         }
         // a^2 + b^2 = c^2
         // c = hyp*scale
@@ -306,12 +309,12 @@ namespace graphing {
         inline void set_scale(mpf_class s){
             translate_center(Point{offset.x*(s - scale), offset.y*(s - scale)});
             scale = s;
-            update();
+            //update();
         }
 
         inline void scale_delta(mpf_class s){
             set_scale(get_scale()+s);
-            update();
+            //update();
         }
 
         lv_obj_t* get_canvas() const {

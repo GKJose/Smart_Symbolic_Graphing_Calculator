@@ -101,7 +101,7 @@
 #  define SDL_VER_RES     240
 
 /* Scale window by this factor (useful when simulating small screens) */
-#  define SDL_ZOOM        1
+#  define SDL_ZOOM        2
 
 /* Used to test true double buffering with only address changing.
  * Use 2 draw buffers, bith with SDL_HOR_RES x SDL_VER_RES size*/
