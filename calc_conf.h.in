@@ -32,6 +32,11 @@
 #define USE_SDL 0
 #define USE_SDL_GPU 1
 #define LV_USE_GPU_SDL 1
+
+#if USE_SDL_GPU
+extern void* sdl_display;
+#endif
+
 #endif
 
 #endif
