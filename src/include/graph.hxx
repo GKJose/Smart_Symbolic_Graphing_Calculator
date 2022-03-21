@@ -186,7 +186,7 @@ namespace graphing {
         private:
 
         /// Returns whether or not the plot needs to recalculate data depending on the range given in `data_range`
-        PlotRecalculationType needs_recalculation(DataRange const& data_range, mpf_class scale){
+        PlotRecalculationType needs_recalculation(DataRange const& data_range, double scale){
             if (cached_data.at(1).x_min >= data_range.second || cached_data.at(4).x_max <= data_range.first || scale != cached_scale || !last_drew)
                 return RecalculateAll;
             if (cached_data.at(1).x_min >= data_range.first)
@@ -306,12 +306,10 @@ namespace graphing {
         inline void set_scale(mpf_class s){
             translate_center(Point{offset.x*(s - scale), offset.y*(s - scale)});
             scale = s;
-            update();
         }
 
         inline void scale_delta(mpf_class s){
             set_scale(get_scale()+s);
-            update();
         }
 
         lv_obj_t* get_canvas() const {

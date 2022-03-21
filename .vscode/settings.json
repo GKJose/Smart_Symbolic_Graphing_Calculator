@@ -67,6 +67,10 @@
         "fstream": "cpp",
         "future": "cpp",
         "iomanip": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "hash_set": "cpp",
+        "codecvt": "cpp",
+        "unordered_set": "cpp",
+        "valarray": "cpp"
     }
 }

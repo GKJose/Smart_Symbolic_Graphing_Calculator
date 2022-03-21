@@ -26,6 +26,7 @@ namespace graphing {
         if (last_point.x != 0 && last_point.y != 0){
             lv_point_t delta{(lv_coord_t)(point.x - last_point.x), (lv_coord_t)(point.y - last_point.y)};
             graph->translate_center(delta);
+            graph->update();
         }
         last_point = point;
         last_time = lv_tick_get();
