@@ -4,6 +4,7 @@
 #include <ticks.hxx>
 #include <random>
 #include <type_traits>
+
 // #if ENABLE_EXPERIMENTAL_PLOTTING
 // #include <armadillo>
 // #endif
@@ -243,7 +244,9 @@ namespace graphing {
                 n_points += n_new_points;
                 n_intervals = n_points / 2;
             }
-            return std::pair<decltype(xs), decltype(fs)>(std::move(xs), std::move(fs));
+            std::pair<decltype(xs), decltype(fs)> result(std::move(xs), std::move(fs));
+
+            return std::move(result);
             #else
             return std::pair<std::vector<double>, std::vector<double>>(std::vector<double>(), std::vector<double>());
             #endif
@@ -431,22 +434,35 @@ namespace graphing {
         } catch(...) {
             return;
         }
-        std::vector<lv_point_t> vals;
-        for (auto& block : plot.cached_data) { // go through each block of points in the cached plot data.
-            for(std::size_t i = 0; i < block.data.size(); i++){ // go through each point in the block and plot it.
-                Point temp = virtual_to_viewport(block.data.at(i).x, block.data.at(i).y);
-                // checks to see if current line/curve we are slicing goes outside of the viewport.
-                if (temp.x < -20 || temp.x > VIEWPORT_WIDTH + 20 || temp.y < -20 || temp.y > VIEWPORT_HEIGHT + 20){
-                    if (vals.size() >= 2){
-                        lv_canvas_draw_line(canvas, vals.data(), vals.size(), &plot.style);
-                    }
-                    vals.clear();
+        auto within_viewport = [=](Option<lv_point_t> point){
+            if (point)
+                return point.value().x >= 0 && point.value().x < VIEWPORT_WIDTH && point.value().y >= 0 && point.value().y < VIEWPORT_HEIGHT;
+            return false;
+        };
+        
+        Option<lv_point_t> last_point = OptNone;
+        
+        for (std::size_t i = 0; i < plot.cached_data.size(); i++) {
+            auto& block = plot.cached_data[i];
+            for(std::size_t j = 0; j < block.data.size(); j++) {
+                auto& point = block.data[j];
+                auto px_d = point.x.get_d();
+                auto py_d = point.y.get_d();
+                auto curr_point = virtual_to_viewport(point.x, point.y).maybe_lv_point();
+                if (!last_point.is_empty() && !curr_point.is_empty()){ // points must exist
+                    if (curr_point.value().x < last_point.value().x) continue; // Fixes weird bug.
+                    bool wv_last = within_viewport(last_point);
+                    bool wv_curr = within_viewport(curr_point);
+                    // xor for plotting lines with one point outside of the viewport.
+                    // and for plotting lines with both points inside the viewport.
+                    // any lines with both points outside the viewport are not plotted.
+                    if (wv_last ^ wv_curr || (wv_last && wv_curr)){ 
+                        lv_point_t line[2] = {last_point.value(), curr_point.value()};
+                        lv_canvas_draw_line(canvas, line, 2, &plot.style);
+                    } 
                 }
-                vals.push_back(temp.to_lv_point());
+                last_point = curr_point;
             }
-        }
-        if (vals.size() > 0){
-            lv_canvas_draw_line(canvas, vals.data(), vals.size(), &plot.style);
         }
         #if 0
         #if ENABLE_EXPERIMENTAL_PLOTTING

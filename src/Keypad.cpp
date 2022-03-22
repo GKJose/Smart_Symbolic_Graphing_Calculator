@@ -3,7 +3,7 @@
 */
 
 
-#include <Keypad.h>
+#include <Keypad.hxx>
 
 #if ENABLE_PI && !ENABLE_LINUX
 

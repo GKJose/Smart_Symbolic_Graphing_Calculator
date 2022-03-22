@@ -2111,6 +2111,11 @@
 },
 {
   "directory": "/home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/build",
+  "command": "/usr/bin/g++ -DLV_CONF_INCLUDE_SIMPLE -DLV_LVGL_H_INCLUDE_SIMPLE -I/home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator -I/home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/lv_drivers -I/home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/src/include -isystem /home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/lvgl -g -std=gnu++14 -o src/CMakeFiles/SSGC.dir/MCP23017.cpp.o -c /home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/src/MCP23017.cpp",
+  "file": "/home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/src/MCP23017.cpp"
+},
+{
+  "directory": "/home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/build",
   "command": "/usr/bin/g++ -DLV_CONF_INCLUDE_SIMPLE -DLV_LVGL_H_INCLUDE_SIMPLE -I/home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator -I/home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/lv_drivers -I/home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/src/include -isystem /home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/lvgl -g -std=gnu++14 -o src/CMakeFiles/SSGC.dir/Settings.cpp.o -c /home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/src/Settings.cpp",
   "file": "/home/toast/VSCODE/SeniorProjects/Smart_Symbolic_Graphing_Calculator/src/Settings.cpp"
 },

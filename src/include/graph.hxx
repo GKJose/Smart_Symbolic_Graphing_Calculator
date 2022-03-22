@@ -13,6 +13,7 @@
 #include <limits> 
 #include <vector>
 #include <chrono>
+#include <option.hxx>
 
 
 #if ENABLE_GIAC == 1
@@ -65,9 +66,22 @@ namespace graphing {
             return str.str();
         }
 
+        /// Unsafely truncate an lv_point_t from a Point.
         inline lv_point_t to_lv_point() const {
             lv_point_t point{(lv_coord_t)x.get_si(), (lv_coord_t)y.get_si()};
             return point;
+        }
+
+        /// Safely get lv_point_t from a Point.
+        inline Option<lv_point_t> maybe_lv_point() const {
+            using PointType = decltype(x);
+            constexpr auto lv_coord_t_max = std::numeric_limits<lv_coord_t>::max();
+            constexpr auto lv_coord_t_min = std::numeric_limits<lv_coord_t>::min();
+            const PointType pt_max(lv_coord_t_max);
+            const PointType pt_min(lv_coord_t_min);
+            if (x > pt_max || x < pt_min || y > pt_max || y < pt_min)
+                return OptNone;
+            return Option<lv_point_t>(lv_point_t{(lv_coord_t)x.get_si(), (lv_coord_t)y.get_si()});
         }
 
     };
@@ -75,7 +89,7 @@ namespace graphing {
     /// Used for cache when plotting functions.
     struct PlotDataBlock{
         using DataBlock = std::vector<Point>;
-        double x_min, x_max; // holds the min anx max x coords of the vector of points.
+        double x_min, x_max; // holds the min and max x coords of the vector of points.
         DataBlock data;
 
         PlotDataBlock() = default;
@@ -163,7 +177,7 @@ namespace graphing {
                 last_drew = false;
                 throw 21; // doesn't really mean much, it just has to throw.
             }
-            
+
             if (rtype == RecalculateLeft){
                 for (std::size_t i = 0; i < calculation.first.size(); i++){
                     cached_data.at(0).data.push_back(Point(std::move(calculation.first[i]), std::move(calculation.second[i])));
@@ -181,9 +195,17 @@ namespace graphing {
                     }
                 }
             }
+
+            // for (std::size_t i = 0; i < cached_data.size(); i++){
+            //     for (std::size_t j = 0; j < cached_data.at(i).data.size()-1; j++){
+            //         if (cached_data.at(i).data.at(j).x > cached_data.at(i).data.at(j).x){
+            //             std::cout << "huh\n";
+            //         }
+            //     }
+            // }
         }
 
-        private:
+        //private:
 
         /// Returns whether or not the plot needs to recalculate data depending on the range given in `data_range`
         PlotRecalculationType needs_recalculation(DataRange const& data_range, double scale){

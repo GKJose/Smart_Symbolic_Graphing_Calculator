@@ -1,4 +1,4 @@
-#include <MCP23017.h>
+#include <MCP23017.hxx>
 #if ENABLE_PI && !ENABLE_LINUX
 
  MCP23017::MCP23017(int bus, int address) {
