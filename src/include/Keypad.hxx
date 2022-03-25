@@ -3,7 +3,7 @@
 #include <calc_conf.h>
 
 #if ENABLE_PI && !ENABLE_LINUX
-#include <MCP23017.h>
+#include <MCP23017.hxx>
 
 class Keypad
 {

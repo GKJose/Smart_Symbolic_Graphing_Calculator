@@ -3,7 +3,7 @@
 #include <sstream>
 #include <unistd.h>
 #if ENABLE_PI
-#include <Keypad.h>
+#include <Keypad.hxx>
 #endif
 #if ENABLE_GIAC
 using namespace giac;
