@@ -5,7 +5,6 @@
 #include <lvgl/lvgl.h>
 #include <iostream>
 #include <sstream>
-#include <gmpxx.h>
 #include <string>
 #include <functional>
 #include <array>
@@ -33,12 +32,9 @@
 
 namespace graphing {
 
-    constexpr int MPF_PRECISION = 200;
-
-    #define CREATE_MPF(x) mpf_class(x, MPF_PRECISION)
     #define COLOR(r,g,b) (lv_color_t)LV_COLOR_MAKE(r,g,b)
     
-    using graph_function = std::function<mpf_class(mpf_class)>;
+    using graph_function = std::function<double(double)>;
     
     inline double calculate_hyp(double a, double b) {
         return sqrt(a*a + b*b);
@@ -47,28 +43,23 @@ namespace graphing {
     void create_graph(lv_obj_t *parent);
 
     struct Point{
-        mpf_class x, y;
+        double x, y;
 
         Point() = default;
 
-        Point(std::string const& x, std::string const& y){
-            this->x = mpf_class(x, MPF_PRECISION);
-            this->y = mpf_class(y, MPF_PRECISION);
-        }
-
-        Point(mpf_class x, mpf_class y):x(x),y(y){}
+        constexpr Point(double x, double y):x(x),y(y){}
 
         Point(lv_point_t point):x(point.x),y(point.y){}
 
         std::string to_string() const {
             std::stringstream str;
-            str << "(" << x.get_d() << " " << y.get_d() << ")";
+            str << "(" << x << " " << y << ")";
             return str.str();
         }
 
         /// Unsafely truncate an lv_point_t from a Point.
         inline lv_point_t to_lv_point() const {
-            lv_point_t point{(lv_coord_t)x.get_si(), (lv_coord_t)y.get_si()};
+            lv_point_t point{(lv_coord_t)x, (lv_coord_t)y};
             return point;
         }
 
@@ -81,7 +72,7 @@ namespace graphing {
             const PointType pt_min(lv_coord_t_min);
             if (x > pt_max || x < pt_min || y > pt_max || y < pt_min)
                 return OptNone;
-            return Option<lv_point_t>(lv_point_t{(lv_coord_t)x.get_si(), (lv_coord_t)y.get_si()});
+            return Option<lv_point_t>(lv_point_t{(lv_coord_t)x, (lv_coord_t)y});
         }
 
     };
@@ -143,10 +134,6 @@ namespace graphing {
                 sprintf(fcall_buf+name.size()+1, "%.7lf)", data);
                 giac::gen g(fcall_buf, &ctx);
                 return (T)std::stod(giac::gen2string(giac::eval(g, &ctx)));
-            } else if (std::is_same<T, mpf_class>::value){
-                gmp_sprintf(fcall_buf+name.size()+1, "%.*Ff)", input_digits, data);
-                giac::gen g(fcall_buf, &ctx);
-                return mpf_class(giac::gen2string(giac::eval(g, &ctx))).get_d();
             } else {
                 throw std::runtime_error("Unsupported type in giac_call.");
             }
@@ -188,24 +175,16 @@ namespace graphing {
                 }
             } else { // Recalculate All
                 cached_data.clear();
-                for (std::size_t i = 0; i < 6; i++){
-                    cached_data.push_back(PlotDataBlock(x_range.first+block_width*((double)i), x_range.first+block_width*((double)i+1), DataBlock()));
-                    for (std::size_t j = 0; cached_data.at(i).x_max > calculation.first[j]; j++){
+                for (std::size_t i = 0, j = 0; i < 6; i++){
+                    cached_data.push_back(PlotDataBlock(x_range.first+block_width*((double)i), x_range.first+block_width*((double)i+1.0), DataBlock()));
+                    for (;j < calculation.first.size() && cached_data.at(i).x_max > calculation.first[j]; j++){
                         cached_data.at(i).data.push_back(Point(std::move(calculation.first[j]), std::move(calculation.second[j])));
                     }
                 }
             }
-
-            // for (std::size_t i = 0; i < cached_data.size(); i++){
-            //     for (std::size_t j = 0; j < cached_data.at(i).data.size()-1; j++){
-            //         if (cached_data.at(i).data.at(j).x > cached_data.at(i).data.at(j).x){
-            //             std::cout << "huh\n";
-            //         }
-            //     }
-            // }
         }
 
-        //private:
+        private:
 
         /// Returns whether or not the plot needs to recalculate data depending on the range given in `data_range`
         PlotRecalculationType needs_recalculation(DataRange const& data_range, double scale){
@@ -240,7 +219,7 @@ namespace graphing {
                     cached_data.at(5) = PlotDataBlock(cached_data.at(4).x_max, cached_data.at(4).x_max + block_width, DataBlock());
                     return DataRange(cached_data.at(5).x_min, cached_data.at(5).x_max);
                 case RecalculateAll:
-                    return DataRange(center_x - block_width*3, center_x + block_width*3);
+                    return DataRange(center_x - block_width*3.0, center_x + block_width*3.0);
                 default:
                     return DataRange(0.0, 0.0); // Should never happen, but will return (0.0, 0.0) just in case.
             }
@@ -270,7 +249,7 @@ namespace graphing {
         #endif
         
         Point offset;
-        mpf_class scale;
+        double scale;
 
         lv_color_t buf[GRAPH_BUF_SIZE];
 
@@ -305,32 +284,32 @@ namespace graphing {
             return atan2(VIEWPORT_HEIGHT, VIEWPORT_WIDTH);
         }
 
-        inline mpf_class horizontal_scale() const {
+        inline double horizontal_scale() const {
             return scale*cos(hyp_angle());
         }
 
-        inline mpf_class vertical_scale() const {
+        inline double vertical_scale() const {
             return scale*sin(hyp_angle());
         }
 
-        inline mpf_class real_width() const {
+        inline double real_width() const {
             return VIEWPORT_HYP*horizontal_scale();
         }
 
-        inline mpf_class real_height() const {
+        inline double real_height() const {
             return VIEWPORT_HYP*vertical_scale();
         }
 
-        inline mpf_class get_scale() const {
+        inline double get_scale() const {
             return scale;
         }
 
-        inline void set_scale(mpf_class s){
+        inline void set_scale(double s){
             translate_center(Point{offset.x*(s - scale), offset.y*(s - scale)});
             scale = s;
         }
 
-        inline void scale_delta(mpf_class s){
+        inline void scale_delta(double s){
             set_scale(get_scale()+s);
         }
 
@@ -339,22 +318,22 @@ namespace graphing {
         }
 
         template<typename T>
-        inline mpf_class virtual_to_viewport_x(T const& x) const {
+        inline double virtual_to_viewport_x(T const& x) const {
             return (x+offset.x)/scale;
         }
 
         template<typename T>
-        inline mpf_class virtual_to_viewport_y(T const& y) const {
+        inline double virtual_to_viewport_y(T const& y) const {
             return (-y+offset.y)/scale + VIEWPORT_HEIGHT;
         }
         
         template<typename T>
-        inline mpf_class viewport_to_virtual_x(T const& x) const {
+        inline double viewport_to_virtual_x(T const& x) const {
             return x*scale - offset.x;
         }
 
         template<typename T>
-        inline mpf_class viewport_to_virtual_y(T const& y) const {
+        inline double viewport_to_virtual_y(T const& y) const {
             return -(y-VIEWPORT_HEIGHT)*scale + offset.y;
         }      
 
@@ -363,11 +342,11 @@ namespace graphing {
         Point top_left_real() const;
         Point top_right_real() const; 
 
-        Point virtual_to_viewport(mpf_class x, mpf_class y) const;
-        Point viewport_to_virtual(mpf_class x, mpf_class y) const;
+        Point virtual_to_viewport(double x, double y) const;
+        Point viewport_to_virtual(double x, double y) const;
 
-        std::pair<mpf_class, mpf_class> viewport_virtual_domain() const;
-        std::pair<mpf_class, mpf_class> viewport_virtual_range() const;
+        std::pair<double, double> viewport_virtual_domain() const;
+        std::pair<double, double> viewport_virtual_range() const;
 
         //void draw_function(graph_function);
         //void draw_function(Plot const&);

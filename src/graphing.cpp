@@ -4,8 +4,8 @@
 
 static lv_obj_t* function_text_area;
 
-static mpf_class plot_sin(mpf_class x) {
-    return mpf_class(sin(x.get_d()*0.1) * 50.0);
+static double plot_sin(double x) {
+    return double(sin(x*0.1) * 50.0);
 }
 
 static void zoom_btnmatrix_cb(lv_event_t* event){
@@ -147,7 +147,7 @@ void create_graph(lv_obj_t *parent){
     
     graph.set_function_button(function_button);
     graph.set_function_textarea(function_text_area);
-    graph.set_scale(mpf_class("0.5"));
+    graph.set_scale(0.5);
     graph.add_function("");
     
     // graph.add_function(plot_sin, LV_COLOR_MAKE16(255, 0, 0), "sin(x)");

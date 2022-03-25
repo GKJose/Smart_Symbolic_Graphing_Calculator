@@ -4,6 +4,7 @@
 #include <ticks.hxx>
 #include <random>
 #include <type_traits>
+#include <stack>
 
 // #if ENABLE_EXPERIMENTAL_PLOTTING
 // #include <armadillo>
@@ -254,7 +255,7 @@ namespace graphing {
 
     Graph::Graph(lv_obj_t* parent){
         offset = Point(VIEWPORT_WIDTH/2, -VIEWPORT_HEIGHT/2);
-        scale = CREATE_MPF("1");
+        scale = 1.0;
         VIEWPORT_HYP = calculate_hyp(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 
         canvas = lv_canvas_create(parent); 
@@ -291,24 +292,24 @@ namespace graphing {
         return Point{offset.x+real_width()/2, offset.y + real_height()/2};
     }
 
-    Point Graph::virtual_to_viewport(mpf_class x, mpf_class y) const {
+    Point Graph::virtual_to_viewport(double x, double y) const {
             return Point{virtual_to_viewport_x(x), virtual_to_viewport_y(y)};
     }
 
-    Point Graph::viewport_to_virtual(mpf_class x, mpf_class y) const {
+    Point Graph::viewport_to_virtual(double x, double y) const {
             return Point{viewport_to_virtual_x(x), viewport_to_virtual_y(y)};//-(y+offset.y)*scale};
     }
 
-    std::pair<mpf_class, mpf_class> Graph::viewport_virtual_domain() const {
+    std::pair<double, double> Graph::viewport_virtual_domain() const {
             auto left = viewport_to_virtual(0, 0).x;
             auto right = viewport_to_virtual(VIEWPORT_WIDTH, 0).x;
-            return std::pair<mpf_class, mpf_class>(left, right);
+            return std::pair<double, double>(left, right);
     }
 
-    std::pair<mpf_class, mpf_class> Graph::viewport_virtual_range() const {
+    std::pair<double, double> Graph::viewport_virtual_range() const {
         auto top = viewport_to_virtual(0, 0).y;
         auto bottom = viewport_to_virtual(0, VIEWPORT_HEIGHT).y;
-        return std::pair<mpf_class, mpf_class>(top, bottom);
+        return std::pair<double, double>(top, bottom);
     }
 
     #if ENABLE_GIAC
@@ -321,11 +322,6 @@ namespace graphing {
             sprintf(fcall_buf+func_name.size()+1, "%.7lf)", data);
             giac::gen g(fcall_buf, &ctx);
             return (T)std::stod(giac::gen2string(giac::eval(g, &ctx)));
-            
-        } else if (std::is_same<T, mpf_class>::value){
-            gmp_sprintf(fcall_buf+func_name.size()+1, "%.*Ff)", input_digits, data);
-            giac::gen g(fcall_buf, &ctx);
-            return mpf_class(giac::gen2string(giac::eval(g, &ctx))).get_d();
         } else {
             throw std::runtime_error("Unsupported type in giac_call.");
         }
@@ -335,8 +331,8 @@ namespace graphing {
     void Graph::draw_axes() {
             auto domain = viewport_virtual_domain();
             auto range = viewport_virtual_range();
-            auto left_point = virtual_to_viewport(domain.first, CREATE_MPF("0"));
-            auto right_point = virtual_to_viewport(domain.second, CREATE_MPF("0"));
+            auto left_point = virtual_to_viewport(domain.first, 0.0);
+            auto right_point = virtual_to_viewport(domain.second, 0.0);
             auto top_point = virtual_to_viewport(domain.first + offset.x, range.first);
             auto bottom_point = virtual_to_viewport(domain.first + offset.x, range.second);
 
@@ -357,8 +353,8 @@ namespace graphing {
         const lv_coord_t tick_text_pt = 10;
 
         // generate tick info based on the domain and range of the current viewport.
-        Ticks::TickInfo hinfo = Ticks::optimize_ticks<2, 5, 3>(domain.first.get_d(), domain.second.get_d());
-        Ticks::TickInfo vinfo = Ticks::optimize_ticks<2, 5, 3>(range.second.get_d(), range.first.get_d());
+        Ticks::TickInfo hinfo = Ticks::optimize_ticks<2, 5, 3>(domain.first, domain.second);
+        Ticks::TickInfo vinfo = Ticks::optimize_ticks<2, 5, 3>(range.second, range.first);
 
         // tick styling
         lv_draw_line_dsc_t ticks_style;
@@ -374,10 +370,10 @@ namespace graphing {
 
         static lv_point_t pts[2];
         for (auto& x : hinfo.ticks){
-            auto vpx = (lv_coord_t)virtual_to_viewport_x(mpf_class(x)).get_si();
-            auto vpy1 = (lv_coord_t)virtual_to_viewport_y(range.first).get_si();
-            auto vpy2 = (lv_coord_t)virtual_to_viewport_y(range.second).get_si();
-            auto y0 = (lv_coord_t)virtual_to_viewport_y(mpf_class(0)).get_si();
+            auto vpx = (lv_coord_t)virtual_to_viewport_x(x);
+            auto vpy1 = (lv_coord_t)virtual_to_viewport_y(range.first);
+            auto vpy2 = (lv_coord_t)virtual_to_viewport_y(range.second);
+            auto y0 = (lv_coord_t)virtual_to_viewport_y(0.0);
 
             if (y0 < (lv_coord_t)40 + tick_text_margin) { // upper bound for text
                 y0 = (lv_coord_t)40 + tick_text_margin;
@@ -393,10 +389,10 @@ namespace graphing {
 
         for (auto& y : vinfo.ticks){
             if (y != 0.0){
-                auto vpy = (lv_coord_t)virtual_to_viewport_y(mpf_class(y)).get_si();
-                auto vpx1 = (lv_coord_t)virtual_to_viewport_x(domain.first).get_si();
-                auto vpx2 = (lv_coord_t)virtual_to_viewport_x(domain.second).get_si();
-                auto x0 = (lv_coord_t)virtual_to_viewport_x(domain.first + offset.x).get_si();
+                auto vpy = (lv_coord_t)virtual_to_viewport_y(y);
+                auto vpx1 = (lv_coord_t)virtual_to_viewport_x(domain.first);
+                auto vpx2 = (lv_coord_t)virtual_to_viewport_x(domain.second);
+                auto x0 = (lv_coord_t)virtual_to_viewport_x(domain.first + offset.x);
                 
                 sprintf(text_buf, "%.2lf", y);
                 int len = strlen(text_buf);
@@ -425,312 +421,97 @@ namespace graphing {
             return;
         Plot& plot = plot_list[id];
         auto& func_name = plot.name;
-        const int number_of_points = 1000;
         auto domain = viewport_virtual_domain();
-        auto range = viewport_virtual_range();
+        
         try {
-            mpf_class center_x = (domain.first + domain.second)/2.0;
-            plot.maybe_calculate(std::pair<double, double>(domain.first.get_d(), domain.second.get_d()), this->scale.get_d(), center_x.get_d());
+            double center_x = (domain.first + domain.second)/2.0;
+            plot.maybe_calculate(std::pair<double, double>(domain.first, domain.second), this->scale, center_x);
         } catch(...) {
             return;
         }
-        auto within_viewport = [=](Option<lv_point_t> point){
-            if (point)
-                return point.value().x >= 0 && point.value().x < VIEWPORT_WIDTH && point.value().y >= 0 && point.value().y < VIEWPORT_HEIGHT;
+
+        auto segment_intersects_d = [](std::stack<Point>& stack, Point const& p0, Point const& p1, Point const& p2, Point const& p3){
+            double s1_x, s1_y, s2_x, s2_y;
+            // used because of float imprecision.
+            constexpr double seg_eps = std::numeric_limits<double>::epsilon()*10.0;
+            
+            s1_x = p1.x - p0.x;   s1_y = p1.y - p0.y;
+            s2_x = p3.x - p2.x;   s2_y = p3.y - p2.y;
+
+            double det, s, t;
+            det = (-s2_x * s1_y + s1_x * s2_y);
+            if (det < seg_eps && det > -seg_eps) return false; // prevent division by zero.
+            s = (-s1_y * (p0.x - p2.x) + s1_x * (p0.y - p2.y)) / det;
+            t = ( s2_x * (p0.y - p2.y) - s2_y * (p0.x - p2.x)) / det;
+
+            // intersection between segments.
+            if (s >= 0 && s <= 1 && t >= 0 && t <= 1){
+                stack.push(Point{p0.x + (t * s1_x), p0.y + (t * s1_y)});
+                return true;
+            }
             return false;
+        };
+
+        auto within_viewport_d = [=](Point point){
+            return point.x >= 0.0 && point.x < (double)VIEWPORT_WIDTH && point.y >= 0.0 && point.y < (double)VIEWPORT_HEIGHT;
         };
         
         Option<lv_point_t> last_point = OptNone;
+        Option<Point> last_point_f = OptNone;
         
+        constexpr Point top_left_corner{0.0, 0.0};
+        constexpr Point top_right_corner{(double)VIEWPORT_WIDTH, 0.0};
+        constexpr Point bottom_right_corner{(double)VIEWPORT_WIDTH, (double)VIEWPORT_HEIGHT};
+        constexpr Point bottom_left_corner{0.0, (double)VIEWPORT_HEIGHT};
+
+        constexpr double coord_max = (double)(std::numeric_limits<lv_coord_t>::max()-1);
+        const double mag_max = std::sqrt(coord_max*coord_max*2); // sqrt is not constexpr :(
+        
+        lv_draw_rect_dsc_t rect_style;
+        lv_draw_rect_dsc_init(&rect_style);
+        rect_style.bg_color = LV_COLOR_MAKE(0,0,255); // debug point color.
+        
+        std::stack<Point> ins_stack;
+        #define POINT_SEG last_point_f.value(), curr_point_f
+        #define SEG_INTERSECTS(corner1, corner2) segment_intersects_d(ins_stack, corner1, corner2, last_point_f.value(), curr_point_f)
         for (std::size_t i = 0; i < plot.cached_data.size(); i++) {
             auto& block = plot.cached_data[i];
             for(std::size_t j = 0; j < block.data.size(); j++) {
                 auto& point = block.data[j];
-                auto px_d = point.x.get_d();
-                auto py_d = point.y.get_d();
-                auto curr_point = virtual_to_viewport(point.x, point.y).maybe_lv_point();
-                if (!last_point.is_empty() && !curr_point.is_empty()){ // points must exist
-                    if (curr_point.value().x < last_point.value().x) continue; // Fixes weird bug.
-                    bool wv_last = within_viewport(last_point);
-                    bool wv_curr = within_viewport(curr_point);
-                    // xor for plotting lines with one point outside of the viewport.
-                    // and for plotting lines with both points inside the viewport.
-                    // any lines with both points outside the viewport are not plotted.
-                    if (wv_last ^ wv_curr || (wv_last && wv_curr)){ 
-                        lv_point_t line[2] = {last_point.value(), curr_point.value()};
+                auto curr_point_f = virtual_to_viewport(point.x, point.y);
+                if (!last_point_f.is_empty() && std::isfinite(curr_point_f.x) && std::isfinite(curr_point_f.y)){
+                    bool wv_curr = within_viewport_d(curr_point_f);
+                    bool wv_last = within_viewport_d(last_point_f.value());
+                    // Fast check and plot if at least one point of the segment is within the viewport.
+                    if (wv_last ^ wv_curr || (wv_last && wv_curr)){
+                        lv_point_t line[2] = {last_point_f.value().to_lv_point(), curr_point_f.to_lv_point()};
                         lv_canvas_draw_line(canvas, line, 2, &plot.style);
-                    } 
-                }
-                last_point = curr_point;
-            }
-        }
-        #if 0
-        #if ENABLE_EXPERIMENTAL_PLOTTING
-        // Sets the plots to be drawn by points, rather than lines.
-        #define ENABLE_DBGPLOT 0
-        #define ENABLE_DBGPRINT 0
-        #define GEN_RAND() ((double)(rand())/((double)RAND_MAX))
-        #if ENABLE_DBGPRINT
-        #define DBGPRINT(x) std::cout << #x": " << x << "\n"
-        #else 
-        #define DBGPRINT(x)
-        #endif
-        
-        
-        // Code from here is translated from Julia to a C++ equivalent. 
-        // https://github.com/JuliaPlots/PlotUtils.jl/blob/master/src/adapted_grid.jl
-
-        const std::size_t max_recursions = 7;
-        const double max_curvature = 0.05; // was 2
-
-        std::size_t n_points = 21;
-        std::size_t n_intervals = n_points / 2;
-        assert(n_points % 2 == 1); // assert that n_points is odd
-
-        std::vector<double> xs = algext::linspace(domain.first.get_d(), domain.second.get_d(), n_points);
-        // Move the first and last interior points a bit closer to the end points
-        xs[1] = xs[0] + (xs[1] - xs[0]) * 0.25;
-        xs[xs.size()-2] = xs[xs.size()-1] - (xs[xs.size()-1] - xs[xs.size()-2]) * 0.25;
-
-        // Wiggle interior points a bit to prevent aliasing and other degenerate cases
-        std::mt19937 rng(1337);
-        std::uniform_real_distribution<double> _rand(0.0, 1.0);
-        double rand_factor = 0.05;
-        
-        for (std::size_t i = 1; i < xs.size() - 2; i++){
-            xs[i] += rand_factor * 2 * (_rand(rng) - 0.5) * (xs[i+1] - xs[i-1]);
-        }
-
-        std::vector<std::size_t> n_tot_refinements(n_intervals, 0);
-        
-        // Evaluate the function on the whole interval
-        std::vector<double> fs(xs.size());
-        for (std::size_t i = 0; i < xs.size(); i++){
-            try {
-              fs[i] = giac_call(func_name, xs[i]);
-            } catch(...){
-                return;
-            }
-        }
-        
-        while (true){
-            std::vector<double> curvatures(n_intervals, 0.0);
-            std::vector<bool> active(n_intervals, false);
-            using dlimits = std::numeric_limits<double>;
-            double min_f = dlimits::infinity(), max_f = -dlimits::infinity();
-            for (std::size_t i = 0; i < fs.size(); i++){
-                if (!std::isnan(fs[i])){
-                    if (fs[i] < min_f)
-                        min_f = fs[i];
-                    else if (fs[i] > max_f)
-                        max_f = fs[i];
-                }
-            }
-            // If all values were NaN, then set min and max to 0.0
-            if (min_f == dlimits::infinity() && max_f == -dlimits::infinity()){
-                min_f = 0.0; max_f = 0.0;
-            }
-            double f_range = max_f - min_f;
-            // Guard against division by zero later
-            if (f_range == 0 || std::isnan(f_range))
-                f_range = 1.0;
-            // Skip first and last interval
-            for (ssize_t interval = 0; interval < n_intervals; interval++){
-                auto p = 2 * interval + 1; // NOTE: could cause problems, may have to subtract by 1
-                if (n_tot_refinements[interval] >= max_recursions){
-                    // Skip intervals that have been refined too much
-                    active[interval] = false;
-                } else if (std::isnan(fs[p-1]) || std::isnan(fs[p]) || std::isnan(fs[p+1])){
-                    // If not all values fs[p-1], fs[p], fs[p+1] are finite, then set active interval to true
-                    active[interval] = true;
-                } else {
-                    double tot_w = 0.0;
-                    // Do a small convolution
-                    using ca_pair = std::pair<ssize_t, double>;
-                    constexpr ca_pair _convarr[3] = {ca_pair(-1, 0.25), ca_pair(0, 0.5), ca_pair(1, 0.25)};
-                    for (struct {std::size_t i; ssize_t q; double w;} c = {0, _convarr[0].first, _convarr[0].second}; c.i < 3; c.i++){ //auto [q, w] : _convarr
-                        if (interval == 0 && c.q == -1)
-                            continue;
-                        if (interval == n_intervals-1 && c.q == 1)
-                            continue;
-                        tot_w += c.w;
-                        ssize_t i = p + c.q;
-                        // Estimate integral of second derivative over interval, use that as a refinement indicator
-                        // https://mathformeremortals.wordpress.com/2013/01/12/a-numerical-second-derivative-from-three-points/
-                        assert(i - 1 >= 0);
-                        assert(i < fs.size());
-                        assert(i + 1 < fs.size());
-                        assert(i < xs.size());
-                        assert(i + 1 < xs.size());
-
-                        curvatures[interval] += std::abs(
-                             2.0 *
-                            (
-                                (fs[i + 1] - fs[i]) /
-                                ((xs[i + 1] - xs[i]) * (xs[i + 1] - xs[i - 1])) -
-                                (fs[i] - fs[i - 1]) /
-                                ((xs[i] - xs[i - 1]) * (xs[i + 1] - xs[i - 1]))
-                            ) *
-                            std::pow(xs[i + 1] - xs[i - 1], 2.0)
-                        );
-                    }
-                    curvatures[interval] /= tot_w;
-                    // Only consider intervals with a high enough curvature
-                    active[interval] = curvatures[interval] > max_curvature;
-                }
-                
-            }
-            // Approximate end intervals as being the same curvature as those next to it.
-            // This avoids computing the function in the end points
-            curvatures[0] = curvatures[1];
-            active[0] = active[1];
-            curvatures[curvatures.size()-1] = curvatures[curvatures.size()-2];
-            active[active.size()-1] = active[active.size()-2];
-
-            bool will_break = true;
-            decltype(n_tot_refinements) _n_tot_refinements_active;
-            assert(active.size() == n_tot_refinements.size());
-            for (std::size_t i = 0; i < n_tot_refinements.size(); i++){
-                if (active[i] && n_tot_refinements[i] < max_recursions){
-                    will_break = false;
-                    break;
-                }
-            }
-            if (will_break)
-                break;
-
-            auto n_target_refinements = n_intervals / 2;
-            std::vector<std::size_t> interval_candidates;
-            assert(active.size() == n_intervals);
-            for (std::size_t i = 0; i < n_intervals; i++){
-                if (active[i])
-                    interval_candidates.push_back(i);
-            }
-            auto n_refinements = interval_candidates.size() < n_target_refinements ? 
-                interval_candidates.size() : n_target_refinements;
-            decltype(curvatures) _curvatures_active;
-            for (std::size_t i = 0; i < n_intervals; i++){
-                if (active[i])
-                    _curvatures_active.push_back(curvatures[i]);
-            }
-            std::vector<std::size_t> perm = algext::sortperm(_curvatures_active);
-            decltype(interval_candidates) intervals_to_refine;
-            for (std::size_t i = perm.size() - n_refinements; i < perm.size(); i++){
-                intervals_to_refine.push_back(interval_candidates[perm[i]]);
-            }
-            std::sort(intervals_to_refine.begin(), intervals_to_refine.end());
-            std::size_t n_intervals_to_refine = intervals_to_refine.size();
-            std::size_t n_new_points = 2 * intervals_to_refine.size();
-
-            // Do divison of the intervals
-            decltype(xs) new_xs(n_points + n_new_points, 0.0);
-            decltype(fs) new_fs(n_points + n_new_points, 0.0);
-            decltype(n_tot_refinements) new_tot_refinements(n_intervals + n_intervals_to_refine, 0);
-            std::size_t k = 0, kk = 0;
-            for (std::size_t i = 0; i < n_points; i++){
-                if (i % 2 == 1){ // check if odd, because 0-indexed, not 1-indexed.
-                    std::size_t interval = i / 2;
-                    // if interval in intervals_to_refine
-                    if (std::find(intervals_to_refine.begin(), intervals_to_refine.end(), interval)!=intervals_to_refine.end()){
-                        kk += 1;
-                        assert(interval < n_tot_refinements.size());
-                        assert(interval - 1 + kk >= 0);
-                        assert(interval - 1 + kk < new_tot_refinements.size());
-                        assert(interval + kk < new_tot_refinements.size());
-                        new_tot_refinements[interval - 1 + kk] = n_tot_refinements[interval] + 1;
-                        new_tot_refinements[interval + kk] = n_tot_refinements[interval] + 1;
-
-                        k += 1;
-                        assert(i - 1 + k >= 0);
-                        assert(i - 1 >= 0);
-                        assert(i - 1 + k < new_xs.size());
-                        assert(i + 1 + k < new_xs.size());
-                        assert(i < xs.size());
-                        
-                        new_xs[i - 1 + k] = (xs[i] + xs[i - 1]) / 2.0;
-                        new_fs[i - 1 + k] = giac_call(func_name, new_xs[i - 1 + k]);
-
-                        new_xs[i + k] = xs[i];
-                        new_fs[i + k] = fs[i];
-
-                        new_xs[i + 1 + k] = (xs[i + 1] + xs[i]) / 2.0;
-                        new_fs[i + 1 + k] = giac_call(func_name, new_xs[i + 1 + k]);
-                        k += 1;
+                        lv_canvas_draw_rect(canvas, line[0].x-2, line[0].y-2, 4, 4, &rect_style);
+                        lv_canvas_draw_rect(canvas, line[1].x-2, line[1].y-2, 4, 4, &rect_style);
                     } else {
-                        assert(interval + kk < new_tot_refinements.size());
-                        assert(interval < n_tot_refinements.size());
-                        assert(i + k < new_xs.size());
-                        assert(i < xs.size());
-                        new_tot_refinements[interval + kk] = n_tot_refinements[interval];
-                        new_xs[i + k] = xs[i];
-                        new_fs[i + k] = fs[i];
+                        bool intersects = false;
+                        intersects |= SEG_INTERSECTS(top_left_corner, top_right_corner);
+                        intersects |= SEG_INTERSECTS(top_right_corner, bottom_right_corner);
+                        intersects |= SEG_INTERSECTS(bottom_right_corner, bottom_left_corner);
+                        intersects |= SEG_INTERSECTS(bottom_left_corner, top_left_corner);
+                        // if it is in this function, then the points of the segment are outside of the viewport,
+                        if (ins_stack.size() == 2){ // unless in the corner, there should be two values.
+                            lv_point_t ins_1 = ins_stack.top().to_lv_point(); ins_stack.pop();
+                            lv_point_t ins_2 = ins_stack.top().to_lv_point(); ins_stack.pop();
+                            lv_point_t line[2] = {ins_1, ins_2};
+                            lv_canvas_draw_line(canvas, line, 2, &plot.style);
+                            lv_canvas_draw_rect(canvas, line[0].x-2, line[0].y-2, 4, 4, &rect_style);
+                            lv_canvas_draw_rect(canvas, line[1].x-2, line[1].y-2, 4, 4, &rect_style);
+                        } else if (ins_stack.size() == 1){
+                            ins_stack.pop();
+                        }
+                        
                     }
-                } else {
-                    assert(i < xs.size());
-                    assert(i + k < new_xs.size());
-                    new_xs[i + k] = xs[i];
-                    new_fs[i + k] = fs[i];
                 }
+                last_point_f = curr_point_f;
             }
+        }
 
-            xs = std::move(new_xs);
-            fs = std::move(new_fs);
-            n_tot_refinements = std::move(new_tot_refinements);
-            n_points += n_new_points;
-            n_intervals = n_points / 2;
-        }
-        // end point-calculating algorithm.
-        lv_draw_rect_dsc_t rect_style;
-        lv_draw_rect_dsc_init(&rect_style);
-        rect_style.bg_color = lv_color_make(0, 0, 255);
-        std::vector<lv_point_t> vals;
-        vals.reserve(xs.size());
-        vals.clear();
-        for (std::size_t i = 0; i < xs.size(); i++){
-            Point temp = virtual_to_viewport(mpf_class(xs[i]), mpf_class(fs[i]));
-            if (temp.x < -20 || temp.x > VIEWPORT_WIDTH + 20 || temp.y < -20 || temp.y > VIEWPORT_HEIGHT + 20){
-                if (vals.size() >= 2){
-                    #if ENABLE_DBGPLOT
-                    for (auto& v : vals){
-                        lv_canvas_draw_rect(canvas, v.x-2, v.y-2, 2, 2, &rect_style);
-                    }
-                    #else
-                    lv_canvas_draw_line(canvas, vals.data(), vals.size(), &plot.style);
-                    #endif
-                }
-                vals.clear();
-            }
-            vals.push_back(temp.to_lv_point());
-            //vals[i] = virtual_to_viewport(mpf_class(xs[i]), mpf_class(fs[i])).to_lv_point();
-        }
-        if (vals.size() > 0){
-            #if ENABLE_DBGPLOT
-            for (auto& v : vals){
-                lv_canvas_draw_rect(canvas, v.x-2, v.y-2, 2, 2, &rect_style);
-            }
-            #else
-            lv_canvas_draw_line(canvas, vals.data(), vals.size(), &plot.style);
-            #endif
-        }
-        #else // Brute Force Plotting (always plotting 2000 points).
-        
-        mpf_class step = (domain.second - domain.first)/number_of_points;
-        static lv_point_t vals[number_of_points];
-        mpf_class acc = domain.first;    
-        try {
-            for (int i = 0; i < number_of_points; i++){
-            mpf_class val = giac_call(acc);
-            Point vpoint = virtual_to_viewport(acc, val);
-            lv_point_t point = vpoint.to_lv_point();
-            vals[i] = point;
-            acc += step;
-            }
-        } catch (...){
-            return;
-        }
-        lv_canvas_draw_line(canvas, vals, number_of_points, &plot.style);
-        #endif // experimental plotting end
-        #endif 
         #endif // giac end
     }
 
@@ -784,7 +565,7 @@ namespace graphing {
         giac::gen g(name + "(x):=" + std::move(func), &ctx);
         giac::eval(g, &ctx); 
         auto domain = viewport_virtual_domain();
-        auto virtual_width = std::abs(domain.second.get_d() - domain.first.get_d());
+        auto virtual_width = std::abs(domain.second - domain.first);
         Plot plot(std::move(name), std::move(func), lv_color_black(), virtual_width, ctx);
         #else 
         Plot plot(std::move(name), std::move(func), lv_color_black());
