@@ -12,7 +12,7 @@
 #include <iostream>
 
 #if ENABLE_PI == 1
-#include <Keypad.h>
+#include <Keypad.hxx>
 #endif
 #include <lvgl/lvgl.h>
 #include <string>
