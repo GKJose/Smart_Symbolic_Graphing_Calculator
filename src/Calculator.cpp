@@ -25,6 +25,7 @@ int total;
 
 static lv_obj_t* kb;
 static lv_obj_t* toggle_kb_btn;
+static lv_obj_t* clear_scr_btn;
 static lv_obj_t* tabview;
 static lv_obj_t* functionTextArea;
 class Solve
@@ -308,6 +309,16 @@ void Calculator::main_screen_driver(lv_obj_t* parent)
     lv_obj_align_to(kb_img, NULL, LV_ALIGN_CENTER, 0, 0);
     lv_obj_add_event_cb(toggle_kb_btn, Calculator::toggle_kb_event_handler, LV_EVENT_ALL, toggle_kb_btn);
 
+	/*Create a button to clear the screen manually*/
+    clear_scr_btn = lv_btn_create(lv_scr_act());
+    lv_obj_align(clear_scr_btn, LV_ALIGN_TOP_LEFT, 0, 0);
+    lv_obj_set_style_bg_color(clear_scr_btn, lv_palette_darken(LV_PALETTE_GREY, 3), 0);
+    lv_obj_set_size(clear_scr_btn, 18, 18);
+    lv_obj_t* clear_scr_img = lv_img_create(clear_scr_btn);
+    lv_img_set_src(clear_scr_img, LV_SYMBOL_CLOSE);
+    lv_obj_align_to(clear_scr_img, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_add_event_cb(clear_scr_btn, Calculator::clear_scr_btn_event_handler, LV_EVENT_ALL, parent);
+
     /*Put kb in view*/
     lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, -10);
     lv_obj_scroll_by(parent, 0, 25, LV_ANIM_OFF);
@@ -329,10 +340,7 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
     {
         if(total > 100)
         {
-            for(uint32_t i = 0; i < lv_obj_get_child_cnt(parent); i++)
-            {
-                lv_obj_clean(parent);
-            }
+        	lv_obj_clean(parent);
             Calculator::main_screen_driver(parent);
             return;
         }
@@ -377,6 +385,19 @@ static void Calculator::kb_event_cb(lv_event_t* e)
         lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);
     }
 
+}
+
+static void Calculator::clear_scr_btn_event_handler(lv_event_t* e)
+{
+	lv_event_code_t code = lv_event_get_code(e);
+	lv_obj_t* parent = static_cast<lv_obj_t*>(lv_event_get_user_data(e));
+	if (code == LV_EVENT_CLICKED)
+	{
+		lv_obj_clean(parent);
+        Calculator::main_screen_driver(parent);
+        return;
+	}
+	lv_obj_move_foreground(toggle_kb_btn);
 }
 
 

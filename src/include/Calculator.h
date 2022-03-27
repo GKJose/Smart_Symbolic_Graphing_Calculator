@@ -36,6 +36,7 @@ namespace Calculator{
 	static void toggle_kb_event_handler(lv_event_t* e);
 	void main_screen_driver(lv_obj_t* parent);
 	static void active_ta_event_handler(lv_event_t* e);
+	static void clear_scr_btn_event_handler(lv_event_t* e);
 
 	
 }
