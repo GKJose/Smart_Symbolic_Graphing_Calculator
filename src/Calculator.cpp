@@ -290,9 +290,10 @@ void Calculator::main_screen_driver(lv_obj_t* parent)
     total++;
     lv_textarea_set_one_line(active_ta, true);
     lv_obj_set_width(active_ta, 320);
-    lv_obj_align(active_ta, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_obj_align(active_ta, LV_ALIGN_BOTTOM_MID, 0, -10);
     lv_obj_add_event_cb(active_ta, active_ta_event_handler, LV_EVENT_ALL, &solution);
     lv_obj_add_state(active_ta, LV_STATE_FOCUSED);
+
     lv_keyboard_set_textarea(kb, active_ta); /*Focus it on one of the text areas to start*/
 
     /*Create a button to toggle the keyboard*/
@@ -308,7 +309,7 @@ void Calculator::main_screen_driver(lv_obj_t* parent)
     lv_obj_add_event_cb(toggle_kb_btn, Calculator::toggle_kb_event_handler, LV_EVENT_ALL, toggle_kb_btn);
 
     /*Put kb in view*/
-    lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, -10);
     lv_obj_scroll_by(parent, 0, 25, LV_ANIM_OFF);
 
 }
@@ -355,7 +356,12 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
 
         /*Put kb in view*/
         lv_obj_align_to(kb, parent, LV_ALIGN_BOTTOM_MID, 0, 0);
-        lv_obj_scroll_by(parent, 0, 25, LV_ANIM_OFF);
+		lv_obj_scroll_to_view(kb, LV_ANIM_OFF);
+		if(!lv_obj_has_flag(kb, LV_OBJ_FLAG_HIDDEN))
+		{
+			lv_obj_set_y(ta, lv_obj_get_y_aligned(ta) - 80);
+		}
+        lv_obj_scroll_by(parent, 0, 15, LV_ANIM_OFF);
     }
 
 }
