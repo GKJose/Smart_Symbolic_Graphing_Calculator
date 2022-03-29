@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "A Connection revokation from either a client or an administrator. Does not require an aknowledgement.",
+    "properties": {
+        "ssgcType": {
+            "description": "SSGC Revokation type",
+            "type": "string",
+            "enum": ["clientRevoke", "adminRevoke"]
+        },
+        "revokeReason": {
+            "description": "Reason why we are revoking a connection between a client and an administrator",
+            "type": "string",
+            "enum": ["adminSessionTermination", "adminClientRemoval", "clientDisconnection"]
+        },
+        "clientIP": {
+            "description": "Internal IP address of a client (calculator)",
+            "type": "string",
+            "format": "ipv4"
+        },
+        "clientName": {
+            "description": "Name given by a client (calculator)",
+            "type": "string"
+        }
+    },
+    "type": "object",
+    "required": ["ssgcType", "revokeReason"]
+    }

@@ -2,9 +2,10 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "A Connection Request reply from an administrator that contains all the permissions that the admin will require of the client",
     "properties": {
-        "requestType": {
+        "ssgcType": {
             "description": "SSGC Request type",
-            "type": { "enum": ["connectionPermissionReply", "connectionReject"] }
+            "type": "string",
+            "enum": ["connectionPermissionReply", "connectionReject"]
         },
         "permissions": {
             "description": "Permissions required by the administrator",
@@ -73,7 +74,8 @@
                     "description": "Contains an array history tracking information types that will be recorded",
                     "type": "array",
                     "items": {
-                        "type": { "enum": ["blacklistedFunctionCall", "whitelistedFunctionCall", "graphingExpressionEntry", "buttonPresses", "journalctl"] },
+                        "type": "string",
+                        "enum": ["blacklistedFunctionCall", "whitelistedFunctionCall", "graphingExpressionEntry", "buttonPresses", "journalctl"],
                         "uniqueItems": true,
                         "minItems": 1
                     }
@@ -111,5 +113,5 @@
         }
     },
     "type": "object",
-    "required": ["requestType"]
+    "required": ["ssgcType"]
 }
