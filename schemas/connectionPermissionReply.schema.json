@@ -22,5 +22,5 @@
         }
     },
     "type": "object",
-    "required": ["ssgcType"]
+    "required": ["ssgcType", "clientIP", "clientName"]
 }
