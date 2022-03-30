@@ -36,7 +36,7 @@
 
 #endif
 
-#if ENABLE_LINUX && ENABLE_PI == 0
+#if ENABLE_LINUX
 #include <SDL2/SDL.h>
 #include "lv_drivers/display/monitor.h"
 #include "lv_drivers/indev/mouse.h"
@@ -44,24 +44,25 @@
 #include "lv_drivers/indev/mousewheel.h"
 #endif
 
-#if ENABLE_PI 
-#include <wiringPi.h>
+#if ENABLE_LINUX_FRAMEBUFFER
 #include "lv_drivers/display/fbdev.h"
 #include "lv_drivers/indev/evdev.h"
-#define PI_EXEC(x) x
-#else 
-#define PI_EXEC(x)
+#endif
+
+#if ENABLE_MCP_KEYPAD
+#include <wiringPi.h>
 #endif
 
 #define DISP_BUF_SIZE (64 * 320)
 
 static void calc_init(void);
 
-
 int main(void)
 {
     calc_init();
-    PI_EXEC(wiringPiSetup());
+    #if ENABLE_MCP_KEYPAD
+    wiringPiSetup();
+    #endif
     Calculator::createDemo();
     lv_timer_create(Calculator::update,350,NULL);
     /*Handle LitlevGL tasks (tickless mode)*/
@@ -89,16 +90,16 @@ static void calc_init(void){
     lv_win32_init(GetModuleHandleW(NULL), SW_SHOW, 320, 240, LoadIconW(GetModuleHandleW(NULL), MAKEINTRESOURCE(IDI_LVGL)));
     lv_win32_add_all_input_devices_to_group(NULL);
     #else
-    #if ENABLE_LINUX == 1 && ENABLE_PI == 0
+    #if ENABLE_LINUX
     monitor_init();
     SDL_CreateThread((SDL_ThreadFunction)custom_tick_get, "tick", nullptr);
-    #elif ENABLE_PI == 1 
+    #elif ENABLE_LINUX_FRAMEBUFFER 
     /*Linux frame buffer device init*/
     fbdev_init();
     #endif
 
     static lv_disp_draw_buf_t disp_buf;
-    #if ENABLE_PI
+    #if ENABLE_LINUX_FRAMEBUFFER
     static lv_color_t buf[DISP_BUF_SIZE];
 	static lv_color_t buf2[DISP_BUF_SIZE];
     lv_disp_draw_buf_init(&disp_buf, buf, &buf2, DISP_BUF_SIZE);
@@ -113,12 +114,12 @@ static void calc_init(void){
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
     disp_drv.draw_buf   = &disp_buf;
-    #if ENABLE_LINUX == 1 && ENABLE_PI == 0
+    #if ENABLE_LINUX
     disp_drv.flush_cb   = monitor_flush;
     disp_drv.hor_res    = MONITOR_HOR_RES;
     disp_drv.ver_res    = MONITOR_VER_RES;
     disp_drv.antialiasing = 1;
-    #elif ENABLE_PI == 1
+    #elif ENABLE_LINUX_FRAMEBUFFER
     disp_drv.flush_cb   = fbdev_flush;
     disp_drv.hor_res    = 320;
     disp_drv.ver_res    = 240;
@@ -126,7 +127,7 @@ static void calc_init(void){
     
     lv_disp_drv_register(&disp_drv);
 
-    #if ENABLE_LINUX == 1 && ENABLE_PI == 0
+    #if ENABLE_LINUX
     lv_group_t* g = lv_group_create();
     lv_group_set_default(g);
 
@@ -155,7 +156,7 @@ static void calc_init(void){
 
     lv_indev_t * enc_indev = lv_indev_drv_register(&indev_drv_3);
     lv_indev_set_group(enc_indev, g);
-    #elif ENABLE_PI == 1
+    #elif ENABLE_LINUX_FRAMEBUFFER
     evdev_init();
     static lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);

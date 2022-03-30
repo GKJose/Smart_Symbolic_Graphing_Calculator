@@ -34,6 +34,55 @@ namespace graphing {
         last_time = lv_tick_get();
     }
 
+    static void zoom_btnmatrix_cb(lv_event_t* event){
+        uint32_t id = lv_btnmatrix_get_selected_btn(event->target);
+        auto graph = static_cast<graphing::Graph*>(event->user_data);
+        if (id == 0) {
+            graph->set_scale(graph->get_scale()*0.9);
+        } else {
+            graph->set_scale(graph->get_scale()*1.1);
+        }
+        graph->update();
+    }
+
+    static void textarea_cb(lv_event_t* event){
+        auto graph = static_cast<graphing::Graph*>(event->user_data);
+        auto func_str = graph->get_function_button_selected_str();
+        auto func_id = graph->get_function_button_selected_id();
+        auto func_expression = std::string(lv_textarea_get_text(event->target));
+        auto plot = graph->get_plot(func_id);
+        std::cout << "TEXTAREA_CB: " << func_str << " " << func_expression << " " << func_id << "\n";
+        graph->update_function(func_str + "(x):=" + func_expression);
+        plot->name = std::move(func_str);
+        plot->change_expression(std::move(func_expression));
+        graph->update();  
+    }
+
+    static void dropdown_button_cb(lv_event_t* event){
+        char buf[10];
+        std::cout << "DROPDOWN_BUTTON_CB\n";
+        int id = lv_dropdown_get_selected(event->target);
+        lv_dropdown_get_selected_str(event->target, buf, sizeof(buf)); // C function, so no std::string
+        auto graph = static_cast<graphing::Graph*>(event->user_data);
+
+        // Check if user selected to add a function to the graph.
+        if (buf[0]=='+'){
+            graph->add_function("");
+            lv_dropdown_set_selected(event->target, id);
+            graph->set_function_textarea_str("");
+            return;
+        }
+        graph->switch_to_bold(id);
+        // Finds user-selected plot.
+        graphing::Plot* plot = graph->get_plot(id);
+        if (plot == nullptr)
+            graph->set_function_textarea_str("NULL");
+        else {
+            graph->set_function_textarea_str(plot->function_expression);
+        } 
+        graph->update();
+    }
+
     std::pair<std::vector<double>, std::vector<double>> Plot::calculate(DataRange const& data_range){
         #if ENABLE_GIAC
             // Sets the plots to be drawn by points, rather than lines.
@@ -254,24 +303,105 @@ namespace graphing {
     }
 
     Graph::Graph(lv_obj_t* parent){
+        static lv_style_t zoom_style_bg;
+        static lv_style_t zoom_style;
+        static lv_style_t textarea_style;
+        static lv_style_t function_button_style;
+
         offset = Point(VIEWPORT_WIDTH/2, -VIEWPORT_HEIGHT/2);
         scale = 1.0;
         VIEWPORT_HYP = calculate_hyp(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 
+        // canvas initialization
         canvas = lv_canvas_create(parent); 
         lv_canvas_set_buffer(canvas, buf, VIEWPORT_WIDTH, VIEWPORT_HEIGHT, LV_IMG_CF_TRUE_COLOR);
         lv_obj_align(canvas, LV_ALIGN_CENTER, 0, 0);
         lv_canvas_fill_bg(canvas, LV_COLOR_MAKE(255, 255, 255), LV_OPA_COVER);
 
+        // zoom buttons backround initialization
+        lv_style_init(&zoom_style_bg);
+        lv_style_set_pad_all(&zoom_style_bg, 10);
+        lv_style_set_border_width(&zoom_style_bg, 0);
+        lv_style_set_bg_opa(&zoom_style_bg, LV_OPA_0);
+
+        // zoom buttons foreground initialization
+        lv_style_init(&zoom_style);
+        lv_style_set_border_opa(&zoom_style, LV_OPA_50);
+        lv_style_set_shadow_color(&zoom_style, lv_color_black());
+        lv_style_set_shadow_spread(&zoom_style, 1);
+        lv_style_set_shadow_width(&zoom_style, 20);
+        lv_style_set_shadow_ofs_y(&zoom_style, 0);
+        lv_style_set_shadow_opa(&zoom_style, LV_OPA_70);
+        lv_style_set_text_font(&zoom_style, &lv_font_dejavu_16_persian_hebrew);
+
+        // zoom button initialization
+        zoom_buttons = lv_btnmatrix_create(canvas);
+        lv_btnmatrix_set_map(zoom_buttons, function_button_map);
+        lv_btnmatrix_set_btn_ctrl_all(zoom_buttons, LV_BTNMATRIX_CTRL_CLICK_TRIG);
+        lv_obj_add_style(zoom_buttons, &zoom_style_bg, 0);
+        lv_obj_add_style(zoom_buttons, &zoom_style, LV_PART_ITEMS);
+        lv_obj_set_size(zoom_buttons, 80, 50);
+        lv_obj_align(zoom_buttons, LV_ALIGN_TOP_RIGHT, 0, 0);
+        lv_obj_add_event_cb(zoom_buttons, zoom_btnmatrix_cb, LV_EVENT_VALUE_CHANGED, this);
+
+        // function_text_area style initialization
+        lv_style_init(&textarea_style);
+        lv_style_set_text_font(&textarea_style, &lv_font_montserrat_12_subpx);
+        lv_style_set_border_width(&textarea_style, 1);
+        lv_style_set_border_opa(&textarea_style, LV_OPA_50);
+        lv_style_set_shadow_color(&textarea_style, lv_color_black());
+        lv_style_set_shadow_spread(&textarea_style, 1);
+        lv_style_set_shadow_width(&textarea_style, 20);
+        lv_style_set_shadow_ofs_y(&textarea_style, 0);
+        lv_style_set_shadow_opa(&textarea_style, LV_OPA_70);
+        lv_style_set_pad_top(&textarea_style, 5);
+        lv_style_set_pad_right(&textarea_style, 40);
+        lv_style_set_text_align(&textarea_style, LV_ALIGN_LEFT_MID);
+
+
+        // function_textarea initialization
+        function_text_area = lv_textarea_create(canvas);
+        lv_textarea_set_one_line(function_text_area, true);
+        lv_obj_add_style(function_text_area, &textarea_style, 0);
+        lv_obj_set_size(function_text_area, 180, 30);
+        lv_obj_align(function_text_area, LV_ALIGN_TOP_MID, -20, 10);
+        lv_obj_add_event_cb(function_text_area, textarea_cb, LV_EVENT_VALUE_CHANGED, this);
+
+        // function_button style initialization
+        lv_style_init(&function_button_style);
+        lv_style_set_text_font(&function_button_style, &lv_font_montserrat_12_subpx);
+        lv_style_set_text_align(&function_button_style, LV_ALIGN_CENTER);
+        lv_style_set_pad_all(&function_button_style, 6);
+
+        // function button initialization
+        function_button = lv_dropdown_create(canvas);
+        lv_dropdown_set_symbol(function_button , NULL);
+        lv_obj_add_style(function_button, &function_button_style, 0);
+        lv_obj_add_style(function_button, &function_button_style, LV_PART_ITEMS);
+        lv_obj_set_size(function_button, 40, 30);
+        lv_obj_align(function_button, LV_ALIGN_TOP_MID, 50, 10);
+        lv_obj_add_event_cb(function_button, dropdown_button_cb, LV_EVENT_VALUE_CHANGED, this);
+
+        // options button initialization
+        options_button = lv_dropdown_create(canvas);
+        lv_dropdown_set_options_static(options_button, options_button_text.c_str());
+        lv_obj_add_style(options_button, &function_button_style, 0);
+        lv_obj_add_style(options_button, &function_button_style, LV_PART_ITEMS);
+        lv_obj_set_size(options_button, 40, 30);
+        lv_obj_align(options_button, LV_ALIGN_TOP_LEFT, 5, 10);
+
+        // axes style initialization
         lv_draw_line_dsc_init(&axes_style);
         axes_style.color = LV_COLOR_MAKE(0, 0, 0);
 
+        // canvas initialization
         lv_obj_add_flag(canvas, LV_OBJ_FLAG_CLICKABLE); // Allows for the canvas to be clickable and pressable
         lv_obj_add_event_cb(canvas, graph_event_cb, LV_EVENT_PRESSING, this);
+
         #if ENABLE_GIAC == 1
         giac::approx_mode(true, &ctx); // Change graphing to calculate approximate values.
         #endif
-
+        add_function(""); // Add function f1 with no definition to the graph.
         draw_axes();
     }
 
@@ -467,9 +597,17 @@ namespace graphing {
         constexpr double coord_max = (double)(std::numeric_limits<lv_coord_t>::max()-1);
         const double mag_max = std::sqrt(coord_max*coord_max*2); // sqrt is not constexpr :(
         
-        lv_draw_rect_dsc_t rect_style;
-        lv_draw_rect_dsc_init(&rect_style);
-        rect_style.bg_color = LV_COLOR_MAKE(0,0,255); // debug point color.
+        //lv_draw_rect_dsc_t rect_style;
+        //lv_draw_rect_dsc_init(&rect_style);
+        //rect_style.bg_color = LV_COLOR_MAKE(0,0,255); // debug point color.
+
+        // Plotting algorithm:
+        // 2 Steps:
+        // -    Check to see if at least one point of the line segment is within the bounds of the viewport.
+        //          If it is, then convert it to lv_point_t and plot it onto the screen.
+        // -    If both points are outside of the viewport, check and see if it intersects the viewport.
+        //          If it does, then plot the subsection of the segment that is within the bounds of the viewport.
+        //          If it does not, then do not plot the line segment.
         
         std::stack<Point> ins_stack;
         #define POINT_SEG last_point_f.value(), curr_point_f
@@ -486,8 +624,8 @@ namespace graphing {
                     if (wv_last ^ wv_curr || (wv_last && wv_curr)){
                         lv_point_t line[2] = {last_point_f.value().to_lv_point(), curr_point_f.to_lv_point()};
                         lv_canvas_draw_line(canvas, line, 2, &plot.style);
-                        lv_canvas_draw_rect(canvas, line[0].x-2, line[0].y-2, 4, 4, &rect_style);
-                        lv_canvas_draw_rect(canvas, line[1].x-2, line[1].y-2, 4, 4, &rect_style);
+                        //lv_canvas_draw_rect(canvas, line[0].x-2, line[0].y-2, 4, 4, &rect_style);
+                        //lv_canvas_draw_rect(canvas, line[1].x-2, line[1].y-2, 4, 4, &rect_style);
                     } else {
                         bool intersects = false;
                         intersects |= SEG_INTERSECTS(top_left_corner, top_right_corner);
@@ -500,8 +638,8 @@ namespace graphing {
                             lv_point_t ins_2 = ins_stack.top().to_lv_point(); ins_stack.pop();
                             lv_point_t line[2] = {ins_1, ins_2};
                             lv_canvas_draw_line(canvas, line, 2, &plot.style);
-                            lv_canvas_draw_rect(canvas, line[0].x-2, line[0].y-2, 4, 4, &rect_style);
-                            lv_canvas_draw_rect(canvas, line[1].x-2, line[1].y-2, 4, 4, &rect_style);
+                            //lv_canvas_draw_rect(canvas, line[0].x-2, line[0].y-2, 4, 4, &rect_style);
+                            //lv_canvas_draw_rect(canvas, line[1].x-2, line[1].y-2, 4, 4, &rect_style);
                         } else if (ins_stack.size() == 1){
                             ins_stack.pop();
                         }
@@ -566,11 +704,10 @@ namespace graphing {
         giac::eval(g, &ctx); 
         auto domain = viewport_virtual_domain();
         auto virtual_width = std::abs(domain.second - domain.first);
-        Plot plot(std::move(name), std::move(func), lv_color_black(), virtual_width, ctx);
+        Plot plot(std::move(name), std::move(func), get_next_color(), virtual_width, ctx);
         #else 
         Plot plot(std::move(name), std::move(func), lv_color_black());
         #endif
-        plot.style.color = get_next_color();
         plot_list.push_back(plot);
         switch_to_bold(plot_list.size()-1); // make this plot bold (as it is the one being added)
         if (function_button)

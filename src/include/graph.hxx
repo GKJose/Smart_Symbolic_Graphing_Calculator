@@ -252,8 +252,10 @@ namespace graphing {
         double scale;
 
         lv_color_t buf[GRAPH_BUF_SIZE];
-
-        lv_obj_t* canvas, *function_button, *function_text_area;
+        
+        const char* function_button_map[3] = {"+", "-", ""}; // text used for the function buttons.
+        const std::string options_button_text = "this\nis\na\ntest";
+        lv_obj_t* canvas, *function_button, *function_text_area, *zoom_buttons, *options_button;
         lv_draw_line_dsc_t axes_style;
         
         std::vector<Plot> plot_list;

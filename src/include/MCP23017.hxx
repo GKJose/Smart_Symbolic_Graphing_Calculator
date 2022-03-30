@@ -2,7 +2,7 @@
 #define _MCP23017_H
 
 #include <calc_conf.h>
-#if ENABLE_PI && !ENABLE_LINUX
+#if ENABLE_MCP_KEYPAD
 #include <cstddef>
 #include <cstdint>
 
