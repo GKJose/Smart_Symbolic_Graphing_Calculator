@@ -273,7 +273,7 @@ void Calculator::update(lv_timer_t * timer){
 	}
 	#endif
 }
-void Calculator::main_screen_driver(lv_obj_t* parent)
+void Calculator::main_screen_driver(lv_obj_t* parent, bool first_screen)
 {
     static Solve solution;
     total = 0;
@@ -297,27 +297,32 @@ void Calculator::main_screen_driver(lv_obj_t* parent)
 
     lv_keyboard_set_textarea(kb, active_ta); /*Focus it on one of the text areas to start*/
 
-    /*Create a button to toggle the keyboard*/
-    toggle_kb_btn = lv_btn_create(lv_scr_act());
-    lv_obj_add_flag(toggle_kb_btn,LV_OBJ_FLAG_CHECKABLE);
-    lv_obj_align(toggle_kb_btn, LV_ALIGN_TOP_RIGHT, 0, 0);
-    lv_color_t grey = lv_palette_main(LV_PALETTE_GREY);
-    lv_obj_set_style_bg_color(toggle_kb_btn, lv_palette_darken(LV_PALETTE_GREY, 3), 0);
-    lv_obj_set_size(toggle_kb_btn, 18, 18);
-    lv_obj_t* kb_img = lv_img_create(toggle_kb_btn);
-    lv_img_set_src(kb_img, LV_SYMBOL_KEYBOARD);
-    lv_obj_align_to(kb_img, NULL, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_add_event_cb(toggle_kb_btn, Calculator::toggle_kb_event_handler, LV_EVENT_ALL, toggle_kb_btn);
+	if(first_screen)
+	{
+		/*Create a button to toggle the keyboard*/
+		toggle_kb_btn = lv_btn_create(lv_scr_act());
+		lv_obj_add_flag(toggle_kb_btn,LV_OBJ_FLAG_CHECKABLE);
+		lv_obj_align(toggle_kb_btn, LV_ALIGN_TOP_RIGHT, 0, 0);
+		lv_color_t grey = lv_palette_main(LV_PALETTE_GREY);
+		lv_obj_set_style_bg_color(toggle_kb_btn, lv_palette_darken(LV_PALETTE_GREY, 3), 0);
+		lv_obj_set_size(toggle_kb_btn, 18, 18);
+		lv_obj_t* kb_img = lv_img_create(toggle_kb_btn);
+		lv_img_set_src(kb_img, LV_SYMBOL_KEYBOARD);
+		lv_obj_align_to(kb_img, NULL, LV_ALIGN_CENTER, 0, 0);
+		lv_obj_add_event_cb(toggle_kb_btn, Calculator::toggle_kb_event_handler, LV_EVENT_ALL, toggle_kb_btn);
+		/**/
 
-	/*Create a button to clear the screen manually*/
-    clear_scr_btn = lv_btn_create(lv_scr_act());
-    lv_obj_align(clear_scr_btn, LV_ALIGN_TOP_LEFT, 0, 0);
-    lv_obj_set_style_bg_color(clear_scr_btn, lv_palette_darken(LV_PALETTE_GREY, 3), 0);
-    lv_obj_set_size(clear_scr_btn, 18, 18);
-    lv_obj_t* clear_scr_img = lv_img_create(clear_scr_btn);
-    lv_img_set_src(clear_scr_img, LV_SYMBOL_CLOSE);
-    lv_obj_align_to(clear_scr_img, NULL, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_add_event_cb(clear_scr_btn, Calculator::clear_scr_btn_event_handler, LV_EVENT_ALL, parent);
+		/*Create a button to clear the screen manually*/
+		clear_scr_btn = lv_btn_create(lv_scr_act());
+		lv_obj_align(clear_scr_btn, LV_ALIGN_TOP_LEFT, 0, 0);
+		lv_obj_set_style_bg_color(clear_scr_btn, lv_palette_darken(LV_PALETTE_GREY, 3), 0);
+		lv_obj_set_size(clear_scr_btn, 18, 18);
+		lv_obj_t* clear_scr_img = lv_img_create(clear_scr_btn);
+		lv_img_set_src(clear_scr_img, LV_SYMBOL_CLOSE);
+		lv_obj_align_to(clear_scr_img, NULL, LV_ALIGN_CENTER, 0, 0);
+		lv_obj_add_event_cb(clear_scr_btn, Calculator::clear_scr_btn_event_handler, LV_EVENT_ALL, parent);
+		/**/
+	}
 
     /*Put kb in view*/
     lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, -10);
@@ -340,10 +345,10 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
     }
     else if (code == LV_EVENT_READY)
     {
-        if(total > 100)
+        if(total > 60)
         {
         	lv_obj_clean(parent);
-            Calculator::main_screen_driver(parent);
+            Calculator::main_screen_driver(parent, false);
             return;
         }
         LV_LOG_USER("Ready, current text: %s", lv_textarea_get_text(ta));
@@ -409,7 +414,7 @@ static void Calculator::clear_scr_btn_event_handler(lv_event_t* e)
 	if (code == LV_EVENT_CLICKED)
 	{
 		lv_obj_clean(parent);
-        Calculator::main_screen_driver(parent);
+        Calculator::main_screen_driver(parent, false);
         return;
 	}
 	lv_obj_move_foreground(toggle_kb_btn);
