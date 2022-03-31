@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "A data payload using base64 encoding from either a client or an administrator",
+    "properties": {
+        "ssgcType": {
+            "description": "SSGC Data Type",
+            "type": "string",
+            "enum": ["clientData", "adminData"]
+        },
+        "clientIP": {
+            "description": "Internal IP address of a client (calculator)",
+            "type": "string",
+            "format": "ipv4"
+        },
+        "clientName": {
+            "description": "Name given by a client (calculator)",
+            "type": "string"
+        },
+        "data": {
+            "description": "A base64-encoded payload.",
+            "type": "string",
+            "contentEncoding": "base64"
+        }
+    },
+    "type": "object",
+    "required": ["ssgcType", "data"]
+}

@@ -5,7 +5,7 @@
 
 #include <Keypad.hxx>
 
-#if ENABLE_PI && !ENABLE_LINUX
+#if ENABLE_MCP_KEYPAD
 
 Keypad::Keypad(){
 	// Create the MCP23017 driver.

@@ -1,0 +1,117 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "A Connection Request reply from an administrator that contains all the permissions that the admin will require of the client",
+    "properties": {
+        "ssgcType": {
+            "description": "SSGC Request type",
+            "type": "string",
+            "enum": ["connectionPermissionReply", "connectionReject"]
+        },
+        "permissions": {
+            "description": "Permissions required by the administrator",
+            "type": "object",
+            "properties": {
+                "functionRestrictionsEnable": {
+                    "description": "Enable/Disable function whitelisting",
+                    "type": "boolean"
+                },
+                "graphingRestrictionsEnable": {
+                    "description": "Enable/Disable function plotting on the graphing tab",
+                    "type": "boolean"
+                },
+                "historyTrackingEnable": {
+                    "description": "Enable/Disable client history tracking by the administrator",
+                    "type": "boolean"
+                },
+                "screenCaptureEnable": {
+                    "description": "Enable/Disable client screen capturing by the administrator",
+                    "type": "boolean"
+                },
+                "remoteConnectionEnable": {
+                    "description": "Enable/Disable remote access of the clients by the administrator via a tty",
+                    "type": "boolean"
+                },
+                "settingOverrideEnable": {
+                    "description": "Enable/Disable settings being temporarily overridden by the administrator",
+                    "type": "boolean"
+                },
+                "payloadEnable": {
+                    "description": "Enable/Disable sending code or data to client without confirmation requirement",
+                    "type": "boolean"
+                }
+            },
+            "required": ["functionRestrictionsEnable", "graphingRestrictionsEnable", "historyTrackingEnable", "screenCaptureEnable", "remoteConnectionEnable", "settingOverrideEnable", "payloadEnable"]
+        },
+        "functionWhitelist": {
+            "description": "If function whitelisting was enabled, this contains a list of allowed functions",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "graphingInfo": {
+            "description": "If graphing restrictions was enabled, this is an object that has information regarding the type of restrictions",
+            "type": "object",
+            "properties": {
+                "graphingEnable": {
+                    "description": "Enable/Disable graphing functionality in its entirety (disable graphing tab)",
+                    "type": "boolean"
+                },
+                "graphingWhitelist": {
+                    "description": "An array containing whitelisted graphing functionality",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "calculationHistoryInfo": {
+            "description": "If history tracking was enabled, this is an object that has information regarding the degree of tracking",
+            "type": "object",
+            "properties": {
+                "historyTypes": {
+                    "description": "Contains an array history tracking information types that will be recorded",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": ["blacklistedFunctionCall", "whitelistedFunctionCall", "graphingExpressionEntry", "buttonPresses", "journalctl"],
+                        "uniqueItems": true,
+                        "minItems": 1
+                    }
+                }
+            }
+        },
+        "screenCaptureInfo": {
+            "description": "If screen capturing was enabled, this is an object that has information regarding screen capturing by an administrator",
+            "type": "object",
+            "properties": {
+                "screenshotFrequency": {
+                    "description": "The period at which screencapture information is sent to an administrator in milliseconds",
+                    "type": "number",
+                    "minimum": 1
+                },
+                "recordingEnable": {
+                    "description": "Allow an administrator to preview the screen of the user in realtime without confirmation requirement",
+                    "type": "boolean"
+                }
+            },
+            "required": ["screenshotFrequency", "recordingEnable"]
+        },
+        "settingOverrideInfo": {
+            "description": "If setting overriding was enabled, this is an array that holds objects that contain information regarding the settings that will be enforced",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "uniqueItems": true,
+                "minItems": 1
+            }
+        },
+        "rejectionReason": {
+            "description": "If the client was rejected, the reason is written here.",
+            "type": "string"
+        }
+    },
+    "type": "object",
+    "required": ["ssgcType"]
+}

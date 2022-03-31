@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "A Connection Permission Acceptance/Rejection from a client to an administrator",
+    "properties": {
+        "ssgcType": {
+            "description": "SSGC Request type",
+            "type": "string",
+            "enum": ["connectionPermissionAccept", "connectionPermissionReject"]
+        },
+        "clientIP": {
+            "description": "Internal IP address of a client (calculator)",
+            "type": "string",
+            "format": "ipv4"
+        },
+        "clientName": {
+            "description": "Name given by a client (calculator)",
+            "type": "string"
+        },
+        "rejectionReason": {
+            "description": "Optional rejection reason if the connection was rejected",
+            "type": "string"
+        }
+    },
+    "type": "object",
+    "required": ["ssgcType", "clientIP", "clientName"]
+}

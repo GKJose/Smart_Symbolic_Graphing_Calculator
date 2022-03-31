@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Information regarding logging a user, which follows the permissions/requirements accepted by a client from an administrator",
+    "properties": {
+        "ssgcType": {
+            "description": "SSGC Data Type",
+            "type": "string",
+            "enum": ["functionLog", "calculationLog", "expressionLog", "buttonPressLog", "journalctlLog"]
+        },
+        "clientIP": {
+            "description": "Internal IP address of a client (calculator)",
+            "type": "string",
+            "format": "ipv4"
+        },
+        "clientName": {
+            "description": "Name given by a client (calculator)",
+            "type": "string"
+        },
+        "data": {
+            "description": "A string payload that contains information as detailed in the ssgcType.",
+            "type": "string"
+        }
+    },
+    "type": "object",
+    "required": ["ssgcType", "clientIP", "clientName", "data"]
+}

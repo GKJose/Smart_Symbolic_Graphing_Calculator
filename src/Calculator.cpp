@@ -2,7 +2,7 @@
 #include <string>
 #include <sstream>
 #include <unistd.h>
-#if ENABLE_PI
+#if ENABLE_MCP_KEYPAD
 #include <Keypad.hxx>
 #endif
 #if ENABLE_GIAC
@@ -12,7 +12,7 @@ using namespace std;
 
 /*Declarations*/
 static lv_obj_t* textArea;
-#if ENABLE_PI
+#if ENABLE_MCP_KEYPAD
 static Keypad keypad;
 #endif
 
@@ -33,10 +33,16 @@ class Solve
     public:
     giac::context ctx;
 
+	Solve(){
+		giac::gen g("approx_mode:=1", &ctx);
+		giac::eval(g, &ctx);
+		assert(giac::approx_mode(&ctx) == true);
+	}
+
     std::string call_giac(std::string input)
     {      
+		//giac::approx_mode(false, &ctx); // Change graphing to calculate approximate values.
         giac::gen g(input, &ctx);
-		giac::approx_mode(true, &ctx); // Change graphing to calculate approximate values.
         std::cout << giac::eval(g, &ctx) << "\n";    
         giac::gen args(input, &ctx);
         std::string output = input + "\n";
@@ -53,9 +59,10 @@ class Solve
 void Calculator::createDemo(){
 	tabview = lv_main_screen_tabs();
 	std::cout << "tabview assigned\n";
+
 }
 void Calculator::update(lv_timer_t * timer){
-	#if ENABLE_PI 
+	#if ENABLE_MCP_KEYPAD
 	keypad.poll();
 	if(keypad.isBothPressed(ALT_BUTTON,ALPHA_BUTTON)){
 		keypad.reset();

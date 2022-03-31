@@ -1,5 +1,5 @@
 #include <MCP23017.hxx>
-#if ENABLE_PI && !ENABLE_LINUX
+#if ENABLE_MCP_KEYPAD
 
  MCP23017::MCP23017(int bus, int address) {
     kI2CBus = bus;           // I2C bus of Jetson (1 and 8 available on Xavier)

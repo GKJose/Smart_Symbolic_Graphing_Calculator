@@ -2,17 +2,22 @@
 #define SMART_CALC_H
 
 #cmakedefine ENABLE_GIAC @ENABLE_GIAC@
-#cmakedefine ENABLE_PI @ENABLE_PI@
 #cmakedefine ENABLE_LINUX @ENABLE_LINUX@
 #cmakedefine ENABLE_WINDOWS @ENABLE_WINDOWS@
+#cmakedefine ENABLE_MCP_KEYPAD @ENABLE_KEYPAD@
+#cmakedefine ENABLE_LINUX_FRAMEBUFFER @ENABLE_LINUX_FRAMEBUFFER@
 
 #ifndef ENABLE_GIAC
 #define ENABLE_GIAC 0
 #endif
 
-#ifndef ENABLE_PI
-#define ENABLE_PI 0
-#endif 
+#ifndef ENABLE_MCP_KEYPAD
+#define ENABLE_MCP_KEYPAD 0 
+#endif
+
+#ifndef ENABLE_LINUX_FRAMEBUFFER
+#define ENABLE_LINUX_FRAMEBUFFER 0
+#endif
 
 #ifndef ENABLE_LINUX
 #define ENABLE_LINUX 0

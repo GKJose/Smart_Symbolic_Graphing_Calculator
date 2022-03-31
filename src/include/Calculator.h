@@ -11,7 +11,7 @@
 #endif
 #include <iostream>
 
-#if ENABLE_PI == 1
+#if ENABLE_MCP_KEYPAD
 #include <Keypad.hxx>
 #endif
 #include <lvgl/lvgl.h>

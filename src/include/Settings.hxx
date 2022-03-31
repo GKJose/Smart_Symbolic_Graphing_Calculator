@@ -3,7 +3,7 @@
 
 #include <lvgl/lvgl.h>
 #include <calc_conf.h>
-#if ENABLE_PI
+#if ENABLE_MCP_KEYPAD
 #include <wiringPi.h>
 #include <softPwm.h>
 #endif

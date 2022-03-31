@@ -20,7 +20,7 @@ static void slider_event_cb(lv_event_t * e)
 {
 
     lv_obj_t * slider = lv_event_get_target(e);
-    #if ENABLE_PI
+    #if ENABLE_MCP_KEYPAD
     softPwmWrite(5,(int)lv_slider_get_value(slider));
 	std::cout << (int)lv_slider_get_value(slider) + "\n";
     #endif
@@ -81,7 +81,7 @@ void createSettingsTab(lv_obj_t* parent){
     lv_event_send(lv_obj_get_child(lv_obj_get_child(lv_menu_get_cur_sidebar_page(menu), 0), 0), LV_EVENT_CLICKED, NULL);  
   
     
-  #if ENABLE_PI
+  #if ENABLE_MCP_KEYPAD
   softPwmCreate(5,100,100);
   softPwmWrite(5,100);
 

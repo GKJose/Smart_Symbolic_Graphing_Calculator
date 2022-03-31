@@ -2,7 +2,7 @@
 #define KEYPAD_H
 #include <calc_conf.h>
 
-#if ENABLE_PI && !ENABLE_LINUX
+#if ENABLE_MCP_KEYPAD
 #include <MCP23017.hxx>
 
 class Keypad
