@@ -22,6 +22,7 @@
 #include <tabs.hxx>
 
 #include <iostream>
+#include <fstream>
 #include <gmpxx.h>
 
 namespace Calculator{
