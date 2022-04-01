@@ -1,7 +1,9 @@
 #include <Calculator.h>
+#include <ctime>
 #include <string>
 #include <sstream>
 #include <unistd.h>
+
 #if ENABLE_PI
 #include <Keypad.hxx>
 #endif
@@ -358,7 +360,73 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
         std::string output = solution->call_giac(func_expression);
         std::cout << output;
 
+		/*Reading Time Info For Logging.*/
+		time_t rawtime;
+  		struct tm * timeinfo;
+  		char current_time [80];
+  		time (&rawtime);
+  		timeinfo = localtime (&rawtime);
+  		strftime (current_time,80,"%x-%X",timeinfo);
+  		puts (current_time);
+		std::string str(current_time);
+		//std::cout << current_time;
+		/**/
 
+		//playing with json
+		// read a JSON file
+		//Expecting a file, implement try, catch.
+		std::ifstream i("history.json");
+		nlohmann::json j;
+
+		try
+		{
+			i >> j;
+
+			/*Check which entry number we are adding.*/
+			//TODO: Expetcting Int, implement try, catch.
+			int json_length = j["length"];
+
+			if(json_length <= 100)
+			{
+				//Append the new entry and increment the counter
+				j["length"] = json_length + 1;
+				nlohmann::json k =
+				{
+					{"Input ID", current_time},
+					{"user","guest"},
+					{"input", func_expression},
+					{"output", output}
+				};/**/
+
+				j["entries"].push_back(k);
+
+				//Write the new json contents to the file
+				std::ofstream o("history.json");
+				o << std::setw(4) << j << std::endl;
+				o.close();
+			}
+			else
+			{
+				//Either history.json was empty or non-existant. Create the base file.
+				std::cout << "There was an error related to history.json" << std::endl;
+				nlohmann::json base = nlohmann::json::object();
+				base["entries"] = {};
+				base["length"] = 0;
+				std::ofstream o("history.json");
+				o << std::setw(4) << base << std::endl;
+			}
+			/**/
+		}
+		catch(...)
+		{
+			//Either history.json was empty or non-existant. Create the base file.
+			std::cout << "There was an error related to history.json" << std::endl;
+			nlohmann::json base = nlohmann::json::object();
+			base["entries"] = {};
+			base["length"] = 0;
+			std::ofstream o("history.json");
+			o << std::setw(4) << base << std::endl;
+		}
 
         const char *copy_input = lv_textarea_get_text(ta);
         

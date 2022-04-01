@@ -24,6 +24,8 @@
 #include <iostream>
 #include <fstream>
 #include <gmpxx.h>
+#include <nlohmann/json.hpp>
+#include <ctime>
 
 namespace Calculator{
     void createDemo();

@@ -467,9 +467,9 @@ namespace graphing {
         constexpr double coord_max = (double)(std::numeric_limits<lv_coord_t>::max()-1);
         const double mag_max = std::sqrt(coord_max*coord_max*2); // sqrt is not constexpr :(
         
-        lv_draw_rect_dsc_t rect_style;
-        lv_draw_rect_dsc_init(&rect_style);
-        rect_style.bg_color = LV_COLOR_MAKE(0,0,255); // debug point color.
+        //lv_draw_rect_dsc_t rect_style;
+        //lv_draw_rect_dsc_init(&rect_style);
+        //rect_style.bg_color = LV_COLOR_MAKE(0,0,255); // debug point color.
         
         std::stack<Point> ins_stack;
         #define POINT_SEG last_point_f.value(), curr_point_f
@@ -486,8 +486,8 @@ namespace graphing {
                     if (wv_last ^ wv_curr || (wv_last && wv_curr)){
                         lv_point_t line[2] = {last_point_f.value().to_lv_point(), curr_point_f.to_lv_point()};
                         lv_canvas_draw_line(canvas, line, 2, &plot.style);
-                        lv_canvas_draw_rect(canvas, line[0].x-2, line[0].y-2, 4, 4, &rect_style);
-                        lv_canvas_draw_rect(canvas, line[1].x-2, line[1].y-2, 4, 4, &rect_style);
+                        //lv_canvas_draw_rect(canvas, line[0].x-2, line[0].y-2, 4, 4, &rect_style);
+                        //lv_canvas_draw_rect(canvas, line[1].x-2, line[1].y-2, 4, 4, &rect_style);
                     } else {
                         bool intersects = false;
                         intersects |= SEG_INTERSECTS(top_left_corner, top_right_corner);
@@ -500,8 +500,8 @@ namespace graphing {
                             lv_point_t ins_2 = ins_stack.top().to_lv_point(); ins_stack.pop();
                             lv_point_t line[2] = {ins_1, ins_2};
                             lv_canvas_draw_line(canvas, line, 2, &plot.style);
-                            lv_canvas_draw_rect(canvas, line[0].x-2, line[0].y-2, 4, 4, &rect_style);
-                            lv_canvas_draw_rect(canvas, line[1].x-2, line[1].y-2, 4, 4, &rect_style);
+                            //lv_canvas_draw_rect(canvas, line[0].x-2, line[0].y-2, 4, 4, &rect_style);
+                            //lv_canvas_draw_rect(canvas, line[1].x-2, line[1].y-2, 4, 4, &rect_style);
                         } else if (ins_stack.size() == 1){
                             ins_stack.pop();
                         }
