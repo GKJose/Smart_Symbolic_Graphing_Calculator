@@ -6,6 +6,9 @@
 #include <set>
 #include <lock_icon_15x17.hxx>
 #include <option.hxx>
+#include <async_extensions.hxx>
+#include <regex>
+#include <lvgl/src/core/lv_event.h>
 
 lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char * txt, lv_menu_builder_variant_t builder_variant);
 lv_obj_t * create_slider(lv_obj_t * parent, const char * icon, const char * txt, int32_t min, int32_t max, int32_t val);
@@ -13,20 +16,32 @@ lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char * txt,
 lv_obj_t * create_button(lv_obj_t * parent, const char * txt);
 
 struct WifiNetworkInfo{
+    std::string mac_address;
     std::string ssid;
     int connection_strength;
     bool has_psk;
+};
+
+enum WifiConnectionResult{
+    ConnectionFailure,
+    InternalConnectionFailure,
+    ConnectionSuccessWithInternet,
+    ConnectionSuccessWithoutInternet
 };
 
 class Settings{
     using container = lv_obj_t;
     using page = lv_obj_t;
     using section = lv_obj_t;
+    using wifi_mac_address = std::string;
     lv_obj_t *parent, *menu, *root_page, *sub_display_page, *sub_misc_page, *sub_about_page, *sub_wifi_page;
+    /// maps used for gaining information relating to UI elements and network information.
     std::map<section*, std::vector<container*>> container_map;
     std::map<page*, std::vector<section*>> section_map;
-    Option<WifiNetworkInfo> connected_network;
-    std::set<WifiNetworkInfo> available_wifi_networks;
+    std::map<container*, WifiNetworkInfo> network_map;
+    struct {Option<WifiNetworkInfo> info; int num;} connected_network;
+    std::future<int> async_wifi_scan_handle, async_wifi_connect_handle;
+    std::vector<WifiNetworkInfo> available_wifi_networks;
 
     public:
 
@@ -69,13 +84,80 @@ class Settings{
         }
     }
 
+    static int db_to_percentage(int db){
+        // Algorithm taken from: 
+        // https://github.com/torvalds/linux/blob/9ff9b0d392ea08090cd1780fb196f36dbb586529/drivers/net/wireless/intel/ipw2x00/ipw2200.c#L4322
+        constexpr int perfect_rssi = -20;
+        constexpr int worst_rssi = -85;
+        int nominal_rssi = perfect_rssi - worst_rssi;
+        int signal_quality = (100 * nominal_rssi * nominal_rssi 
+        - (perfect_rssi - db) * (15 * nominal_rssi + 62*(perfect_rssi - db)))
+        / (nominal_rssi * nominal_rssi);
+        if (signal_quality > 100){
+            signal_quality = 100;
+        } else if (signal_quality < 0){
+            signal_quality = 0;
+        }
+        return signal_quality;
+    }
+
+    /// Currently called by a button, will eventually be called to refresh and find new networks.
     static void add_wifi_cb(lv_event_t* e){
+        using rti = std::regex_token_iterator<std::string::iterator>;
         static int count = 0;
         LV_ASSERT(e->user_data != nullptr);
-        std::stringstream ss;
-        ss << "network " << count++;
+        uint16_t id = lv_btnmatrix_get_selected_btn(e->target);
         Settings* settings = static_cast<Settings*>(e->user_data);
-        settings->add_wifi_network(ss.str(), count % 2 == 0);
+        std::stringstream ss;
+        if (id == 1){ // disconnect
+            settings->wifi_network_disconnect();
+            return;
+        }
+        // scan
+
+        // -- will be replaced with actual network
+        ss << "network " << count++;
+
+        // steps to scan for networks
+        // wpa_cli -i wlan0 scan
+        // get network info using regex: (.+)\t\w+\t(-\w+)\t(\[.+\])+\t([^\t\n]+)
+        
+        #if ENABLE_WIFI
+        // asynchronously gather network info.
+        settings->async_wifi_scan_handle = std::async(std::launch::async, [=]{
+            auto scan_res = run_async_cmd("wpa_cli -i wlan0 scan").get();
+            if (scan_res != "OK\n") return -1;
+            
+            auto scan_results = run_async_cmd("wpa_cli -i wlan0 scan_results").get();
+            std::regex re(R"rgx((.+)\t\w+\t(-\w+)\t(\[.+\])?\t([^\t\n]+))rgx"); // regex used to capture fields in scan_results
+            std::string wpa_name = "WPA2";
+            rti rend;
+            int submatches[] = {1, 2, 3, 4};
+            rti a(scan_results.begin(), scan_results.end(), re, submatches);
+            settings->available_wifi_networks.clear();
+            while (a != rend){
+                WifiNetworkInfo info;
+                info.mac_address = *a++;
+                info.connection_strength = db_to_percentage(std::stoi(*a++));
+                std::string flags = *a++;
+                info.has_psk = std::search(flags.begin(), flags.end(), wpa_name.begin(), wpa_name.end()) != flags.end();
+                info.ssid = *a++;
+                settings->available_wifi_networks.push_back(std::move(info));
+            }
+            settings->update_wifi_networks(); // show new networks in the gui.
+            return 0;
+        });
+
+        #else 
+        WifiNetworkInfo info;
+        info.mac_address = "10:20:30:40:50:60";
+        info.ssid = ss.str();
+        info.connection_strength = 92;
+        info.has_psk = count % 2 == 0;
+        settings->add_wifi_network(info);
+        #endif
+        // --
+        
     }
 
     static void remove_wifi_cb(lv_event_t* e){
@@ -85,17 +167,175 @@ class Settings{
     }
 
     static void wifi_msgbox_cb(lv_event_t* e){
-        lv_obj_t* popup = lv_msgbox_create(nullptr, "Connect to network", "Howdy pardner", nullptr, true);
-        lv_obj_center(popup);
+        using WifiPair = struct {Settings* settings; lv_obj_t* textarea; lv_obj_t* con;};
+        static WifiPair s; // fine because there is ever only ever one wifi message box on the screen.
+        static const char* connect_text[] = {"Connect", ""};
+        s.settings = (Settings*)e->user_data;
+        s.con = (lv_obj_t*)e->target;
+        if (!(s.settings->network_map[e->target].has_psk)){
+            s.settings->wifi_network_connect(s.settings->network_map[e->target], "");
+            return; // If there is no password, there is no need to show the popup, just connect.
+        }
+            
+        std::stringstream ss;
+        ss << "Connect to " << s.settings->network_map[e->target].ssid;
+        lv_msgbox_t* popup = (lv_msgbox_t*)lv_msgbox_create(nullptr, ss.str().c_str(), "Enter Password:", nullptr, true);
+        lv_obj_t* textarea = lv_textarea_create((lv_obj_t*)popup);
+        // !n8zW&6#b3TaSQ
+        lv_textarea_set_one_line(textarea, true);
+        lv_textarea_set_password_mode(textarea, true);
+        lv_obj_set_width(textarea, (popup->obj.coords.x2 - popup->obj.coords.x1) - 25);
+        
+       
+        s.textarea = textarea;
+        // wifi connect button
+        popup->btns = lv_btnmatrix_create((lv_obj_t*)popup);
+        lv_btnmatrix_set_map(popup->btns, connect_text);
+        lv_btnmatrix_set_btn_ctrl_all(popup->btns, LV_BTNMATRIX_CTRL_CLICK_TRIG | LV_BTNMATRIX_CTRL_NO_REPEAT);
+        lv_obj_add_event_cb(popup->btns, [](lv_event_t* e){
+            WifiPair* wp = (WifiPair*)e->user_data;
+            WifiNetworkInfo const& info = wp->settings->network_map[wp->con]; // get WifiNetworkInfo associated with the container
+            const char* text = lv_textarea_get_text(wp->textarea);
+            lv_msgbox_close(lv_obj_get_parent(wp->textarea)); // close the message box
+            // std::stringstream ss;
+            // ss << "Connecting to " << info.ssid;
+            // lv_obj_t* connecting_msgbox = lv_msgbox_create(nullptr, "Connecting.", ss.str().c_str(), nullptr, false);
+            // connect to network with the password entered into the textarea
+            wp->settings->wifi_network_connect(info, text);
+        }, LV_EVENT_CLICKED, &s);
+
+        const lv_font_t * font = lv_obj_get_style_text_font(popup->btns, LV_PART_ITEMS);
+        lv_coord_t btn_h = lv_font_get_line_height(font) + LV_DPI_DEF / 10;
+        lv_obj_set_size(popup->btns, (2 * LV_DPI_DEF / 3), btn_h);
+        lv_obj_set_style_max_width(popup->btns, lv_pct(100), 0);
+        lv_obj_add_flag(popup->btns, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+        lv_obj_center((lv_obj_t*)popup);
     }
 
-    void add_wifi_network(std::string name, bool has_psk){
+    /// Updates visible wifi networks in the GUI.
+    void update_wifi_networks(){
+        if (section_map.find(sub_wifi_page) == section_map.end())
+            return;
+        if (section_map[sub_wifi_page].size() < 2) // wifi network has two sections
+            return;
+        auto sec = section_map[sub_wifi_page][1]; // wifi network section
+        if (container_map.find(sec) == container_map.end())
+            return;
+        auto& con = container_map[sec]; // All wifi network containers.
+        // erase all conatiners.
+        while (con.size() > 0){
+            lv_obj_del(con[con.size()-1]);
+            con.pop_back();
+        }
+        // create new empty containers
+        for (std::size_t i = 0; i < available_wifi_networks.size(); i++){
+            add_wifi_network(available_wifi_networks[i]);
+        }
+    }
+    
+    /// Disconnects the system from a wifi network.
+    /// Updates the GUI to showcase the network disconnected
+    void wifi_network_disconnect(){
+        #if ENABLE_WIFI
+        std::stringstream ss;
+        ss << "wpa_cli -i wlan0 disable_network " << connected_network.num;
+        run_async_cmd(ss.str()).get();
+        ss.str(""); ss.clear();
+        ss << "wpa_cli -i wlan0 delete_network " << connected_network.num;
+        run_async_cmd(ss.str()).get();
+        #endif
+
+        if (section_map.find(sub_wifi_page) == section_map.end()) return;
+        if (section_map[sub_wifi_page].size() < 2) return; // wifi network ahs two sections
+        
+        auto current_network_sec = section_map[sub_wifi_page][0]; // current connection section.
+        if (container_map[current_network_sec].size() != 2) return; // Should be two containers in the current network section
+        auto current_network_con = container_map[current_network_sec][0];
+        auto network_btn_con = container_map[current_network_sec][1];
+        lv_obj_t* current_network_label = lv_obj_get_child(current_network_con, 0);
+        lv_obj_t* btnmat = lv_obj_get_child(network_btn_con, 0); // get the button matrix
+        lv_label_set_text(current_network_label, "Not connected.");
+        lv_btnmatrix_set_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN); // hide the button to keep users from clicking it.
+    }
+
+    /// Connect the system to the given network.
+    /// Updates the GUI to showcase the new network connection and internet availability.
+    WifiConnectionResult wifi_network_connect(WifiNetworkInfo const& network, std::string psk){
+
+        if (section_map.find(sub_wifi_page) == section_map.end())
+            return InternalConnectionFailure;
+        if (section_map[sub_wifi_page].size() < 2) // wifi network has two sections
+            return InternalConnectionFailure;
+         auto current_network_sec = section_map[sub_wifi_page][0]; // current connection section.
+        if (container_map[current_network_sec].size() != 2) 
+            return InternalConnectionFailure; // Should be two containers in the current network section
+        auto current_network_con = container_map[current_network_sec][0]; 
+        auto network_btn_con = container_map[current_network_sec][1];
+        lv_obj_t* current_network_label = lv_obj_get_child(current_network_con, 0); // label
+        lv_obj_t* btnmat = lv_obj_get_child(network_btn_con, 0); // get the button matrix
+
+        #if ENABLE_WIFI
+        auto net_num = run_async_cmd("wpa_cli -i wlan0 add_network").get(); // returns an integer
+        this->connected_network.num = std::stoi(net_num);
+        this->connected_network.info = network;
+        std::stringstream ss;
+        ss << "wpa_cli -i wlan0 set_network " << net_num << " ssid '\"" << network.ssid << "\"'";
+        
+        // set network ssid
+        if (run_async_cmd(ss.str()).get() != "OK\n")
+            return ConnectionFailure;
+
+        if (network.has_psk){
+            ss.str(""); ss.clear();
+            ss << "wpa_cli -i wlan0 set_network " << net_num << " psk '\"" << psk << "\"'";
+            // set network password
+            if (run_async_cmd(ss.str()).get() != "OK\n")
+                return ConnectionFailure;
+        }
+        ss.str(""); ss.clear();
+        ss << "wpa_cli -i wlan0 enable_network " << net_num;
+        if(run_async_cmd(ss.str()).get() != "OK\n")
+            return ConnectionFailure;
+        #endif
+
+        
+
+        // test internet connectivity
+        // pings a max of 3 times to check if the device is connected to the internet.
+        async_wifi_connect_handle = std::async(std::launch::async, [=]{
+            auto ping_res = run_async_cmd("ping 1.1.1.1 -c3").get();
+            std::smatch sm;
+            int ping_count = 0;
+            if (std::regex_search(ping_res, sm, std::regex(R"~((\w+) received)~"))){
+                ping_count = std::stoi(sm[1].str()); // Captures the number of pings received.
+            }
+            //lv_label_set_text_fmt(current_network_label, "Connected to %s.", network.ssid.c_str()); 
+            
+            lv_label_set_text_fmt(current_network_label, 
+                "Connected to %s.\n%s.", 
+                network.ssid.c_str(), 
+                (ping_count > 0 ? "Internet Available" : "Internet Unavailable"));
+            
+            lv_btnmatrix_clear_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN); // make it visible again.
+
+            return 0;
+        });
+        
+        return ConnectionSuccessWithInternet;
+    }
+
+    void add_wifi_network(WifiNetworkInfo const& network){
         if (section_map.find(sub_wifi_page) == section_map.end())
             return;
         if (section_map[sub_wifi_page].size() < 2) // wifi network page has two sections.
             return;
         container* con = create_container(section_map[sub_wifi_page][1]);
-        create_text(con, has_psk ? (char*)&lock_icon : nullptr, name.c_str(), LV_MENU_ITEM_BUILDER_VARIANT_1);
+        network_map[con] = network; // add network to network_map
+        // Add lock image if the network is password-protected
+        create_text(con, network.has_psk ? (char*)&lock_icon : nullptr, network.ssid.c_str(), LV_MENU_ITEM_BUILDER_VARIANT_1);
+        lv_obj_t* percentagio = lv_label_create(con);
+        lv_label_set_text_fmt(percentagio, "%d%%", network.connection_strength);
         lv_obj_add_flag(con, LV_OBJ_FLAG_CLICKABLE);
         lv_obj_add_event_cb(con, wifi_msgbox_cb, LV_EVENT_CLICKED, this);
     }
@@ -110,6 +350,7 @@ class Settings{
             return;
         auto& con = container_map[sec];
         if (con.size() > 0){
+            network_map.erase(container_map[sec][con.size()-1]); // remove from network_map
             lv_obj_del(container_map[sec][con.size()-1]);
             container_map[sec].pop_back();
         }
@@ -144,13 +385,14 @@ class Settings{
         return obj;
     }
 
-    void create_root_text_container(page* p, const char* icon, const char* name){
+    container* create_root_text_container(page* p, const char* icon, const char* name){
         LV_ASSERT(root_page!=nullptr);
         LV_ASSERT(section_map.find(root_page) != section_map.end());
         LV_ASSERT(section_map[root_page].size() > 0);
         container* rc = create_container(section_map[root_page][0]);
         lv_obj_t* rc_text = create_text(rc, icon, name, LV_MENU_ITEM_BUILDER_VARIANT_1);
         lv_menu_set_load_page_event(menu, rc, p);
+        return rc;
     }
 
     void init_root_page(){
@@ -186,16 +428,39 @@ class Settings{
     }
 
     void init_wifi_page(){
+        static const char* btnmat_map[3] = {"Scan", "Disconnect", ""};
         sub_wifi_page = init_page();
         section* sec = create_section(sub_wifi_page);
         container* con = create_container(sec);
-        lv_obj_t* text = create_text(con, nullptr, "Hello, this is a test", LV_MENU_ITEM_BUILDER_VARIANT_1);
-        create_section(sub_wifi_page); // test
-        lv_obj_t* add_b = create_button(sub_wifi_page, "+");
-        lv_obj_t* remove_b = create_button(sub_wifi_page, "-");
-        lv_obj_add_event_cb(add_b, add_wifi_cb, LV_EVENT_CLICKED, this);
-        lv_obj_add_event_cb(remove_b, remove_wifi_cb, LV_EVENT_CLICKED, this);
-        create_root_text_container(sub_wifi_page, LV_SYMBOL_WIFI, "Wifi");
+        lv_obj_t* label = lv_label_create(con);
+        lv_label_set_text(label, "Not Connected.");
+        lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL_CIRCULAR);
+        lv_obj_set_flex_grow(label, 1);
+
+        container* con2 = create_container(sec);
+        lv_obj_t* btnmat = lv_btnmatrix_create(con2);
+        static lv_style_t btnmat_style_bg, btnmat_style;
+
+        lv_style_init(&btnmat_style_bg);
+        lv_style_set_pad_all(&btnmat_style_bg, 10);
+        lv_style_set_border_width(&btnmat_style_bg, 0);
+        lv_style_set_bg_opa(&btnmat_style_bg, LV_OPA_0);
+
+        lv_style_init(&btnmat_style);
+        lv_style_set_border_opa(&btnmat_style, LV_OPA_50);
+        lv_style_set_text_font(&btnmat_style, &lv_font_montserrat_12_subpx);
+
+        lv_btnmatrix_set_map(btnmat, btnmat_map);
+        lv_btnmatrix_set_btn_ctrl_all(btnmat, LV_BTNMATRIX_CTRL_CLICK_TRIG);
+        lv_btnmatrix_set_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN);
+        lv_btnmatrix_set_btn_width(btnmat, 1, 2);
+        lv_obj_add_style(btnmat, &btnmat_style_bg, 0);
+        lv_obj_add_style(btnmat, &btnmat_style, LV_PART_ITEMS);
+        lv_obj_set_size(btnmat, 150, 50);
+        lv_obj_add_event_cb(btnmat, add_wifi_cb, LV_EVENT_VALUE_CHANGED, this);
+
+        create_section(sub_wifi_page); 
+        container* wifi_con = create_root_text_container(sub_wifi_page, LV_SYMBOL_WIFI, "Wifi");
     }
 };
 
