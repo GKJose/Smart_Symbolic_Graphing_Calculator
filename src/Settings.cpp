@@ -154,7 +154,8 @@ class Settings{
         info.ssid = ss.str();
         info.connection_strength = 92;
         info.has_psk = count % 2 == 0;
-        settings->add_wifi_network(info);
+        settings->available_wifi_networks.push_back(std::move(info));
+        settings->update_wifi_networks();
         #endif
         // --
         
@@ -220,13 +221,13 @@ class Settings{
         if (section_map[sub_wifi_page].size() < 2) // wifi network has two sections
             return;
         auto sec = section_map[sub_wifi_page][1]; // wifi network section
-        if (container_map.find(sec) == container_map.end())
-            return;
-        auto& con = container_map[sec]; // All wifi network containers.
-        // erase all conatiners.
-        while (con.size() > 0){
-            lv_obj_del(con[con.size()-1]);
-            con.pop_back();
+        if (container_map.find(sec) != container_map.end()) {
+            auto& con = container_map[sec]; // All wifi network containers.
+            // erase all conatainers.
+            while (con.size() > 0){
+                lv_obj_del(con[con.size()-1]);
+                con.pop_back();
+            }
         }
         // create new empty containers
         for (std::size_t i = 0; i < available_wifi_networks.size(); i++){
