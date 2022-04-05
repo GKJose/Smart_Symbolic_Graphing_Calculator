@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.22.3)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.18.4)
 PROJECT (SSGC)
 SET(CMAKE_CXX_STANDARD 14)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -11,6 +11,7 @@ option(MCP_KEYPAD_ENABLE "Enable compiling/linking for external keyboard connect
 option(LINUX_FRAMEBUFFER_ENABLE "Enabling compiling/linking without using a framebuffer" OFF)
 option(LINUX_ENABLE "Enable compiling/linking for linux systems" ON)
 option(WINDOWS_ENABLE "Enable compiling/linking for windows" OFF)
+option(WIFI_ENABLE "Enable calling wpa_cli for connecting to networks" OFF)
 
 if(LINUX_ENABLE)
     message(STATUS "Enabling Linux linkage...")
@@ -54,6 +55,10 @@ endif()
 
 if(LINUX_FRAMEBUFFER_ENABLE)
     set(ENABLE_LINUX_FRAMEBUFFER 1)
+endif()
+
+if(WIFI_ENABLE)
+    set(ENABLE_WIFI 1)
 endif()
 
 if(GIAC_ENABLE)
