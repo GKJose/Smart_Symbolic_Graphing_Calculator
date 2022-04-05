@@ -196,7 +196,7 @@ class Settings{
         lv_obj_add_event_cb(popup->btns, [](lv_event_t* e){
             WifiPair* wp = (WifiPair*)e->user_data;
             WifiNetworkInfo const& info = wp->settings->network_map[wp->con]; // get WifiNetworkInfo associated with the container
-            const char* text = lv_textarea_get_text(wp->textarea);
+            std::string text(lv_textarea_get_text(wp->textarea));
             lv_msgbox_close(lv_obj_get_parent(wp->textarea)); // close the message box
             // std::stringstream ss;
             // ss << "Connecting to " << info.ssid;
@@ -281,7 +281,7 @@ class Settings{
         this->connected_network.num = std::stoi(net_num);
         this->connected_network.info = network;
         std::stringstream ss;
-        ss << "wpa_cli -i wlan0 set_network " << net_num << " ssid '\"" << network.ssid << "\"'";
+        ss << "wpa_cli -i wlan0 set_network " << this->connected_network.num << " ssid '\"" << network.ssid << "\"'";
         
         // set network ssid
         if (run_async_cmd(ss.str()).get() != "OK\n")
@@ -289,13 +289,13 @@ class Settings{
 
         if (network.has_psk){
             ss.str(""); ss.clear();
-            ss << "wpa_cli -i wlan0 set_network " << net_num << " psk '\"" << psk << "\"'";
+            ss << "wpa_cli -i wlan0 set_network " << this->connected_network.num << " psk '\"" << psk << "\"'";
             // set network password
             if (run_async_cmd(ss.str()).get() != "OK\n")
                 return ConnectionFailure;
         }
         ss.str(""); ss.clear();
-        ss << "wpa_cli -i wlan0 enable_network " << net_num;
+        ss << "wpa_cli -i wlan0 enable_network " << this->connected_network.num;
         if(run_async_cmd(ss.str()).get() != "OK\n")
             return ConnectionFailure;
         #endif
