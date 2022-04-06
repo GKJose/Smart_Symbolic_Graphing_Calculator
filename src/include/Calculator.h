@@ -36,6 +36,8 @@ namespace Calculator{
 	static void toggle_kb_event_handler(lv_event_t* e);
 	void main_screen_driver(lv_obj_t* parent);
 	static void active_ta_event_handler(lv_event_t* e);
+	void storeFunctionTA(lv_obj_t* ta);
+	void storeWifiTA(lv_obj_t* ta);
 
 	
 }

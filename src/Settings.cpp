@@ -5,10 +5,15 @@
 #include <sstream>
 #include <set>
 #include <lock_icon_15x17.hxx>
+#include <wifi_signal_0.hxx>
+#include <wifi_signal_1.hxx>
+#include <wifi_signal_2.hxx>
+#include <wifi_signal_3.hxx>
 #include <option.hxx>
 #include <async_extensions.hxx>
 #include <regex>
 #include <lvgl/src/core/lv_event.h>
+#include <Calculator.h>
 
 lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char * txt, lv_menu_builder_variant_t builder_variant);
 lv_obj_t * create_slider(lv_obj_t * parent, const char * icon, const char * txt, int32_t min, int32_t max, int32_t val);
@@ -186,6 +191,7 @@ class Settings{
         lv_textarea_set_one_line(textarea, true);
         lv_textarea_set_password_mode(textarea, true);
         lv_obj_set_width(textarea, (popup->obj.coords.x2 - popup->obj.coords.x1) - 25);
+        Calculator::storeWifiTA(textarea);
         
        
         s.textarea = textarea;
@@ -335,8 +341,17 @@ class Settings{
         network_map[con] = network; // add network to network_map
         // Add lock image if the network is password-protected
         create_text(con, network.has_psk ? (char*)&lock_icon : nullptr, network.ssid.c_str(), LV_MENU_ITEM_BUILDER_VARIANT_1);
-        lv_obj_t* percentagio = lv_label_create(con);
-        lv_label_set_text_fmt(percentagio, "%d%%", network.connection_strength);
+        //lv_obj_t* percentagio = lv_label_create(con);
+		if(network.connection_strength > 0 && network.connection_strength < 25){
+			create_text(con,(char*)&wifi_signal_0_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
+		}else if(network.connection_strength > 25 && network.connection_strength < 50){
+			create_text(con,(char*)&wifi_signal_1_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
+		}else if(network.connection_strength > 50 && network.connection_strength < 75){
+			create_text(con,(char*)&wifi_signal_2_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
+		}else{
+			create_text(con,(char*)&wifi_signal_3_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
+		}
+        //lv_label_set_text_fmt(percentagio, "%d%%", network.connection_strength);
         lv_obj_add_flag(con, LV_OBJ_FLAG_CLICKABLE);
         lv_obj_add_event_cb(con, wifi_msgbox_cb, LV_EVENT_CLICKED, this);
     }
@@ -434,7 +449,16 @@ class Settings{
         section* sec = create_section(sub_wifi_page);
         container* con = create_container(sec);
         lv_obj_t* label = lv_label_create(con);
-        lv_label_set_text(label, "Not Connected.");
+		 async_wifi_connect_handle = std::async(std::launch::async, [=]{
+            auto ping_res = run_async_cmd("ping 1.1.1.1 -c3").get();
+            std::smatch sm;
+            int ping_count = 0;
+            if (std::regex_search(ping_res, sm, std::regex(R"~((\w+) received)~"))){
+                ping_count = std::stoi(sm[1].str()); // Captures the number of pings received.
+            }
+			lv_label_set_text_fmt(label, "%s",(ping_count > 0 ? "Internet Available" : "Internet Unavailable"));
+			return 0;
+		 });	
         lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL_CIRCULAR);
         lv_obj_set_flex_grow(label, 1);
 
@@ -464,7 +488,6 @@ class Settings{
         container* wifi_con = create_root_text_container(sub_wifi_page, LV_SYMBOL_WIFI, "Wifi");
     }
 };
-
 void createSettingsTab(lv_obj_t* parent){
     
     static Settings settings(parent);

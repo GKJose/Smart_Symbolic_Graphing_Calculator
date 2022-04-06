@@ -3,7 +3,7 @@
 #include <Calculator.h>
 #include <chrono>
 #include <thread>
-
+#include <WebSocket.hxx>
 #if ENABLE_WINDOWS
 #include<Windows.h>
 #define IDI_LVGL                       101
@@ -54,7 +54,7 @@
 #endif
 
 #define DISP_BUF_SIZE (64 * 320)
-
+static WebSocket client("73.136.108.71",6969);
 static void calc_init(void);
 
 int main(void)
@@ -65,10 +65,12 @@ int main(void)
     #endif
     Calculator::createDemo();
     lv_timer_create(Calculator::update,350,NULL);
+	client.connectToServer();
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {
         
         lv_task_handler();
+		client.recieveMessage();
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 

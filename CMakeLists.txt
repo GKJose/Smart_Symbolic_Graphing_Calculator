@@ -50,6 +50,7 @@ else()
 endif()
 
 if(MCP_KEYPAD_ENABLE)
+	message(STATUS "Enabling Keypad")
     set(ENABLE_MCP_KEYPAD 1)
 endif()
 
@@ -58,6 +59,7 @@ if(LINUX_FRAMEBUFFER_ENABLE)
 endif()
 
 if(WIFI_ENABLE)
+	message(STATUS "Enabling WIFI")	
     set(ENABLE_WIFI 1)
 endif()
 
