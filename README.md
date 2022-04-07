@@ -35,7 +35,7 @@ cmake --build .
 The following command below is an example on how to clone and build this project on the raspberry pi:
 
 ```bash
-sudo apt install -y build-essential libgiac-dev libmpfr-dev libgmp3-dev python3-smbus i2c-tools cmake
+sudo apt install -y build-essential libgiac-dev libmpfr-dev libgmp3-dev python3-smbus i2c-tools cmake nlohmann-json-dev
 git clone --recursive https://github.com/GKJose/Smart_Symbolic_Graphing_Calculator.git
 cd Smart_Symbolic_Graphing_Calculator
 cmake -DLINUX_ENABLE=OFF -DPI_ENABLE=ON -DGIAC_ENABLE=ON .

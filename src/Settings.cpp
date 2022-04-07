@@ -14,11 +14,20 @@
 #include <regex>
 #include <lvgl/src/core/lv_event.h>
 #include <Calculator.h>
+#include <easywsclient.hpp>
+#include <stdio.h>
+#include <nlohmann/json.hpp>
+#include <sstream>
 
+using easywsclient::WebSocket;
+using json = nlohmann::json;
+
+void pollWebsocket(lv_timer_t* timer);
 lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char * txt, lv_menu_builder_variant_t builder_variant);
 lv_obj_t * create_slider(lv_obj_t * parent, const char * icon, const char * txt, int32_t min, int32_t max, int32_t val);
 lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char * txt, bool chk);
 lv_obj_t * create_button(lv_obj_t * parent, const char * txt);
+
 
 struct WifiNetworkInfo{
     std::string mac_address;
@@ -47,7 +56,8 @@ class Settings{
     struct {Option<WifiNetworkInfo> info; int num;} connected_network;
     std::future<int> async_wifi_scan_handle, async_wifi_connect_handle;
     std::vector<WifiNetworkInfo> available_wifi_networks;
-
+    WebSocket::pointer ws;
+	bool isConnected;
     public:
 
     Settings(lv_obj_t* parent):parent(parent),menu(lv_menu_create(parent)){
@@ -67,7 +77,36 @@ class Settings{
 
         lv_event_send(lv_obj_get_child(lv_obj_get_child(lv_menu_get_cur_sidebar_page(menu), 0), 0), LV_EVENT_CLICKED, nullptr);  
     }
+	void connectToAdminApp(){
+		static auto async_app_connect_handle = std::async(std::launch::async, [=]{
+		std::stringstream ss;
+		auto ip_res = run_async_cmd("hostname -I | awk '{ print $1 }' ").get();
+		printf("ip of pi: %s\n",ip_res.c_str());
+		ss << "nmap --iflist | grep "+ip_res;
 
+		auto ips_res = run_async_cmd(ss.str().c_str()).get();
+	    ss.str("");
+		ss.clear();
+		ss << "echo \""+ ips_res+"\"| awk '{print $3}'";
+		ips_res = run_async_cmd(ss.str().c_str()).get();
+		ips_res = ips_res.substr(0,strlen(ips_res.c_str())-2);
+		printf("ips: %s\n",ips_res.c_str());
+		ss.str("");
+		ss.clear();
+		ss << "nmap --open -p 6969 "+ips_res+" -oG - | grep \"/open\" | awk '{ print $2 }'";
+		auto app_ip_res = run_async_cmd(ss.str().c_str()).get();
+		app_ip_res = app_ip_res.substr(0,strlen(app_ip_res.c_str())-1);
+		printf("ip of admin app: %s\n",app_ip_res.c_str());
+		if(app_ip_res != "") ws = WebSocket::from_url("ws://"+app_ip_res+":6969");
+		return 0;
+	 });			
+	}
+	WebSocket::pointer getWebsocket(){
+		return ws;
+	}
+	bool isConnectedToWifi(){
+		return isConnected;
+	}
     private:
 
     static void back_event_handler(lv_event_t * e){}
@@ -323,9 +362,9 @@ class Settings{
                 "Connected to %s.\n%s.", 
                 network.ssid.c_str(), 
                 (ping_count > 0 ? "Internet Available" : "Internet Unavailable"));
+				isConnected = (ping_count > 0);
             
             lv_btnmatrix_clear_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN); // make it visible again.
-
             return 0;
         });
         
@@ -457,8 +496,9 @@ class Settings{
                 ping_count = std::stoi(sm[1].str()); // Captures the number of pings received.
             }
 			lv_label_set_text_fmt(label, "%s",(ping_count > 0 ? "Internet Available" : "Internet Unavailable"));
+			isConnected = (ping_count > 0);
 			return 0;
-		 });	
+		 });
         lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL_CIRCULAR);
         lv_obj_set_flex_grow(label, 1);
 
@@ -487,17 +527,33 @@ class Settings{
         create_section(sub_wifi_page); 
         container* wifi_con = create_root_text_container(sub_wifi_page, LV_SYMBOL_WIFI, "Wifi");
     }
+
 };
 void createSettingsTab(lv_obj_t* parent){
     
     static Settings settings(parent);
-
+	lv_timer_create(pollWebsocket,250,&settings);
     #if ENABLE_MCP_KEYPAD
     softPwmCreate(5,100,100);
     softPwmWrite(5,100);
     #endif
+	
 }
+void pollWebsocket(lv_timer_t* timer){
+	Settings* settings = (Settings*)timer->user_data;
+	WebSocket::pointer ws = settings->getWebsocket();
+	if(settings->isConnectedToWifi() && ws == NULL){
+		settings->connectToAdminApp();
+	}
+		if(ws != NULL && ws->getReadyState() != WebSocket::CLOSED){
+			ws->poll();
+			ws->dispatch([](const std::string & message) -> void{
+				json obj = json::parse(message.c_str());
+				printf(message.c_str());
 
+			});
+		}
+	}
 // static void switch_handler(lv_event_t * e)
 // {
 //     lv_event_code_t code = lv_event_get_code(e);
