@@ -77,9 +77,12 @@ endif()
 configure_file(calc_conf.h.in calc_conf.h @ONLY)
 
 message(STATUS "CMAKE BUILD TYPE: " ${CMAKE_BUILD_TYPE})
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+set(JSON_Install ON CACHE INTERNAL "")
 include_directories(${CMAKE_SOURCE_DIR})
 add_subdirectory(lv_drivers)
 add_subdirectory(lvgl)
-
+add_subdirectory(json)
+add_subdirectory(json-schema-validator)
 add_subdirectory(src)
 add_subdirectory(tests)
