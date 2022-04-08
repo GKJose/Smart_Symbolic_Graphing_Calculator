@@ -3,7 +3,6 @@
 #include <Calculator.h>
 #include <chrono>
 #include <thread>
-
 #if ENABLE_WINDOWS
 #include<Windows.h>
 #define IDI_LVGL                       101
@@ -55,8 +54,8 @@
 
 #define DISP_BUF_SIZE (64 * 320)
 
-static void calc_init(void);
 
+static void calc_init(void);
 int main(void)
 {
     calc_init();
@@ -67,7 +66,6 @@ int main(void)
     lv_timer_create(Calculator::update,350,NULL);
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {
-        
         lv_task_handler();
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }

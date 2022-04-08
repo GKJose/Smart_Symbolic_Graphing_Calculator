@@ -10,3 +10,9 @@
 [submodule "lv_demos"]
 	path = lv_demos
 	url = https://github.com/lvgl/lv_demos
+[submodule "json-schema-validator"]
+	path = json-schema-validator
+	url = https://github.com/pboettch/json-schema-validator.git
+[submodule "json"]
+	path = json
+	url = https://github.com/nlohmann/json.git

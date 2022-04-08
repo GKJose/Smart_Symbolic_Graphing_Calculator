@@ -28,6 +28,7 @@ static lv_obj_t* toggle_kb_btn;
 static lv_obj_t* clear_scr_btn;
 static lv_obj_t* tabview;
 static lv_obj_t* functionTextArea;
+static lv_obj_t* wifiTextArea;
 class Solve
 {
     public:
@@ -59,7 +60,7 @@ class Solve
 void Calculator::createDemo(){
 	tabview = lv_main_screen_tabs();
 	std::cout << "tabview assigned\n";
-
+	textArea = areas[0];
 }
 void Calculator::update(lv_timer_t * timer){
 	#if ENABLE_MCP_KEYPAD
@@ -250,7 +251,7 @@ void Calculator::update(lv_timer_t * timer){
 		}else if(keypad.isPressed(RIGHT_BUTTON)){
 			lv_textarea_cursor_right(textArea);
 		}else if(keypad.isPressed(GRAPH_BUTTON)){
-                        textArea = get_functionTextArea();
+			textArea = functionTextArea;
 			lv_tabview_set_act(tabview, 1, LV_ANIM_OFF);
 		}else if(keypad.isPressed(NINE_BUTTON)){
 			lv_textarea_add_text(textArea,"9");
@@ -489,6 +490,9 @@ lv_obj_t* Calculator::lv_result_ta(lv_obj_t* parent, std::string output, lv_obj_
 	lv_obj_add_event_cb(ta, input_history_ta_event_handler, LV_EVENT_ALL, active_ta);
     return ta;
 }
-void storeFunctionTextArea(lv_obj_t* funcTA){
-    functionTextArea = funcTA;
+void Calculator::storeFunctionTA(lv_obj_t* ta){
+    functionTextArea = ta;
+}
+void Calculator::storeWifiTA(lv_obj_t* ta){
+    textArea = ta;
 }

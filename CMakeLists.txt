@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.22.3)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.18.4)
 PROJECT (SSGC)
 SET(CMAKE_CXX_STANDARD 14)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -11,6 +11,7 @@ option(MCP_KEYPAD_ENABLE "Enable compiling/linking for external keyboard connect
 option(LINUX_FRAMEBUFFER_ENABLE "Enabling compiling/linking without using a framebuffer" OFF)
 option(LINUX_ENABLE "Enable compiling/linking for linux systems" ON)
 option(WINDOWS_ENABLE "Enable compiling/linking for windows" OFF)
+option(WIFI_ENABLE "Enable calling wpa_cli for connecting to networks" OFF)
 
 if(LINUX_ENABLE)
     message(STATUS "Enabling Linux linkage...")
@@ -49,11 +50,17 @@ else()
 endif()
 
 if(MCP_KEYPAD_ENABLE)
+	message(STATUS "Enabling Keypad")
     set(ENABLE_MCP_KEYPAD 1)
 endif()
 
 if(LINUX_FRAMEBUFFER_ENABLE)
     set(ENABLE_LINUX_FRAMEBUFFER 1)
+endif()
+
+if(WIFI_ENABLE)
+	message(STATUS "Enabling WIFI")	
+    set(ENABLE_WIFI 1)
 endif()
 
 if(GIAC_ENABLE)
@@ -70,9 +77,12 @@ endif()
 configure_file(calc_conf.h.in calc_conf.h @ONLY)
 
 message(STATUS "CMAKE BUILD TYPE: " ${CMAKE_BUILD_TYPE})
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+set(JSON_Install ON CACHE INTERNAL "")
 include_directories(${CMAKE_SOURCE_DIR})
 add_subdirectory(lv_drivers)
 add_subdirectory(lvgl)
-
+add_subdirectory(json)
+add_subdirectory(json-schema-validator)
 add_subdirectory(src)
 add_subdirectory(tests)

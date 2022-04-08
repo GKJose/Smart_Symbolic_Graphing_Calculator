@@ -2461,6 +2461,11 @@
 },
 {
   "directory": "/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/_deps/catch2-build/src",
+  "command": "/usr/bin/g++  -I/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator -I/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/_deps/catch2-src/src/catch2/.. -I/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/generated-includes -g -ffile-prefix-map=/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/_deps/catch2-src=. -std=gnu++14 -o CMakeFiles/Catch2.dir/catch2/internal/catch_test_case_info_hasher.cpp.o -c /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/_deps/catch2-src/src/catch2/internal/catch_test_case_info_hasher.cpp",
+  "file": "/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/_deps/catch2-src/src/catch2/internal/catch_test_case_info_hasher.cpp"
+},
+{
+  "directory": "/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/_deps/catch2-build/src",
   "command": "/usr/bin/g++  -I/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator -I/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/_deps/catch2-src/src/catch2/.. -I/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/generated-includes -g -ffile-prefix-map=/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/_deps/catch2-src=. -std=gnu++14 -o CMakeFiles/Catch2.dir/catch2/benchmark/internal/catch_benchmark_combined_tu.cpp.o -c /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/_deps/catch2-src/src/catch2/benchmark/internal/catch_benchmark_combined_tu.cpp",
   "file": "/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/build/_deps/catch2-src/src/catch2/benchmark/internal/catch_benchmark_combined_tu.cpp"
 },

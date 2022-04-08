@@ -5,6 +5,7 @@
 #include <random>
 #include <type_traits>
 #include <stack>
+#include <Calculator.h>
 
 // #if ENABLE_EXPERIMENTAL_PLOTTING
 // #include <armadillo>
@@ -361,6 +362,7 @@ namespace graphing {
 
         // function_textarea initialization
         function_text_area = lv_textarea_create(canvas);
+	Calculator::storeFunctionTA(function_text_area);
         lv_textarea_set_one_line(function_text_area, true);
         lv_obj_add_style(function_text_area, &textarea_style, 0);
         lv_obj_set_size(function_text_area, 180, 30);
