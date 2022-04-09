@@ -1,12 +1,14 @@
-<h1 align="center">Smart Graphing Calculator </h1>
+<h1 align="center"><b>Smart Graphing Calculator </b></h1>
 
-## UHCL Senior Projects Group 2
+
+<h2 align="center"><b>UHCL Senior Projects Group 2</b></h2>
 
 <p align="center"> 
 <img src="media/SSGC_Graphing.gif" width="50%">
 </p>
 
-**Greetings!** This is the repository for our Smart Symbolic Graphing Calculator. Written in C/C++, this project utilizes [LVGL](https://github.com/lvgl/lvgl) and [Giac](https://www-fourier.ujf-grenoble.fr/~parisse/giac.html) to create a free and open source and extensible symbolic calculator that is able to used in both testing environments and general calculation applications.
+**Greetings!** This is the repository for our Smart Symbolic Graphing Calculator. Written in C/C++, this project utilizes [LVGL](https://github.com/lvgl/lvgl) and [Giac](https://www-fourier.ujf-grenoble.fr/~parisse/giac.html) to create a free and open source and extensible symbolic calculator that is able to used in both testing environments and general calculation applications. Websocket communication is done using the [easywsclient](https://github.com/dhbaird/easywsclient) library. JSON manipulation is made possible by the [JSON for Modern C++](https://github.com/nlohmann/json) and [json-schema-validator](https://github.com/pboettch/json-schema-validator)
+ libraries.
 
 Some of the algorithmic implementations, such as plotting and optimal tick generation, were gathered and translated from the [Julia Programming Language](https://github.com/JuliaLang/julia) into C++.
 
