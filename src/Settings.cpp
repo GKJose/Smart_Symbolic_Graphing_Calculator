@@ -18,9 +18,12 @@
 #include <stdio.h>
 #include <nlohmann/json.hpp>
 #include <sstream>
+#include <nlohmann/json-schema.hpp>
+#include <fstream>
 
 using easywsclient::WebSocket;
 using json = nlohmann::json;
+using nlohmann::json_schema::json_validator;
 
 void pollWebsocket(lv_timer_t* timer);
 lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char * txt, lv_menu_builder_variant_t builder_variant);
@@ -42,7 +45,11 @@ enum WifiConnectionResult{
     ConnectionSuccessWithInternet,
     ConnectionSuccessWithoutInternet
 };
-
+enum Schemas{
+	connectionAdminInfo,
+	connectionRevoke,
+	ConnectionPermission
+};
 class Settings{
     using container = lv_obj_t;
     using page = lv_obj_t;
@@ -58,6 +65,12 @@ class Settings{
     std::vector<WifiNetworkInfo> available_wifi_networks;
     WebSocket::pointer ws;
 	bool isConnected;
+	bool isConnectingToAdmin;
+	std::string ip;
+	std::string ips;
+	json connectionAdminInfoSchema;
+	json connectionRevokeSchema;
+	json connectionPermissionSchema;
     public:
 
     Settings(lv_obj_t* parent):parent(parent),menu(lv_menu_create(parent)){
@@ -76,36 +89,85 @@ class Settings{
         init_wifi_page();
 
         lv_event_send(lv_obj_get_child(lv_obj_get_child(lv_menu_get_cur_sidebar_page(menu), 0), 0), LV_EVENT_CLICKED, nullptr);  
+		std::ifstream file;
+		file.open(R"(../schemas/connectionAdminInfo.schema.json)", std::ifstream::in);
+		if(file.is_open()){
+			file >> connectionAdminInfoSchema;
+			file.close();
+		}else{
+			std::cout << "ERROR: could not open connectionAdminInfo";
+		}
+				
+		file.open(R"(../schemas/connectionRevoke.schema.json)", std::ifstream::in);
+		if(file.is_open()){
+			file >> connectionRevokeSchema;
+			file.close();
+		}
+			
+		file.open(R"(../schemas/connectionPermission.schema.json)", std::ifstream::in);
+		if(file.is_open()){
+			file >> connectionPermissionSchema;
+			file.close();
+		}
     }
 	void connectToAdminApp(){
-		static auto async_app_connect_handle = std::async(std::launch::async, [=]{
+		auto async_app_connect_handle = std::async(std::launch::async, [=]{
+		isConnectingToAdmin = true;
 		std::stringstream ss;
-		auto ip_res = run_async_cmd("hostname -I | awk '{ print $1 }' ").get();
-		printf("ip of pi: %s\n",ip_res.c_str());
-		ss << "nmap --iflist | grep "+ip_res;
-
-		auto ips_res = run_async_cmd(ss.str().c_str()).get();
-	    ss.str("");
-		ss.clear();
-		ss << "echo \""+ ips_res+"\"| awk '{print $3}'";
-		ips_res = run_async_cmd(ss.str().c_str()).get();
-		ips_res = ips_res.substr(0,strlen(ips_res.c_str())-2);
-		printf("ips: %s\n",ips_res.c_str());
+		if(ip == "")ip = run_async_cmd("hostname -I | awk '{ print $1 }' ").get();
+		printf("ip of pi: %s\n",ip.c_str());
+		
+		ss << "nmap --iflist | grep "+ip;
+        if(ips == ""){
+			auto ips_res = run_async_cmd(ss.str().c_str()).get();
+			ss.str("");
+			ss.clear();
+			ss << "echo \""+ ips_res+"\"| awk '{print $3}'";
+			ips_res = run_async_cmd(ss.str().c_str()).get();
+			ips_res = ips_res.substr(0,strlen(ips_res.c_str())-2);
+			ips = ips_res;
+		}
+		printf("ips: %s\n",ips.c_str());
 		ss.str("");
 		ss.clear();
-		ss << "nmap --open -p 6969 "+ips_res+" -oG - | grep \"/open\" | awk '{ print $2 }'";
+		ss << "nmap --open -p 6969 "+ips+" -oG - | grep \"/open\" | awk '{ print $2 }'";
 		auto app_ip_res = run_async_cmd(ss.str().c_str()).get();
 		app_ip_res = app_ip_res.substr(0,strlen(app_ip_res.c_str())-1);
 		printf("ip of admin app: %s\n",app_ip_res.c_str());
 		if(app_ip_res != "") ws = WebSocket::from_url("ws://"+app_ip_res+":6969");
+		if(ws == NULL) isConnectingToAdmin = false;
 		return 0;
 	 });			
+	}
+	bool validateJSON(json& obj,int schema){
+		
+		json_validator validator(nullptr,nlohmann::json_schema::default_string_format_check);
+		switch(schema){
+			case Schemas::connectionAdminInfo:
+				validator.set_root_schema(connectionAdminInfoSchema);
+				return validator.validate(obj) != NULL;
+				break;
+			case Schemas::connectionRevoke:
+				validator.set_root_schema(connectionRevokeSchema);
+				return validator.validate(obj) != NULL;
+				break;
+			case Schemas::ConnectionPermission:
+				validator.set_root_schema(connectionPermissionSchema);
+				return validator.validate(obj) != NULL;
+				break;
+			default:
+				break;
+		}
+		
 	}
 	WebSocket::pointer getWebsocket(){
 		return ws;
 	}
 	bool isConnectedToWifi(){
 		return isConnected;
+	}
+	bool isConnectingToAdminApp(){
+		return isConnectingToAdmin;
 	}
     private:
 
@@ -542,7 +604,7 @@ void createSettingsTab(lv_obj_t* parent){
 void pollWebsocket(lv_timer_t* timer){
 	Settings* settings = (Settings*)timer->user_data;
 	WebSocket::pointer ws = settings->getWebsocket();
-	if(settings->isConnectedToWifi() && ws == NULL){
+	if(settings->isConnectedToWifi() && !settings->isConnectingToAdminApp() && ws == NULL){
 		settings->connectToAdminApp();
 	}
 		if(ws != NULL && ws->getReadyState() != WebSocket::CLOSED){
