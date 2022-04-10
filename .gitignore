@@ -72,8 +72,12 @@ Testing/
 CTestTestfile.cmake
 DartConfiguration.tcl
 build
-build/compile_commands.json
 demo
+schemas/include_gen/*
+schemas/cmake_install.cmake
+schemas/CTestTestfile.cmake
+schemas/Makefile
+schemas/CMakeFiles
 #tests
 tests/CMakeFiles/
 tests/cmake_install.cmake

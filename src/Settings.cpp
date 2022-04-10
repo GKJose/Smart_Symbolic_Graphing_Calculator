@@ -20,9 +20,10 @@
 #include <sstream>
 #include <nlohmann/json-schema.hpp>
 #include <fstream>
+#include <schemas.hpp>
 
 using easywsclient::WebSocket;
-using json = nlohmann::json;
+using nlohmann::json;
 using nlohmann::json_schema::json_validator;
 
 void pollWebsocket(lv_timer_t* timer);
@@ -50,11 +51,13 @@ enum Schemas{
 	connectionRevoke,
 	ConnectionPermission
 };
+using namespace schemas;
 class Settings{
     using container = lv_obj_t;
     using page = lv_obj_t;
     using section = lv_obj_t;
     using wifi_mac_address = std::string;
+    
     lv_obj_t *parent, *menu, *root_page, *sub_display_page, *sub_misc_page, *sub_about_page, *sub_wifi_page;
     /// maps used for gaining information relating to UI elements and network information.
     std::map<section*, std::vector<container*>> container_map;
@@ -68,9 +71,10 @@ class Settings{
 	bool isConnectingToAdmin;
 	std::string ip;
 	std::string ips;
-	json connectionAdminInfoSchema;
-	json connectionRevokeSchema;
-	json connectionPermissionSchema;
+	// json connectionAdminInfoSchema = connectionAdminInfoStr;
+	// json connectionRevokeSchema = connectionRevokeStr;
+	// json connectionPermissionSchema = connectionPermissionStr;
+
     public:
 
     Settings(lv_obj_t* parent):parent(parent),menu(lv_menu_create(parent)){
@@ -89,26 +93,6 @@ class Settings{
         init_wifi_page();
 
         lv_event_send(lv_obj_get_child(lv_obj_get_child(lv_menu_get_cur_sidebar_page(menu), 0), 0), LV_EVENT_CLICKED, nullptr);  
-		std::ifstream file;
-		file.open(R"(../schemas/connectionAdminInfo.schema.json)", std::ifstream::in);
-		if(file.is_open()){
-			file >> connectionAdminInfoSchema;
-			file.close();
-		}else{
-			std::cout << "ERROR: could not open connectionAdminInfo";
-		}
-				
-		file.open(R"(../schemas/connectionRevoke.schema.json)", std::ifstream::in);
-		if(file.is_open()){
-			file >> connectionRevokeSchema;
-			file.close();
-		}
-			
-		file.open(R"(../schemas/connectionPermission.schema.json)", std::ifstream::in);
-		if(file.is_open()){
-			file >> connectionPermissionSchema;
-			file.close();
-		}
     }
 	void connectToAdminApp(){
 		auto async_app_connect_handle = std::async(std::launch::async, [=]{

@@ -72,6 +72,7 @@
         "codecvt": "cpp",
         "unordered_set": "cpp",
         "valarray": "cpp",
-        "csignal": "cpp"
+        "csignal": "cpp",
+        "*.out": "cpp"
     }
 }
