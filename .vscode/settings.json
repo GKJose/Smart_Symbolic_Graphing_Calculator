@@ -73,6 +73,9 @@
         "unordered_set": "cpp",
         "valarray": "cpp",
         "csignal": "cpp",
-        "*.out": "cpp"
+        "*.out": "cpp",
+        "forward_list": "cpp",
+        "shared_mutex": "cpp",
+        "span": "cpp"
     }
 }
