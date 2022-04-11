@@ -100,7 +100,6 @@ class Settings{
 		std::stringstream ss;
 		if(ip == "")ip = run_async_cmd("hostname -I | awk '{ print $1 }' ").get();
 		printf("ip of pi: %s\n",ip.c_str());
-		
 		ss << "nmap --iflist | grep "+ip;
         if(ips == ""){
 			auto ips_res = run_async_cmd(ss.str().c_str()).get();

@@ -1,10 +1,10 @@
 
-set(SCHEMA_HEADER "#ifndef SCHEMA_H\n#define SCHEMA_H\n#include<string>\nnamespace schemas{\n")
+set(SCHEMA_HEADER "#ifndef SCHEMA_H\n#define SCHEMA_H\n#include<string>\n#include <nlohmann/json.hpp>\nnamespace schemas{\n")
 
 function(schema_gen file_input)
     set(schema_path ${CMAKE_CURRENT_LIST_DIR}/${file_input}.schema.json)
     set(out_path ${CMAKE_CURRENT_LIST_DIR}/include_gen/${file_input}.out)
-    set(SCHEMA_HEADER "${SCHEMA_HEADER}const nlohmann::json ${file_input}Schema =\n#include \"${out_path}\"\n\;\n" PARENT_SCOPE)
+    set(SCHEMA_HEADER "${SCHEMA_HEADER}const nlohmann::json ${file_input}Schema = nlohmann::json::parse(\n#include \"${out_path}\"\n)\;\n" PARENT_SCOPE)
     make_includable(${schema_path} ${out_path})
 endfunction()
 
