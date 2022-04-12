@@ -157,6 +157,11 @@ class Settings{
 	bool isConnectingToAdminApp(){
 		return isConnectingToAdmin;
 	}
+	void sendDataToAdminApp(std::string data){
+		if(!ws.is_empty() && ws.value()->getReadyState() == WebSocket::OPEN){
+			ws.value()->send(data);
+		}
+	}
     private:
 
     static void back_event_handler(lv_event_t * e){}
