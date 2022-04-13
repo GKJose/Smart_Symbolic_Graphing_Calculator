@@ -4,6 +4,7 @@ SET(CMAKE_CXX_STANDARD 14)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 include(CTest)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake_includes/includeconv.cmake)
 
 option(GIAC_ENABLE "Enable Giac library" ON)
 option(PI_ENABLE "Enable compiling/linking for the Raspberry PI Zero 2 W" OFF)
@@ -75,6 +76,9 @@ else()
     set(ENABLE_WINDOWS 0)
 endif()
 configure_file(calc_conf.h.in calc_conf.h @ONLY)
+
+# Generate includable schemas
+add_subdirectory(schemas)
 
 message(STATUS "CMAKE BUILD TYPE: " ${CMAKE_BUILD_TYPE})
 set(JSON_BuildTests OFF CACHE INTERNAL "")

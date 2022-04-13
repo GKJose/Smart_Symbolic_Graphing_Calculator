@@ -12,11 +12,11 @@
             "type": "object",
             "properties": {
                 "functionRestrictionsEnable": {
-                    "description": "Enable/Disable function whitelisting",
+                    "description": "Enable/Disable function blacklisting",
                     "type": "boolean"
                 },
                 "graphingRestrictionsEnable": {
-                    "description": "Enable/Disable function plotting on the graphing tab",
+                    "description": "Enable/Disable function plotting capabilities blacklisting",
                     "type": "boolean"
                 },
                 "historyTrackingEnable": {
@@ -42,8 +42,8 @@
             },
             "required": ["functionRestrictionsEnable", "graphingRestrictionsEnable", "historyTrackingEnable", "screenCaptureEnable", "remoteConnectionEnable", "settingOverrideEnable", "payloadEnable"]
         },
-        "functionWhitelist": {
-            "description": "If function whitelisting was enabled, this contains a list of allowed functions",
+        "functionBlacklist": {
+            "description": "If function blacklisting was enabled, this contains a list of banned functions",
             "type": "array",
             "items": {
                 "type": "string"
@@ -57,8 +57,8 @@
                     "description": "Enable/Disable graphing functionality in its entirety (disable graphing tab)",
                     "type": "boolean"
                 },
-                "graphingWhitelist": {
-                    "description": "An array containing whitelisted graphing functionality",
+                "graphingBlacklist": {
+                    "description": "An array containing blacklisted graphing functionality",
                     "type": "array",
                     "items": {
                         "type": "string"
