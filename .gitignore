@@ -78,6 +78,8 @@ schemas/cmake_install.cmake
 schemas/CTestTestfile.cmake
 schemas/Makefile
 schemas/CMakeFiles
+image.bin
+image.bmp
 #tests
 tests/CMakeFiles/
 tests/cmake_install.cmake

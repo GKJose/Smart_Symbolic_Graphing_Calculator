@@ -68,7 +68,7 @@ class Settings{
     std::map<page*, std::vector<section*>> section_map;
     std::map<container*, WifiNetworkInfo> network_map;
     struct {Option<WifiNetworkInfo> info; int num;} connected_network;
-    std::future<int> async_wifi_scan_handle, async_wifi_connect_handle, async_app_connect_handle;
+    std::future<int> async_wifi_scan_handle, async_wifi_connect_handle, async_app_connect_handle, async_screenshot_handle;
     std::vector<WifiNetworkInfo> available_wifi_networks;
     Option<WebSocket::pointer> ws = OptNone;
 	bool isConnected;
@@ -173,6 +173,25 @@ class Settings{
 	json* getssgcDataJson(){
 		return &ssgcData;
 	}
+
+    void screenshot_handle(){
+        async_screenshot_handle = std::async(std::launch::async, [=]{
+            json ssgcData = this->ssgcData;
+            std::size_t buf_size = lv_snapshot_buf_size_needed(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
+            lv_img_dsc_t* snapshot = lv_snapshot_take(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
+            std::vector<unsigned char> raw_data(snapshot->data, snapshot->data + buf_size);
+            std::ofstream out("image.bin");
+            out.write(reinterpret_cast<const char*>(&raw_data[0]), raw_data.size()*sizeof(unsigned char));
+            auto poggers = run_async_cmd("convert -size 320x240 -depth 8 bgra:image.bin image.bmp").get();
+            std::ifstream inny("image.bmp", std::ios::in | std::ios::binary);
+            std::vector<uint8_t> contents((std::istreambuf_iterator<char>(inny)), std::istreambuf_iterator<char>());
+            auto size = contents.size();
+            ssgcData["data"] = base64_encode(contents.data(), contents.size(), false);
+            lv_snapshot_free(snapshot);
+            this->sendDataToAdminApp(ssgcData.dump());
+            return 0;
+        });
+    }
     private:
 
     static void back_event_handler(lv_event_t * e){}
@@ -623,14 +642,7 @@ void pollAdminApp(lv_timer_t* timer){
 }
 void takeScreenshot(lv_timer_t* timer){
 	Settings* settings = (Settings*)timer->user_data;
-	json ssgcData = *settings->getssgcDataJson();
-    std::size_t buf_size = lv_snapshot_buf_size_needed(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
-	lv_img_dsc_t* snapshot = lv_snapshot_take(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
-	ssgcData["data"] = base64_encode(snapshot->data,buf_size,false);
-	lv_snapshot_free(snapshot);
-	settings->sendDataToAdminApp(ssgcData.dump());
-	
-	
+    settings->screenshot_handle();
 }
 void pollWebsocket(lv_timer_t* timer){
 	Settings* settings = (Settings*)timer->user_data;
