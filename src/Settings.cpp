@@ -624,8 +624,9 @@ void pollAdminApp(lv_timer_t* timer){
 void takeScreenshot(lv_timer_t* timer){
 	Settings* settings = (Settings*)timer->user_data;
 	json ssgcData = *settings->getssgcDataJson();
+    std::size_t buf_size = lv_snapshot_buf_size_needed(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
 	lv_img_dsc_t* snapshot = lv_snapshot_take(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
-	ssgcData["data"] = base64_encode(snapshot->data,snapshot->data_size,false);
+	ssgcData["data"] = base64_encode(snapshot->data,buf_size,false);
 	lv_snapshot_free(snapshot);
 	settings->sendDataToAdminApp(ssgcData.dump());
 	
