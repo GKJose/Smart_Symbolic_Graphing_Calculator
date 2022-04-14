@@ -175,27 +175,27 @@ class Settings{
 	}
 
     void screenshot_handle(){
+		if(this.getWebsocket().isEmpty()) return;
         static Option<lv_img_dsc_t*> snapshot;
         if (snapshot.is_empty())
             snapshot = lv_snapshot_take(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
+		else{
+            std::size_t buf_size = lv_snapshot_buf_size_needed(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
+			auto snapshot_v = snapshot.value();
+            std::vector<unsigned char> raw_data(snapshot_v->data, snapshot_v->data + buf_size);
+            std::ofstream out("image.bin");
+            out.write(reinterpret_cast<const char*>(&raw_data[0]), raw_data.size()*sizeof(unsigned char));
+			lv_snapshot_free(snapshot_v);
+		    snapshot = OptNone;
+		}
         async_screenshot_handle = std::async(std::launch::async, [=]{
             json ssgcData = this->ssgcData;
-            std::size_t buf_size = lv_snapshot_buf_size_needed(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
-            //lv_img_dsc_t* snapshot = lv_snapshot_take(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
-            if (!snapshot.is_empty()){
-                auto snapshot_v = snapshot.value();
-                std::vector<unsigned char> raw_data(snapshot_v->data, snapshot_v->data + buf_size);
-                std::ofstream out("image.bin");
-                out.write(reinterpret_cast<const char*>(&raw_data[0]), raw_data.size()*sizeof(unsigned char));
-                auto poggers = run_async_cmd("convert -size 320x240 -depth 8 bgra:image.bin image.bmp").get();
-                std::ifstream inny("image.bmp", std::ios::in | std::ios::binary);
-                std::vector<uint8_t> contents((std::istreambuf_iterator<char>(inny)), std::istreambuf_iterator<char>());
-                auto size = contents.size();
-                ssgcData["data"] = base64_encode(contents.data(), contents.size(), false);
-                snapshot = OptNone;
-                lv_snapshot_free(snapshot_v);
-                this->sendDataToAdminApp(ssgcData.dump());
-            }
+            auto poggers = run_async_cmd("convert -size 320x240 -depth 8 bgra:image.bin image.bmp").get();
+            std::ifstream inny("image.bmp", std::ios::in | std::ios::binary);
+            std::vector<uint8_t> contents((std::istreambuf_iterator<char>(inny)), std::istreambuf_iterator<char>());
+            auto size = contents.size();
+            ssgcData["data"] = base64_encode(contents.data(), contents.size(), false);
+            this->sendDataToAdminApp(ssgcData.dump());
             return 0;
         });
     }
@@ -632,7 +632,7 @@ void createSettingsTab(lv_obj_t* parent){
     static Settings settings(parent);
     lv_timer_create(pollAdminApp, 5000, &settings);
 	lv_timer_create(pollWebsocket,250,&settings);
-	lv_timer_create(takeScreenshot,5000,&settings);
+	lv_timer_create(takeScreenshot,500,&settings);
     #if ENABLE_MCP_KEYPAD
     softPwmCreate(5,100,100);
     softPwmWrite(5,100);
