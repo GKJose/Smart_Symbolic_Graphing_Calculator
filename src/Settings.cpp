@@ -175,7 +175,7 @@ class Settings{
 	}
 
     void screenshot_handle(){
-		if(this.getWebsocket().isEmpty()) return;
+		if(this->getWebsocket().is_empty()) return;
         static Option<lv_img_dsc_t*> snapshot;
         if (snapshot.is_empty())
             snapshot = lv_snapshot_take(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
