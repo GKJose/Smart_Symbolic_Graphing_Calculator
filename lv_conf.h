@@ -42,7 +42,7 @@
 #define LV_MEM_CUSTOM      0
 #if LV_MEM_CUSTOM == 0
 /*Size of the memory available for `lv_mem_alloc()` in bytes (>= 2kB)*/
-#  define LV_MEM_SIZE    (128U * 1024U)          /*[bytes]*/
+#  define LV_MEM_SIZE    (1000U * 1000U)          /*[bytes]*/
 
 /*Set an address for the memory pool instead of allocating it as a normal array. Can be in external SRAM too.*/
 #  define LV_MEM_ADR          0     /*0: unused*/
@@ -148,19 +148,19 @@ e.g. "stm32f769xx.h" or "stm32f429xx.h"*/
  *LV_LOG_LEVEL_ERROR       Only critical issue, when the system may fail
  *LV_LOG_LEVEL_USER        Only logs added by the user
  *LV_LOG_LEVEL_NONE        Do not log anything*/
-#  define LV_LOG_LEVEL    LV_LOG_LEVEL_WARN
+#  define LV_LOG_LEVEL    LV_LOG_LEVEL_USER
 /*1: Print the log with 'printf';
  *0: User need to register a callback with `lv_log_register_print_cb()`*/
 #  define LV_LOG_PRINTF   1
 
 /*Enable/disable LV_LOG_TRACE in modules that produces a huge number of logs*/
-#  define LV_LOG_TRACE_MEM            1
-#  define LV_LOG_TRACE_TIMER          1
+#  define LV_LOG_TRACE_MEM            0
+#  define LV_LOG_TRACE_TIMER          0
 #  define LV_LOG_TRACE_INDEV          1
 #  define LV_LOG_TRACE_DISP_REFR      1
-#  define LV_LOG_TRACE_EVENT          1
+#  define LV_LOG_TRACE_EVENT          0
 #  define LV_LOG_TRACE_OBJ_CREATE     1
-#  define LV_LOG_TRACE_LAYOUT         1
+#  define LV_LOG_TRACE_LAYOUT         0
 #  define LV_LOG_TRACE_ANIM           1
 
 #endif  /*LV_USE_LOG*/
@@ -505,6 +505,7 @@ e.g. "stm32f769xx.h" or "stm32f429xx.h"*/
 /*Enable the examples to be built with the library*/
 #define LV_BUILD_EXAMPLES   1
 #define LV_INDEV_POINT_MARKER 3
+#define CONFIG_LV_USE_SNAPSHOT 1
 /*--END OF LV_CONF_H--*/
 
 #endif /*LV_CONF_H*/
