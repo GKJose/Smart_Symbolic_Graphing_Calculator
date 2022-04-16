@@ -23,44 +23,28 @@
 #include <fstream>
 #include <schemas.hpp>
 #include <base64.h>
+#include <state.hxx>
 
 using easywsclient::WebSocket;
 using nlohmann::json;
 using nlohmann::json_schema::json_validator;
 
-void pollWebsocket(lv_timer_t* timer);
-void pollAdminApp(lv_timer_t* timer);
-void takeScreenshot(lv_timer_t* timer);
+// void pollWebsocket(lv_timer_t* timer);
+// void pollAdminApp(lv_timer_t* timer);
+// void takeScreenshot(lv_timer_t* timer);
 lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char * txt, lv_menu_builder_variant_t builder_variant);
 lv_obj_t * create_slider(lv_obj_t * parent, const char * icon, const char * txt, int32_t min, int32_t max, int32_t val);
 lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char * txt, bool chk);
 lv_obj_t * create_button(lv_obj_t * parent, const char * txt);
 
-
-struct WifiNetworkInfo{
-    std::string mac_address;
-    std::string ssid;
-    int connection_strength;
-    bool has_psk;
-};
-
-enum WifiConnectionResult{
-    ConnectionFailure,
-    InternalConnectionFailure,
-    ConnectionSuccessWithInternet,
-    ConnectionSuccessWithoutInternet
-};
-enum Schemas{
-	connectionAdminInfo,
-	connectionRevoke,
-	ConnectionPermission
-};
 using namespace schemas;
 class Settings{
     using container = lv_obj_t;
     using page = lv_obj_t;
     using section = lv_obj_t;
     using wifi_mac_address = std::string;
+    using WifiNetworkInfo = calc_state::wifi::WifiNetworkInfo;
+    using WifiConnectionResult = calc_state::wifi::WifiConnectionResult;
     
     lv_obj_t *parent, *menu, *root_page, *sub_display_page, *sub_misc_page, *sub_about_page, *sub_wifi_page,*sub_name_page;
     /// maps used for gaining information relating to UI elements and network information.
@@ -70,18 +54,15 @@ class Settings{
     struct {Option<WifiNetworkInfo> info; int num;} connected_network;
     std::future<int> async_wifi_scan_handle, async_wifi_connect_handle, async_app_connect_handle, async_screenshot_handle;
     std::vector<WifiNetworkInfo> available_wifi_networks;
-    Option<WebSocket::pointer> ws = OptNone;
-	bool isConnected;
-	bool isConnectingToAdmin;
-	std::string ip;
-	std::string ips;
-	json ssgcData = R"({"ssgcType":"clientData",
-					 "clientIP":"",
-					 "clientName":"",
-					 "data":""})"_json;
-	// json connectionAdminInfoSchema = connectionAdminInfoStr;
-	// json connectionRevokeSchema = connectionRevokeStr;
-	// json connectionPermissionSchema = connectionPermissionStr;
+    // Option<WebSocket::pointer> ws = OptNone;
+	// bool isConnected;
+	// bool isConnectingToAdmin;
+	// std::string ip;
+	// std::string ips;
+	// json ssgcData = R"({"ssgcType":"clientData",
+	// 				 "clientIP":"",
+	// 				 "clientName":"",
+	// 				 "data":""})"_json;
 
     public:
 
@@ -102,100 +83,10 @@ class Settings{
 
         lv_event_send(lv_obj_get_child(lv_obj_get_child(lv_menu_get_cur_sidebar_page(menu), 0), 0), LV_EVENT_CLICKED, nullptr);  
     }
-	void connectToAdminApp(){
-		async_app_connect_handle = std::async(std::launch::async, [=]{
-            if (!ws.is_empty()) return 0; // If a websocket connection is already made, do not do it again.
-		isConnectingToAdmin = true;
-		std::stringstream ss;
-        if (ip == "") {
-            ip = run_async_cmd("ip route get 1.2.3.4 | awk '{print $7}'").get();
-            ip.erase(std::remove(ip.begin(), ip.end(), '\n'), ip.end());
-        }
-		ssgcData["clientIP"] = ip;
-        std::cout << "ip of device: " << ip << "\n";
-        if(ips == ""){
-            ss << "nmap --iflist | grep " << ip << "| awk '{print $3}'";
-			auto ips_res = run_async_cmd(ss.str()).get();
-            ips_res.erase(std::remove(ips_res.begin(), ips_res.end(), '\n'), ips_res.end());
-			ips = ips_res;
-		}
-        std::cout << "ips: " << ips << "\n";
-		ss.str(""); ss.clear();
-		ss << "nmap --open -p 6969 " << ips << " -oG - | grep \"/open\" | awk '{ print $2 }'";
-		auto app_ip_res = run_async_cmd(ss.str()).get();
-        app_ip_res.erase(std::remove(app_ip_res.begin(), app_ip_res.end(), '\n'), app_ip_res.end());
-        if (app_ip_res == ""){
-            std::cout << "Admin App not found.\n";
-            ws = OptNone;
-        } else {
-            std::cout << "ip of admin app: " << app_ip_res << "\n";
-		    if(app_ip_res != "") ws = WebSocket::from_url("ws://"+app_ip_res+":6969");
-        }
-		isConnectingToAdmin = false;
-		return 0;
-	 });			
-	}
-	bool validateJSON(json& obj,int schema){
-		
-		json_validator validator(nullptr,nlohmann::json_schema::default_string_format_check);
-		switch(schema){
-			case Schemas::connectionAdminInfo:
-				validator.set_root_schema(connectionAdminInfoSchema);
-				return validator.validate(obj) != NULL;
-				break;
-			case Schemas::connectionRevoke:
-				validator.set_root_schema(connectionRevokeSchema);
-				return validator.validate(obj) != NULL;
-				break;
-			case Schemas::ConnectionPermission:
-				validator.set_root_schema(connectionPermissionSchema);
-				return validator.validate(obj) != NULL;
-				break;
-			default:
-				break;
-		}
-		
-	}
-	Option<WebSocket::pointer> getWebsocket(){
-		return ws;
-	}
-	bool isConnectedToWifi(){
-		return isConnected;
-	}
-	bool isConnectingToAdminApp(){
-		return isConnectingToAdmin;
-	}
-	void sendDataToAdminApp(std::string data){
-		if(!ws.is_empty() && ws.value()->getReadyState() == WebSocket::OPEN){
-			ws.value()->send(data);
-		}
-	}
-	json* getssgcDataJson(){
-		return &ssgcData;
-	}
 
     void screenshot_handle(){
-		if(this->getWebsocket().is_empty()) return;
-        static Option<lv_img_dsc_t*> snapshot;
-        if (snapshot.is_empty())
-            snapshot = lv_snapshot_take(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
-		else{
-            std::size_t buf_size = lv_snapshot_buf_size_needed(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
-			auto snapshot_v = snapshot.value();
-            std::vector<unsigned char> raw_data(snapshot_v->data, snapshot_v->data + buf_size);
-            std::ofstream out("image.bin");
-            out.write(reinterpret_cast<const char*>(&raw_data[0]), raw_data.size()*sizeof(unsigned char));
-			lv_snapshot_free(snapshot_v);
-		    snapshot = OptNone;
-		}
         async_screenshot_handle = std::async(std::launch::async, [=]{
-            json ssgcData = this->ssgcData;
-            auto poggers = run_async_cmd("convert -size 320x240 -depth 8 bgra:image.bin image.bmp").get();
-            std::ifstream inny("image.bmp", std::ios::in | std::ios::binary);
-            std::vector<uint8_t> contents((std::istreambuf_iterator<char>(inny)), std::istreambuf_iterator<char>());
-            auto size = contents.size();
-            ssgcData["data"] = base64_encode(contents.data(), contents.size(), false);
-            this->sendDataToAdminApp(ssgcData.dump());
+            global_state.screenshot_handle();
             return 0;
         });
     }
@@ -246,7 +137,7 @@ class Settings{
         Settings* settings = static_cast<Settings*>(e->user_data);
         std::stringstream ss;
         if (id == 1){ // disconnect
-            settings->wifi_network_disconnect();
+            global_state.ws.disconnect();
             return;
         }
         // scan
@@ -261,25 +152,7 @@ class Settings{
         #if ENABLE_WIFI
         // asynchronously gather network info.
         settings->async_wifi_scan_handle = std::async(std::launch::async, [=]{
-            auto scan_res = run_async_cmd("wpa_cli -i wlan0 scan").get();
-            if (scan_res != "OK\n") return -1;
-            
-            auto scan_results = run_async_cmd("wpa_cli -i wlan0 scan_results").get();
-            std::regex re(R"rgx((.+)\t\w+\t(-\w+)\t(\[.+\])?\t([^\t\n]+))rgx"); // regex used to capture fields in scan_results
-            std::string wpa_name = "WPA2";
-            rti rend;
-            int submatches[] = {1, 2, 3, 4};
-            rti a(scan_results.begin(), scan_results.end(), re, submatches);
-            settings->available_wifi_networks.clear();
-            while (a != rend){
-                WifiNetworkInfo info;
-                info.mac_address = *a++;
-                info.connection_strength = db_to_percentage(std::stoi(*a++));
-                std::string flags = *a++;
-                info.has_psk = std::search(flags.begin(), flags.end(), wpa_name.begin(), wpa_name.end()) != flags.end();
-                info.ssid = *a++;
-                settings->available_wifi_networks.push_back(std::move(info));
-            }
+            settings->available_wifi_networks = calc_state::global_state.ws.scan();
             settings->update_wifi_networks(); // show new networks in the gui.
             return 0;
         });
@@ -375,14 +248,7 @@ class Settings{
     /// Disconnects the system from a wifi network.
     /// Updates the GUI to showcase the network disconnected
     void wifi_network_disconnect(){
-        #if ENABLE_WIFI
-        std::stringstream ss;
-        ss << "wpa_cli -i wlan0 disable_network " << connected_network.num;
-        run_async_cmd(ss.str()).get();
-        ss.str(""); ss.clear();
-        ss << "wpa_cli -i wlan0 delete_network " << connected_network.num;
-        run_async_cmd(ss.str()).get();
-        #endif
+        global_state.ws.disconnect();
 
         if (section_map.find(sub_wifi_page) == section_map.end()) return;
         if (section_map[sub_wifi_page].size() < 2) return; // wifi network ahs two sections
@@ -402,65 +268,31 @@ class Settings{
     WifiConnectionResult wifi_network_connect(WifiNetworkInfo const& network, std::string psk){
 
         if (section_map.find(sub_wifi_page) == section_map.end())
-            return InternalConnectionFailure;
+            return WifiConnectionResult::InternalConnectionFailure;
         if (section_map[sub_wifi_page].size() < 2) // wifi network has two sections
-            return InternalConnectionFailure;
+            return WifiConnectionResult::InternalConnectionFailure;
          auto current_network_sec = section_map[sub_wifi_page][0]; // current connection section.
         if (container_map[current_network_sec].size() != 2) 
-            return InternalConnectionFailure; // Should be two containers in the current network section
+            return WifiConnectionResult::InternalConnectionFailure; // Should be two containers in the current network section
         auto current_network_con = container_map[current_network_sec][0]; 
         auto network_btn_con = container_map[current_network_sec][1];
         lv_obj_t* current_network_label = lv_obj_get_child(current_network_con, 0); // label
         lv_obj_t* btnmat = lv_obj_get_child(network_btn_con, 0); // get the button matrix
 
-        #if ENABLE_WIFI
-        auto net_num = run_async_cmd("wpa_cli -i wlan0 add_network").get(); // returns an integer
-        this->connected_network.num = std::stoi(net_num);
-        this->connected_network.info = network;
-        std::stringstream ss;
-        ss << "wpa_cli -i wlan0 set_network " << this->connected_network.num << " ssid '\"" << network.ssid << "\"'";
-        
-        // set network ssid
-        if (run_async_cmd(ss.str()).get() != "OK\n")
-            return ConnectionFailure;
-
-        if (network.has_psk){
-            ss.str(""); ss.clear();
-            ss << "wpa_cli -i wlan0 set_network " << this->connected_network.num << " psk '\"" << psk << "\"'";
-            // set network password
-            if (run_async_cmd(ss.str()).get() != "OK\n")
-                return ConnectionFailure;
-        }
-        ss.str(""); ss.clear();
-        ss << "wpa_cli -i wlan0 enable_network " << this->connected_network.num;
-        if(run_async_cmd(ss.str()).get() != "OK\n")
-            return ConnectionFailure;
-        #endif
-
-        
-
-        // test internet connectivity
-        // pings a max of 3 times to check if the device is connected to the internet.
+        // Connects to a wifi network asynchronously
         async_wifi_connect_handle = std::async(std::launch::async, [=]{
-            auto ping_res = run_async_cmd("ping 1.1.1.1 -c3").get();
-            std::smatch sm;
-            int ping_count = 0;
-            if (std::regex_search(ping_res, sm, std::regex(R"~((\w+) received)~"))){
-                ping_count = std::stoi(sm[1].str()); // Captures the number of pings received.
-            }
-            //lv_label_set_text_fmt(current_network_label, "Connected to %s.", network.ssid.c_str()); 
+            global_state.ws.connect(network, psk);
             
             lv_label_set_text_fmt(current_network_label, 
                 "Connected to %s.\n%s.", 
                 network.ssid.c_str(), 
-                (ping_count > 0 ? "Internet Available" : "Internet Unavailable"));
-				isConnected = (ping_count > 0);
+                (global_state.ws.has_internet() ? "Internet Available" : "Internet Unavailable"));
             
             lv_btnmatrix_clear_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN); // make it visible again.
             return 0;
         });
         
-        return ConnectionSuccessWithInternet;
+        return WifiConnectionResult::ConnectionSuccessWithInternet;
     }
 
     void add_wifi_network(WifiNetworkInfo const& network){
@@ -580,17 +412,12 @@ class Settings{
         section* sec = create_section(sub_wifi_page);
         container* con = create_container(sec);
         lv_obj_t* label = lv_label_create(con);
-		 async_wifi_connect_handle = std::async(std::launch::async, [=]{
-            auto ping_res = run_async_cmd("ping 1.1.1.1 -c3").get();
-            std::smatch sm;
-            int ping_count = 0;
-            if (std::regex_search(ping_res, sm, std::regex(R"~((\w+) received)~"))){
-                ping_count = std::stoi(sm[1].str()); // Captures the number of pings received.
-            }
-			lv_label_set_text_fmt(label, "%s",(ping_count > 0 ? "Internet Available" : "Internet Unavailable"));
-			isConnected = (ping_count > 0);
-			return 0;
-		 });
+        lv_label_set_text_fmt(label, "%s",(global_state.ws.has_internet() ? "Internet Available" : "Internet Unavailable"));
+        async_wifi_connect_handle = std::async(std::launch::async, [=]{
+                global_state.ws.internet_connection_test();
+                lv_label_set_text_fmt(label, "%s",(global_state.ws.has_internet() ? "Internet Available" : "Internet Unavailable"));
+                return 0;
+        });
         lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL_CIRCULAR);
         lv_obj_set_flex_grow(label, 1);
 
@@ -619,6 +446,7 @@ class Settings{
         create_section(sub_wifi_page); 
         container* wifi_con = create_root_text_container(sub_wifi_page, LV_SYMBOL_WIFI, "Wifi");
     }
+
 	void init_name_page(){
 		sub_name_page = init_page();
 		section* sec = create_section(sub_name_page);
@@ -630,9 +458,24 @@ class Settings{
 void createSettingsTab(lv_obj_t* parent){
     
     static Settings settings(parent);
-    lv_timer_create(pollAdminApp, 5000, &settings);
-	lv_timer_create(pollWebsocket,250,&settings);
-	lv_timer_create(takeScreenshot,500,&settings);
+    lv_timer_create([](lv_timer_t* timer){
+        std::thread t(
+            calc_state::admin_app::poll_admin_app, 
+            (calc_state::admin_app::AdminState*)timer->user_data);
+        t.detach();
+    }, 5000, &global_state.as);
+	lv_timer_create([](lv_timer_t* timer){
+        std::thread t(
+            calc_state::admin_app::poll_websocket, 
+            (calc_state::admin_app::AdminState*)timer->user_data);
+        t.detach();
+    }, 250, &global_state.as);
+	lv_timer_create([](lv_timer_t* timer){
+        std::thread t(
+            calc_state::screenshot_cb, 
+            (calc_state::State*)timer->user_data);
+        t.detach();
+    }, 500, &global_state);
     #if ENABLE_MCP_KEYPAD
     softPwmCreate(5,100,100);
     softPwmWrite(5,100);
@@ -640,34 +483,8 @@ void createSettingsTab(lv_obj_t* parent){
 	
 }
 
-void pollAdminApp(lv_timer_t* timer){
-    Settings* settings = (Settings*)timer->user_data;
-    auto ws = settings->getWebsocket();
-    if (settings->isConnectedToWifi() && !settings->isConnectingToAdminApp() && ws.is_empty()){
-        settings->connectToAdminApp();
-    }
-}
-void takeScreenshot(lv_timer_t* timer){
-	Settings* settings = (Settings*)timer->user_data;
-    settings->screenshot_handle();
-}
-void pollWebsocket(lv_timer_t* timer){
-	Settings* settings = (Settings*)timer->user_data;
-	auto ws = settings->getWebsocket();
-    if (ws.is_empty()) return;
     
-    if (ws.value()->getReadyState() == WebSocket::CLOSED){
-        // make it a None optional value to make it attempt to reconnect to admin server.
-        ws = OptNone; 
-    } else if (ws.value()->getReadyState() != WebSocket::CLOSED){
-        ws.value()->poll();
-        ws.value()->dispatch([](const std::string & message){
-            json obj = json::parse(message.c_str());
-            printf(message.c_str());
-        });
-    }
-    
-}
+// }
 // static void switch_handler(lv_event_t * e)
 // {
 //     lv_event_code_t code = lv_event_get_code(e);
