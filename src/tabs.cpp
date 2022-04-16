@@ -3,8 +3,6 @@
 #include <graphing.hxx>
 #include <tabs.hxx>
 
-#if LV_USE_TABVIEW && LV_BUILD_EXAMPLES
-
 //Disable Scroll Animation Between Tabs
 // static void scroll_begin_event(lv_event_t * e)
 // {
@@ -59,11 +57,10 @@ lv_obj_t* lv_main_screen_tabs(void)
     /*Clear flags for graph scroll*/
 
     /*Add content to the tabs*/
-    Calculator::main_screen_driver(tab1);
+    Calculator::main_screen_driver(tab1, true);
     
     create_graph(tab2);
     createSettingsTab(tab3);
     return tabview;
 
 }
-#endif
