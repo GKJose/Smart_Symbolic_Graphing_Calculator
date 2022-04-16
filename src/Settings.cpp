@@ -12,6 +12,7 @@
 #include <option.hxx>
 #include <async_extensions.hxx>
 #include <regex>
+#include <lvgl.h>
 #include <lvgl/src/core/lv_event.h>
 #include <Calculator.h>
 #include <easywsclient.hpp>
@@ -21,6 +22,7 @@
 #include <nlohmann/json-schema.hpp>
 #include <fstream>
 #include <schemas.hpp>
+#include <base64.h>
 
 using easywsclient::WebSocket;
 using nlohmann::json;
@@ -28,6 +30,7 @@ using nlohmann::json_schema::json_validator;
 
 void pollWebsocket(lv_timer_t* timer);
 void pollAdminApp(lv_timer_t* timer);
+void takeScreenshot(lv_timer_t* timer);
 lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char * txt, lv_menu_builder_variant_t builder_variant);
 lv_obj_t * create_slider(lv_obj_t * parent, const char * icon, const char * txt, int32_t min, int32_t max, int32_t val);
 lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char * txt, bool chk);
@@ -59,19 +62,23 @@ class Settings{
     using section = lv_obj_t;
     using wifi_mac_address = std::string;
     
-    lv_obj_t *parent, *menu, *root_page, *sub_display_page, *sub_misc_page, *sub_about_page, *sub_wifi_page;
+    lv_obj_t *parent, *menu, *root_page, *sub_display_page, *sub_misc_page, *sub_about_page, *sub_wifi_page,*sub_name_page;
     /// maps used for gaining information relating to UI elements and network information.
     std::map<section*, std::vector<container*>> container_map;
     std::map<page*, std::vector<section*>> section_map;
     std::map<container*, WifiNetworkInfo> network_map;
     struct {Option<WifiNetworkInfo> info; int num;} connected_network;
-    std::future<int> async_wifi_scan_handle, async_wifi_connect_handle, async_app_connect_handle;
+    std::future<int> async_wifi_scan_handle, async_wifi_connect_handle, async_app_connect_handle, async_screenshot_handle;
     std::vector<WifiNetworkInfo> available_wifi_networks;
     Option<WebSocket::pointer> ws = OptNone;
 	bool isConnected;
 	bool isConnectingToAdmin;
 	std::string ip;
 	std::string ips;
+	json ssgcData = R"({"ssgcType":"clientData",
+					 "clientIP":"",
+					 "clientName":"",
+					 "data":""})"_json;
 	// json connectionAdminInfoSchema = connectionAdminInfoStr;
 	// json connectionRevokeSchema = connectionRevokeStr;
 	// json connectionPermissionSchema = connectionPermissionStr;
@@ -104,6 +111,7 @@ class Settings{
             ip = run_async_cmd("ip route get 1.2.3.4 | awk '{print $7}'").get();
             ip.erase(std::remove(ip.begin(), ip.end(), '\n'), ip.end());
         }
+		ssgcData["clientIP"] = ip;
         std::cout << "ip of device: " << ip << "\n";
         if(ips == ""){
             ss << "nmap --iflist | grep " << ip << "| awk '{print $3}'";
@@ -162,6 +170,35 @@ class Settings{
 			ws.value()->send(data);
 		}
 	}
+	json* getssgcDataJson(){
+		return &ssgcData;
+	}
+
+    void screenshot_handle(){
+		if(this->getWebsocket().is_empty()) return;
+        static Option<lv_img_dsc_t*> snapshot;
+        if (snapshot.is_empty())
+            snapshot = lv_snapshot_take(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
+		else{
+            std::size_t buf_size = lv_snapshot_buf_size_needed(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
+			auto snapshot_v = snapshot.value();
+            std::vector<unsigned char> raw_data(snapshot_v->data, snapshot_v->data + buf_size);
+            std::ofstream out("image.bin");
+            out.write(reinterpret_cast<const char*>(&raw_data[0]), raw_data.size()*sizeof(unsigned char));
+			lv_snapshot_free(snapshot_v);
+		    snapshot = OptNone;
+		}
+        async_screenshot_handle = std::async(std::launch::async, [=]{
+            json ssgcData = this->ssgcData;
+            auto poggers = run_async_cmd("convert -size 320x240 -depth 8 bgra:image.bin image.bmp").get();
+            std::ifstream inny("image.bmp", std::ios::in | std::ios::binary);
+            std::vector<uint8_t> contents((std::istreambuf_iterator<char>(inny)), std::istreambuf_iterator<char>());
+            auto size = contents.size();
+            ssgcData["data"] = base64_encode(contents.data(), contents.size(), false);
+            this->sendDataToAdminApp(ssgcData.dump());
+            return 0;
+        });
+    }
     private:
 
     static void back_event_handler(lv_event_t * e){}
@@ -582,6 +619,12 @@ class Settings{
         create_section(sub_wifi_page); 
         container* wifi_con = create_root_text_container(sub_wifi_page, LV_SYMBOL_WIFI, "Wifi");
     }
+	void init_name_page(){
+		sub_name_page = init_page();
+		section* sec = create_section(sub_name_page);
+		container* con = create_container(sec);
+		create_root_text_container(sub_name_page, LV_SYMBOL_WARNING, "Name");
+	}
 
 };
 void createSettingsTab(lv_obj_t* parent){
@@ -589,6 +632,7 @@ void createSettingsTab(lv_obj_t* parent){
     static Settings settings(parent);
     lv_timer_create(pollAdminApp, 5000, &settings);
 	lv_timer_create(pollWebsocket,250,&settings);
+	lv_timer_create(takeScreenshot,500,&settings);
     #if ENABLE_MCP_KEYPAD
     softPwmCreate(5,100,100);
     softPwmWrite(5,100);
@@ -603,7 +647,10 @@ void pollAdminApp(lv_timer_t* timer){
         settings->connectToAdminApp();
     }
 }
-
+void takeScreenshot(lv_timer_t* timer){
+	Settings* settings = (Settings*)timer->user_data;
+    settings->screenshot_handle();
+}
 void pollWebsocket(lv_timer_t* timer){
 	Settings* settings = (Settings*)timer->user_data;
 	auto ws = settings->getWebsocket();
