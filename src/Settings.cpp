@@ -395,6 +395,8 @@ class Settings{
         Settings* settings = (Settings*)e->user_data;
         ap.admin_info = &settings->admin_map[(container*)e->target]; 
         ap.settings = settings;
+        auto result = global_state.connect_to_admin_app(*ap->admin_info); // returns true if connected, otherwise false
+
         static const char* connect_text[] = {"Connect", ""};
 
         lv_msgbox_t* popup = (lv_msgbox_t*)lv_msgbox_create(
@@ -423,7 +425,6 @@ class Settings{
         lv_obj_add_event_cb(popup->btns, [](lv_event_t* e){
             AdminPair* ap = (AdminPair*)e->user_data;
             Settings* settings = ap->settings;
-            auto result = global_state.connect_to_admin_app(*ap->admin_info); // returns true if connected, otherwise false
             lv_msgbox_close(ap->popup);
             
             lv_obj_t* connection_result_popup = lv_msgbox_create(

@@ -163,7 +163,42 @@ namespace calc_state{
             {"clientName", _ph},
             {"data", _ph}
         };
-
+        const json connectionInfo = {
+            {"ssgcType", "connectionInfo"},
+            {"clientIP", _ph},
+            {"clientName", _ph},
+            {"clientVersion", {
+                {"major",0},
+                {"minor",0},
+                {"bugfix",0}
+            }}
+        };
+        const json connectionRequest = {
+            {"ssgcType", "connectionRequest"},
+            {"clientIP", _ph},
+            {"clientName", _ph},
+            {"clientVersion", {
+                {"major",0},
+                {"minor",0},
+                {"bugfix",0}
+            }}
+        };
+        const json connectionRevoke = {
+            {"ssgcType", "clientRevoke"},
+            {"revokeReason","clientDisconnection"},
+            {"clientIP", _ph},
+            {"clientName", _ph}
+        }; 
+        const json permissionAcceptReply = {
+            {"ssgcType","connectionPermissionAccept"},
+            {"clientIP", _ph},
+            {"clientName", _ph}
+        };
+        const json permissionRejectReply = {
+            {"ssgcType","connectionPermissionReject"},
+            {"clientIP", _ph},
+            {"clientName", _ph}
+        };
         bool validate(json const& obj, json const& schema);
         
     }
