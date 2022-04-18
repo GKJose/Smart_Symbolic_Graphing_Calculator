@@ -24,6 +24,7 @@
 #include <schemas.hpp>
 #include <base64.h>
 #include <state.hxx>
+#include <tuple>
 
 using easywsclient::WebSocket;
 using nlohmann::json;
@@ -44,13 +45,17 @@ class Settings{
     using section = lv_obj_t;
     using wifi_mac_address = std::string;
     using WifiNetworkInfo = calc_state::wifi::WifiNetworkInfo;
+    using AdminInfo = calc_state::admin_app::AdminInfo;
     using WifiConnectionResult = calc_state::wifi::WifiConnectionResult;
+    template<typename T>
+    using update_map = std::map<container*, T>;
     
-    lv_obj_t *parent, *menu, *root_page, *sub_display_page, *sub_misc_page, *sub_about_page, *sub_wifi_page,*sub_name_page;
+    lv_obj_t *parent, *menu, *root_page, *sub_display_page, *sub_misc_page, *sub_about_page, *sub_wifi_page, *sub_admin_page, *sub_name_page;
     /// maps used for gaining information relating to UI elements and network information.
     std::map<section*, std::vector<container*>> container_map;
     std::map<page*, std::vector<section*>> section_map;
-    std::map<container*, WifiNetworkInfo> network_map;
+    update_map<WifiNetworkInfo> network_map;
+    update_map<AdminInfo> admin_map;
     struct {Option<WifiNetworkInfo> info; int num;} connected_network;
     std::future<int> async_wifi_scan_handle, async_wifi_connect_handle, async_app_connect_handle, async_screenshot_handle;
     std::vector<WifiNetworkInfo> available_wifi_networks;
@@ -80,6 +85,7 @@ class Settings{
         init_misc_page();
         init_about_page();
         init_wifi_page();
+        init_admin_page();
 
         lv_event_send(lv_obj_get_child(lv_obj_get_child(lv_menu_get_cur_sidebar_page(menu), 0), 0), LV_EVENT_CLICKED, nullptr);  
     }
@@ -128,8 +134,8 @@ class Settings{
         return signal_quality;
     }
 
-    /// Currently called by a button, will eventually be called to refresh and find new networks.
-    static void add_wifi_cb(lv_event_t* e){
+    /// Refreshes and finds new networks.
+    static void wifi_scan_cb(lv_event_t* e){
         using rti = std::regex_token_iterator<std::string::iterator>;
         static int count = 0;
         LV_ASSERT(e->user_data != nullptr);
@@ -137,7 +143,7 @@ class Settings{
         Settings* settings = static_cast<Settings*>(e->user_data);
         std::stringstream ss;
         if (id == 1){ // disconnect
-            global_state.ws.disconnect();
+            settings->wifi_network_disconnect();
             return;
         }
         // scan
@@ -173,7 +179,7 @@ class Settings{
     static void remove_wifi_cb(lv_event_t* e){
         LV_ASSERT(e->user_data != nullptr);
         Settings* settings = static_cast<Settings*>(e->user_data);
-        settings->remove_wifi_network();
+        settings->generic_remove(settings->sub_wifi_page);
     }
 
     static void wifi_msgbox_cb(lv_event_t* e){
@@ -191,7 +197,6 @@ class Settings{
         ss << "Connect to " << s.settings->network_map[e->target].ssid;
         lv_msgbox_t* popup = (lv_msgbox_t*)lv_msgbox_create(nullptr, ss.str().c_str(), "Enter Password:", nullptr, true);
         lv_obj_t* textarea = lv_textarea_create((lv_obj_t*)popup);
-        // !n8zW&6#b3TaSQ
         lv_textarea_set_one_line(textarea, true);
         lv_textarea_set_password_mode(textarea, true);
         lv_obj_set_width(textarea, (popup->obj.coords.x2 - popup->obj.coords.x1) - 25);
@@ -208,9 +213,6 @@ class Settings{
             WifiNetworkInfo const& info = wp->settings->network_map[wp->con]; // get WifiNetworkInfo associated with the container
             std::string text(lv_textarea_get_text(wp->textarea));
             lv_msgbox_close(lv_obj_get_parent(wp->textarea)); // close the message box
-            // std::stringstream ss;
-            // ss << "Connecting to " << info.ssid;
-            // lv_obj_t* connecting_msgbox = lv_msgbox_create(nullptr, "Connecting.", ss.str().c_str(), nullptr, false);
             // connect to network with the password entered into the textarea
             wp->settings->wifi_network_connect(info, text);
         }, LV_EVENT_CLICKED, &s);
@@ -226,105 +228,142 @@ class Settings{
 
     /// Updates visible wifi networks in the GUI.
     void update_wifi_networks(){
-        if (section_map.find(sub_wifi_page) == section_map.end())
-            return;
-        if (section_map[sub_wifi_page].size() < 2) // wifi network has two sections
-            return;
-        auto sec = section_map[sub_wifi_page][1]; // wifi network section
-        if (container_map.find(sec) != container_map.end()) {
-            auto& con = container_map[sec]; // All wifi network containers.
-            // erase all conatainers.
+        static auto connect_strength_within = [](int lower, int upper, WifiNetworkInfo const& network){
+            return network.connection_strength > lower && network.connection_strength <= upper;
+        };
+        generic_update<WifiNetworkInfo>(sub_wifi_page, network_map, available_wifi_networks, 
+        [=](container* con, WifiNetworkInfo const& network){
+             create_text(con, network.has_psk ? (char*)&lock_icon : nullptr, network.ssid.c_str(), LV_MENU_ITEM_BUILDER_VARIANT_1);
+            if (connect_strength_within(0, 25, network)){
+                create_text(con,(char*)&wifi_signal_0_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
+            } else if (connect_strength_within(25, 50, network)){
+                create_text(con,(char*)&wifi_signal_1_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
+            } else if (connect_strength_within(50, 75, network)){
+                create_text(con,(char*)&wifi_signal_2_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
+            } else if (connect_strength_within(75, 100, network)){
+                create_text(con,(char*)&wifi_signal_3_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
+            }
+        },
+        wifi_msgbox_cb);
+    }
+
+    template<typename T>
+    void generic_update(
+        lv_obj_t* page,
+        std::map<container*, T>& m,
+        std::vector<T> const& data,
+        std::function<void(container*, T const&)> listitem_update_f,
+        lv_event_cb_t listitem_press_cb){
+        auto sec = section_map[page][1]; // list section;
+        if (container_map.find(sec) != container_map.end()){
+            auto& con = container_map[sec]; // vector of all containers in list.
             while (con.size() > 0){
                 lv_obj_del(con[con.size()-1]);
                 con.pop_back();
             }
         }
-        // create new empty containers
-        for (std::size_t i = 0; i < available_wifi_networks.size(); i++){
-            add_wifi_network(available_wifi_networks[i]);
+        // populate list
+        for (std::size_t i = 0; i < data.size(); i++){
+            generic_add<T>(page, m, data[i], listitem_update_f, listitem_press_cb);
         }
     }
     
     /// Disconnects the system from a wifi network.
     /// Updates the GUI to showcase the network disconnected
     void wifi_network_disconnect(){
-        global_state.ws.disconnect();
+        generic_disconnect<true>(
+            sub_wifi_page, 
+            [=](){global_state.ws.disconnect();},
+            "Not connected.");
+    }
 
-        if (section_map.find(sub_wifi_page) == section_map.end()) return;
-        if (section_map[sub_wifi_page].size() < 2) return; // wifi network ahs two sections
-        
-        auto current_network_sec = section_map[sub_wifi_page][0]; // current connection section.
-        if (container_map[current_network_sec].size() != 2) return; // Should be two containers in the current network section
-        auto current_network_con = container_map[current_network_sec][0];
-        auto network_btn_con = container_map[current_network_sec][1];
-        lv_obj_t* current_network_label = lv_obj_get_child(current_network_con, 0);
-        lv_obj_t* btnmat = lv_obj_get_child(network_btn_con, 0); // get the button matrix
-        lv_label_set_text(current_network_label, "Not connected.");
-        lv_btnmatrix_set_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN); // hide the button to keep users from clicking it.
+    template<bool IsBlocking>
+    void generic_disconnect(
+        lv_obj_t* page, 
+        std::function<void(void)> disconnect_backend_f,
+        const char disconnect_text[]){
+        auto first_sec = section_map[page][0]; 
+        auto first_con = container_map[first_sec][0];
+        auto second_con = container_map[first_sec][1];
+        if (IsBlocking){
+            disconnect_backend_f();
+        } else {
+            std::thread(disconnect_backend_f).detach();
+        }
+        lv_obj_t* first_label = lv_obj_get_child(first_con, 0);
+        lv_obj_t* btnmat = lv_obj_get_child(second_con, 0);
+        lv_label_set_text(first_label, disconnect_text);
+        lv_btnmatrix_set_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN);
     }
 
     /// Connect the system to the given network.
     /// Updates the GUI to showcase the new network connection and internet availability.
     WifiConnectionResult wifi_network_connect(WifiNetworkInfo const& network, std::string psk){
+        using connect_tuple = std::tuple<lv_obj_t*, lv_obj_t*>;
 
-        if (section_map.find(sub_wifi_page) == section_map.end())
-            return WifiConnectionResult::InternalConnectionFailure;
-        if (section_map[sub_wifi_page].size() < 2) // wifi network has two sections
-            return WifiConnectionResult::InternalConnectionFailure;
-         auto current_network_sec = section_map[sub_wifi_page][0]; // current connection section.
-        if (container_map[current_network_sec].size() != 2) 
-            return WifiConnectionResult::InternalConnectionFailure; // Should be two containers in the current network section
-        auto current_network_con = container_map[current_network_sec][0]; 
-        auto network_btn_con = container_map[current_network_sec][1];
-        lv_obj_t* current_network_label = lv_obj_get_child(current_network_con, 0); // label
-        lv_obj_t* btnmat = lv_obj_get_child(network_btn_con, 0); // get the button matrix
-
-        // Connects to a wifi network asynchronously
-        async_wifi_connect_handle = std::async(std::launch::async, [=]{
+        generic_connect<connect_tuple>(sub_wifi_page,
+        [=](lv_obj_t* sec){
+            auto current_network_con = container_map[sec][0];
+            auto network_btn_con = container_map[sec][1];
+            lv_obj_t* current_network_label = lv_obj_get_child(current_network_con, 0); // label
+            lv_obj_t* btnmat = lv_obj_get_child(network_btn_con, 0); // get the button matrix
+            return std::make_tuple(current_network_label, btnmat);
+        },
+        [=](connect_tuple v){
             global_state.ws.connect(network, psk);
-            
+            lv_obj_t* current_network_label, *btnmat;
+            std::tie(current_network_label, btnmat) = v;
             lv_label_set_text_fmt(current_network_label, 
                 "Connected to %s.\n%s.", 
                 network.ssid.c_str(), 
                 (global_state.ws.has_internet() ? "Internet Available" : "Internet Unavailable"));
             
             lv_btnmatrix_clear_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN); // make it visible again.
-            return 0;
         });
-        
+
         return WifiConnectionResult::ConnectionSuccessWithInternet;
     }
 
-    void add_wifi_network(WifiNetworkInfo const& network){
-        if (section_map.find(sub_wifi_page) == section_map.end())
-            return;
-        if (section_map[sub_wifi_page].size() < 2) // wifi network page has two sections.
-            return;
-        container* con = create_container(section_map[sub_wifi_page][1]);
-        network_map[con] = network; // add network to network_map
-        // Add lock image if the network is password-protected
-        create_text(con, network.has_psk ? (char*)&lock_icon : nullptr, network.ssid.c_str(), LV_MENU_ITEM_BUILDER_VARIANT_1);
-        //lv_obj_t* percentagio = lv_label_create(con);
-		if(network.connection_strength > 0 && network.connection_strength < 25){
-			create_text(con,(char*)&wifi_signal_0_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
-		}else if(network.connection_strength > 25 && network.connection_strength < 50){
-			create_text(con,(char*)&wifi_signal_1_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
-		}else if(network.connection_strength > 50 && network.connection_strength < 75){
-			create_text(con,(char*)&wifi_signal_2_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
-		}else{
-			create_text(con,(char*)&wifi_signal_3_icon,nullptr,LV_MENU_ITEM_BUILDER_VARIANT_1);
-		}
-        //lv_label_set_text_fmt(percentagio, "%d%%", network.connection_strength);
-        lv_obj_add_flag(con, LV_OBJ_FLAG_CLICKABLE);
-        lv_obj_add_event_cb(con, wifi_msgbox_cb, LV_EVENT_CLICKED, this);
+
+    template<typename T>
+    int generic_connect(
+        lv_obj_t* page, 
+        std::function<T(section*)> pre_thread_f,
+        std::function<void(T)> thread_f){
+
+        section* current_sec = section_map[page][0];    // first section
+        
+        T res = pre_thread_f(current_sec);
+
+        std::thread([=]{
+            thread_f(res);
+        }).detach();
+
+        return 0;
     }
 
-    void remove_wifi_network(){
-        if (section_map.find(sub_wifi_page) == section_map.end())
+    template<typename MapVal>
+    void generic_add(
+        lv_obj_t* page, 
+        std::map<container*, MapVal>& m, 
+        MapVal const& val, 
+        std::function<void(container*, MapVal const&)> post_f,
+        lv_event_cb_t press_callback){
+     
+        container* con = create_container(section_map[page][1]);
+        m[con] = val; // add item to map.
+        
+        post_f(con, val);
+        lv_obj_add_flag(con, LV_OBJ_FLAG_CLICKABLE);
+        lv_obj_add_event_cb(con, press_callback, LV_EVENT_CLICKED, this);
+    }
+
+    void generic_remove(lv_obj_t* page){
+        if (section_map.find(page) == section_map.end())
             return;
-        if (section_map[sub_wifi_page].size() < 2) // wifi network has two sections
+        if (section_map[page].size() < 2) // wifi network has two sections
             return;
-        auto sec = section_map[sub_wifi_page][1];
+        auto sec = section_map[page][1];
         if (container_map.find(sec) == container_map.end())
             return;
         auto& con = container_map[sec];
@@ -333,7 +372,130 @@ class Settings{
             lv_obj_del(container_map[sec][con.size()-1]);
             container_map[sec].pop_back();
         }
+    }
+
+    static void admin_scan_cb(lv_event_t* e){
+        using rti = std::regex_token_iterator<std::string::iterator>;
+        static int count = 0;
+        LV_ASSERT(e->user_data != nullptr);
+        uint16_t id = lv_btnmatrix_get_selected_btn(e->target);
+        Settings* settings = static_cast<Settings*>(e->user_data);
+
+        if (id == 1){ // disconnect button pressed
+            settings->admin_disconnect();
+        } else { // scan button pressed
+
+            settings->update_admin_page();
+        }
+    }
+
+    static void admin_msgbox_cb(lv_event_t* e){
+        using AdminPair = struct {Settings* settings; lv_obj_t* list; AdminInfo* admin_info; lv_obj_t* popup;};
+        static AdminPair ap;
+        Settings* settings = (Settings*)e->user_data;
+        ap.admin_info = &settings->admin_map[(container*)e->target]; 
+        ap.settings = settings;
+        static const char* connect_text[] = {"Connect", ""};
+
+        lv_msgbox_t* popup = (lv_msgbox_t*)lv_msgbox_create(
+            nullptr, 
+            ap.admin_info->name.c_str(), 
+            "Accept the following permissions to connect:", 
+            nullptr, 
+            true);
+        ap.popup = (lv_obj_t*)popup;
         
+        ap.list = lv_list_create((lv_obj_t*)popup);
+        lv_obj_set_size(ap.list, 180, 100);
+
+        auto permissions = global_state.as.get_permissions();
+
+        if (!permissions.is_empty()){
+            for (auto const& perm : permissions.value_ref_const()){
+                lv_list_add_text(ap.list, perm.c_str());
+            }
+        }
+        
+
+        popup->btns = lv_btnmatrix_create((lv_obj_t*)popup);
+        lv_btnmatrix_set_map(popup->btns, connect_text);
+        lv_btnmatrix_set_btn_ctrl_all(popup->btns, LV_BTNMATRIX_CTRL_CLICK_TRIG | LV_BTNMATRIX_CTRL_NO_REPEAT);
+        lv_obj_add_event_cb(popup->btns, [](lv_event_t* e){
+            AdminPair* ap = (AdminPair*)e->user_data;
+            Settings* settings = ap->settings;
+            auto result = global_state.connect_to_admin_app(*ap->admin_info); // returns true if connected, otherwise false
+            lv_msgbox_close(ap->popup);
+            lv_obj_t* connection_result_popup = lv_msgbox_create(
+                nullptr, 
+                result ? "Connection Successful" : "Connection Failure",
+                result ? "Successfully connected to an administrator." : "Unsuccessfully connected to an adminstrator.",
+                nullptr,
+                true);
+            lv_obj_center(connection_result_popup);
+            auto admin_sec = settings->section_map[settings->sub_admin_page][0];
+            auto current_admin_con = settings->container_map[admin_sec][0];
+            auto admin_btn_con = settings->container_map[admin_sec][1];
+            lv_obj_t* current_network_label = lv_obj_get_child(current_admin_con, 0); // label
+            lv_obj_t* btnmat = lv_obj_get_child(admin_btn_con, 0); // get the button matrix
+            if (result){
+                // Make the disconnect button visible if connection was successful
+                lv_btnmatrix_clear_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN);
+            }
+        }, LV_EVENT_CLICKED, &ap);
+
+        const lv_font_t * font = lv_obj_get_style_text_font(popup->btns, LV_PART_ITEMS);
+        lv_coord_t btn_h = lv_font_get_line_height(font) + LV_DPI_DEF / 10;
+        lv_obj_set_size(popup->btns, (2 * LV_DPI_DEF / 3), btn_h);
+        lv_obj_set_style_max_width(popup->btns, lv_pct(100), 0);
+        lv_obj_add_flag(popup->btns, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+        lv_obj_center((lv_obj_t*)popup);
+    }
+
+    /// Tries to search for administrators visible to the device.
+    /// Asynchronously displays the results on the GUI.
+    void update_admin_page(){
+
+        auto sec = section_map[sub_admin_page][0];
+        auto con = container_map[sec][2]; // textarea container
+        lv_obj_t* port_textarea = lv_obj_get_child(con, 0);
+        std::string* str = new std::string(lv_textarea_get_text(port_textarea));
+        if (str->size() > 0){
+            try {
+                // if this passes then the ip is indeed a number.
+                std::stoul(*str);
+            } catch (...){
+                lv_obj_t* msgbox = lv_msgbox_create(nullptr, "ERROR", "Invalid port number.", nullptr, true);
+                lv_obj_center(msgbox);
+                delete str;
+            }
+        }
+        std::thread([=]{
+            generic_update<AdminInfo>(
+                sub_admin_page,
+                admin_map,
+                global_state.as.scan(str->size() > 0 ? *str : "6969"), // this is blocking, but because this is in a new thread it doesn't matter.
+                [=](container* con, AdminInfo const& admin){
+                    create_text(con, nullptr, admin.name.c_str(), LV_MENU_ITEM_BUILDER_VARIANT_1);
+                    create_text(con, nullptr, admin.ip.c_str(), LV_MENU_ITEM_BUILDER_VARIANT_1);
+                },
+                admin_msgbox_cb
+                );
+                delete str; // thread has to clean up
+            }).detach();
+        
+    }
+
+    
+
+    /// Disconnects from the currently-connected administrator.
+    /// Updates the GUI to reflect the disconnection.
+    void admin_disconnect(){
+        generic_disconnect<false>(
+            sub_admin_page, 
+            [=]{global_state.as.disconnect();}, 
+            "Not connected."
+        );
     }
 
     page* init_page(){
@@ -441,10 +603,52 @@ class Settings{
         lv_obj_add_style(btnmat, &btnmat_style_bg, 0);
         lv_obj_add_style(btnmat, &btnmat_style, LV_PART_ITEMS);
         lv_obj_set_size(btnmat, 150, 50);
-        lv_obj_add_event_cb(btnmat, add_wifi_cb, LV_EVENT_VALUE_CHANGED, this);
+        lv_obj_add_event_cb(btnmat, wifi_scan_cb, LV_EVENT_VALUE_CHANGED, this);
 
         create_section(sub_wifi_page); 
         container* wifi_con = create_root_text_container(sub_wifi_page, LV_SYMBOL_WIFI, "Wifi");
+    }
+
+    void init_admin_page(){
+        static const char* btnmat_map[3] = {"Scan", "Disconnect", ""};
+        sub_admin_page = init_page();
+        section* sec = create_section(sub_admin_page);
+        container* con = create_container(sec);
+        lv_obj_t* label = lv_label_create(con);
+        lv_label_set_text(label, "Admin session search.");
+
+        container* btn_con = create_container(sec);
+        lv_obj_t* btnmat = lv_btnmatrix_create(btn_con);
+        
+        container* port_con = create_container(sec);
+        lv_obj_t* port_textarea = lv_textarea_create(port_con);
+
+        static lv_style_t btnmat_style_bg, btnmat_style;
+        // background style
+        lv_style_init(&btnmat_style_bg);
+        lv_style_set_pad_all(&btnmat_style_bg, 10);
+        lv_style_set_border_width(&btnmat_style_bg, 0);
+        lv_style_set_bg_opa(&btnmat_style_bg, LV_OPA_0);
+        // foreground style
+        lv_style_init(&btnmat_style);
+        lv_style_set_border_opa(&btnmat_style, LV_OPA_50);
+        lv_style_set_text_font(&btnmat_style, &lv_font_montserrat_12_subpx);
+        // button matrix setup
+        lv_btnmatrix_set_map(btnmat, btnmat_map);
+        lv_btnmatrix_set_btn_ctrl_all(btnmat, LV_BTNMATRIX_CTRL_CLICK_TRIG);
+        lv_btnmatrix_set_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN);
+        lv_btnmatrix_set_btn_width(btnmat, 1, 2);
+        lv_obj_add_style(btnmat, &btnmat_style_bg, 0);
+        lv_obj_add_style(btnmat, &btnmat_style, LV_PART_ITEMS);
+        lv_obj_set_size(btnmat, 150, 50);
+        lv_obj_add_event_cb(btnmat, admin_scan_cb, LV_EVENT_VALUE_CHANGED, this);
+        // port textarea setup
+        lv_textarea_set_one_line(port_textarea, true);
+        lv_textarea_set_placeholder_text(port_textarea, "PORT # (default: 6969)");
+        lv_obj_set_flex_grow(port_textarea, true);
+
+        create_section(sub_admin_page); // section to populate with admin info.
+        container* admin_con = create_root_text_container(sub_admin_page, LV_SYMBOL_TRASH, "Admin");
     }
 
 	void init_name_page(){
@@ -458,12 +662,12 @@ class Settings{
 void createSettingsTab(lv_obj_t* parent){
     
     static Settings settings(parent);
-    lv_timer_create([](lv_timer_t* timer){
-        std::thread t(
-            calc_state::admin_app::poll_admin_app, 
-            (calc_state::admin_app::AdminState*)timer->user_data);
-        t.detach();
-    }, 5000, &global_state.as);
+    // lv_timer_create([](lv_timer_t* timer){
+    //     std::thread t(
+    //         calc_state::admin_app::poll_admin_app, 
+    //         (calc_state::admin_app::AdminState*)timer->user_data);
+    //     t.detach();
+    // }, 5000, &global_state.as);
 	lv_timer_create([](lv_timer_t* timer){
         std::thread t(
             calc_state::admin_app::poll_websocket, 

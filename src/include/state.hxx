@@ -21,6 +21,8 @@
 #include <calc_conf.h>
 
 
+#define UNDEFINED_CODE_BREAK 0
+
 /// NOTE: None of the data structures & functions implemented below
 /// are asynchronous. Every call is blocking. Async is handled by the caller.
 namespace calc_state{
@@ -99,7 +101,7 @@ namespace calc_state{
         class AdminState {
             wifi::WifiState& ws;
             Option<AdminInfo> current_admin;
-            std::mutex connecting_mutex, scan_mutex;
+            std::mutex connecting_mutex, disconnecting_mutex, scan_mutex, permission_mutex, info_mutex;
 
             public:
             AdminState(wifi::WifiState& ws);
@@ -108,13 +110,36 @@ namespace calc_state{
             /// Sets current_admin on success.
             /// NOTE: This method is blocking.
             /// Calling this method is thread-safe
-            Option<easywsclient::WebSocket::pointer> connect_to_admin_app(AdminInfo const& admin);
+            #if UNDEFINED_CODE_BREAK
+            void connect(AdminInfo const& admin);
+            #else
+            Option<easywsclient::WebSocket::pointer> connect(AdminInfo& admin);
+            #endif
+
+            /// Disconnects from an admin app.
+            /// NOTE: This method is blocking
+            /// Calling this method is thread-safe.
+            void disconnect();
             /// Scans for administrators on the device's network.
             /// NOTE: This method is blocking.
-            /// Calling this method is thread-safe
-            std::vector<AdminInfo> scan(std::string const& port);
+            /// Calling this method is thread-safe.
+            std::vector<AdminInfo> scan(std::string const& port = "6969");
             bool is_connecting();
             bool is_connected() const;
+            /// Attempts to get permissions from the current admin.
+            /// Sends a JSON object that complies with the connectionPermission schema
+            /// Receives a connectionPermissionReply JSON object from an admin and returns the
+            /// permissions as a vector of strings.
+            /// NOTE: This method is blocking
+            /// Calling this method is thread-safe.
+            Option<std::vector<std::string>> get_permissions();
+            /// Attempts to get information about an admin.
+            /// Sends a JSON object that complies with the connectionRequest schema
+            /// Receives a adminInfo JSON object from an admin and returns the information
+            /// as an AdminInfo struct.
+            /// NOTE: This method is blocking
+            /// Calling this method is thread-safe.
+            Option<AdminInfo> get_admin_info(std::string const& ip);
             void send_data(std::string const& data) const;
 
             friend void poll_admin_app(AdminState* state);
@@ -143,6 +168,7 @@ namespace calc_state{
         
     }
 
+    /// Holds general state of the application.
     class State{
         std::mutex screenshot_mutex;
 
@@ -155,7 +181,7 @@ namespace calc_state{
         ///
         void take_screenshot();
         void screenshot_handle();
-        void connect_to_admin_app();
+        bool connect_to_admin_app(admin_app::AdminInfo& admin);
         
         friend void screenshot_cb(State* state);
     };

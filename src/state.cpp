@@ -1,5 +1,6 @@
 #include <state.hxx>
 #include <iostream>
+#include <schemas.hpp>
 
 #define _WS(rettype) rettype calc_state::wifi::WifiState::
 #define _WIFI_CALLBACK void calc_state::wifi::
@@ -47,7 +48,11 @@ _WS(int) db_to_percentage(int db){
 }
 
 _WS(bool) is_connected() const {
+    #if ENABLE_WIFI
     return _is_connected;
+    #else
+    return true; 
+    #endif
 }
 
 _WS(void) disconnect(){
@@ -80,14 +85,18 @@ _WS(void) obtain_ip_address(){
 }
 
 _WS(Option<std::string>) ip(){
+    #if ENABLE_WIFI
     if (connected_network.info.is_empty())
         return OptNone;
+    #endif
     return Option<std::string>(_ip);
 }
 
 _WS(Option<std::string>) ips(){
+    #if ENABLE_WIFI
     if (connected_network.info.is_empty())
         return OptNone;
+    #endif
     return Option<std::string>(_ips);
 }
 
@@ -126,14 +135,15 @@ _WS(calc_state::wifi::WifiConnectionResult) connect(WifiNetworkInfo const& netwo
         connected_network.num = -1;
         connected_network.info = OptNone;
         return ConnectionFailure;
-    }
-
+    }    
+    #endif
+    obtain_ip_address();
     internet_connection_test();
     if (_has_internet){
         return ConnectionSuccessWithInternet;
     }
-    #endif
     return ConnectionSuccessWithoutInternet;
+    
 }
 
 _WS(std::vector<calc_state::wifi::WifiNetworkInfo>) scan(){
@@ -171,12 +181,38 @@ _AS() AdminState(calc_state::wifi::WifiState& ws):ws(ws){
     
 }
 
-_AS(Option<easywsclient::WebSocket::pointer>) connect_to_admin_app(AdminInfo const& admin){
+#if UNDEFINED_CODE_BREAK
+_AS(void) connect(AdminInfo const& admin) {
+#else
+_AS(Option<easywsclient::WebSocket::pointer>) connect(AdminInfo& admin) {
+#endif 
     const std::lock_guard<std::mutex> guard(connecting_mutex);
     auto s = easywsclient::WebSocket::from_url("ws://" + admin.ip + ":" + admin.port);
+    #if UNDEFINED_CODE_BREAK
+    // current_admin = admin;
+    // current_admin.value_ref().socket = s;
+    if (s->getReadyState() == easywsclient::WebSocket::OPEN){
+        current_admin = admin;
+        current_admin.value_ref().socket = s;
+    } else {
+        current_admin = OptNone;
+    }
+    return;
+    #else
     if (s->getReadyState() != easywsclient::WebSocket::OPEN)
         return OptNone;
     return Option<easywsclient::WebSocket::pointer>(s);
+    #endif
+}
+
+_AS(void) disconnect(){
+    const std::lock_guard<std::mutex> guard(disconnecting_mutex);
+    /// TODO: Impement sending disconnection JSON to admin.
+    //send_data()
+    if (!current_admin.is_empty() && !current_admin.value_ref().socket.is_empty()){
+        current_admin.value_ref().socket.value_ref()->close();
+    }
+    current_admin = OptNone;
 }
 
 _AS(std::vector<calc_state::admin_app::AdminInfo>) scan(std::string const& port) {
@@ -185,7 +221,10 @@ _AS(std::vector<calc_state::admin_app::AdminInfo>) scan(std::string const& port)
     const std::lock_guard<std::mutex> guard(scan_mutex);
     std::regex re(R"rgx((.+)\n)rgx");
     std::stringstream ss;
+
+    #if ENABLE_WIFI
     if (!ws.is_connected()) return admin_vec();
+    #endif
 
     auto ip = ws.ip().value_ref();
     auto ips = ws.ips().value_ref();
@@ -198,7 +237,14 @@ _AS(std::vector<calc_state::admin_app::AdminInfo>) scan(std::string const& port)
     admin_vec vec;
     while (a != rend){
         /// TODO: Should send information json to admin.
-        vec.push_back(AdminInfo{ *a++ });
+        std::string admin_ip = *a++;
+        auto info = get_admin_info(admin_ip);
+        if (info.is_empty()){
+            vec.push_back(AdminInfo{ admin_ip, port, "UNKNOWN", OptNone });
+        } else {
+            info.value_ref().ip = admin_ip;
+            vec.push_back(std::move(info.value()));
+        }   
     }
     return vec;
 }
@@ -215,6 +261,18 @@ _AS(bool) is_connected() const {
     return !current_admin.is_empty() && !current_admin.value_ref_const().socket.is_empty();
 }
 
+_AS(Option<std::vector<std::string>>) get_permissions(){
+    const std::lock_guard<std::mutex> guard(permission_mutex);
+    /// TODO: Implement this function.
+    return OptNone;
+}
+
+_AS(Option<calc_state::admin_app::AdminInfo>) get_admin_info(std::string const& ip){
+    const std::lock_guard<std::mutex> guard(info_mutex);
+    /// TODO: Implement this function
+    return OptNone;
+}
+
 _AS(void) send_data(std::string const& data) const {
     if (ws.is_connected() 
         && !current_admin.is_empty() 
@@ -225,22 +283,15 @@ _AS(void) send_data(std::string const& data) const {
 }   
 
 _ADMIN_CALLBACK poll_admin_app(AdminState* state) {
-    if (state->ws.is_connected() && !state->is_connected()){
-        auto admins = state->scan("6969");
-        /// TODO: GUI should be able to choose the admin to connect to.
-        if (admins.size() > 0){
-            // Get websocket from connecting to the admin app.
-            auto res = state->connect_to_admin_app(admins[0]);
-            // If websocket connection exists, set the current admin.
-            if (!res.is_empty()){
-                state->current_admin = admins[0];
-                state->current_admin.value_ref().socket = res;
-            }
-        }
+    /// I don't think that polling the admin app is necessary anymore.
+    /// As the admin is now selected by the user.
+    if (state->ws.is_connected() && state->is_connected()){
+       
     }
 }
 
 _ADMIN_CALLBACK poll_websocket(AdminState* state){
+    using namespace calc_state::json;
     if (state->current_admin.is_empty()) return;
     if (state->current_admin.value_ref().socket.is_empty()) return;
     
@@ -255,8 +306,17 @@ _ADMIN_CALLBACK poll_websocket(AdminState* state){
     } else {
         ready_state->poll();
         ready_state->dispatch([](std::string const& message){
-            //json::json obj = json::json::parse(message);
-            //std::cout << message;
+            json::json obj = json::json::parse(message);
+            if (validate(obj, schemas::connectionAdminInfoSchema)){
+
+            } else if (validate(obj, schemas::connectionPermissionSchema)){
+
+            } else if (validate(obj, schemas::connectionRevokeSchema)){
+
+            } else {
+                std::cout << "Unidentified JSON recieved!\n"; // spooky
+            }
+            std::cout << message;
         });
     }
 }
@@ -302,15 +362,18 @@ _STATE(void) screenshot_handle(){
     as.send_data(data.dump());
 }
 
-_STATE(void) connect_to_admin_app(){
+_STATE(bool) connect_to_admin_app(admin_app::AdminInfo& admin){
     if (!as.is_connected()){
-        auto admins = as.scan("6969");
-        for (auto& admin : admins){
-            std::cout << "ADMIN AT: " << admin.ip;
-        }
-        if (admins.size() > 0)
-            as.connect_to_admin_app(admins[0]);
+        std::cout << "CONNECTING TO " << admin.name << " AT " << admin.ip << ":" << admin.port << "\n";
+        #if UNDEFINED_CODE_BREAK
+        as.connect(admin);
+        return as.is_connected();
+        #else 
+        admin.socket = as.connect(admin);
+        return !admin.socket.is_empty();
+        #endif
     }
+    return false;
 }
 
 _STATE_CALLBACK screenshot_cb(State* state){
