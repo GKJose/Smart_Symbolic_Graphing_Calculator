@@ -21,7 +21,7 @@
 #include <calc_conf.h>
 
 
-#define UNDEFINED_CODE_BREAK 0
+#define UNDEFINED_CODE_BREAK 1
 
 /// NOTE: None of the data structures & functions implemented below
 /// are asynchronous. Every call is blocking. Async is handled by the caller.

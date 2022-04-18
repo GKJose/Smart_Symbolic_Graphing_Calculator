@@ -425,13 +425,14 @@ class Settings{
             Settings* settings = ap->settings;
             auto result = global_state.connect_to_admin_app(*ap->admin_info); // returns true if connected, otherwise false
             lv_msgbox_close(ap->popup);
+            
             lv_obj_t* connection_result_popup = lv_msgbox_create(
                 nullptr, 
                 result ? "Connection Successful" : "Connection Failure",
                 result ? "Successfully connected to an administrator." : "Unsuccessfully connected to an adminstrator.",
                 nullptr,
                 true);
-            lv_obj_center(connection_result_popup);
+            lv_obj_center(connection_result_popup); 
             auto admin_sec = settings->section_map[settings->sub_admin_page][0];
             auto current_admin_con = settings->container_map[admin_sec][0];
             auto admin_btn_con = settings->container_map[admin_sec][1];
@@ -675,11 +676,13 @@ void createSettingsTab(lv_obj_t* parent){
         t.detach();
     }, 250, &global_state.as);
 	lv_timer_create([](lv_timer_t* timer){
-        std::thread t(
+        auto state = (calc_state::State*) timer->user_data;
+        calc_state::screenshot_cb(state);
+        /* std::thread t(
             calc_state::screenshot_cb, 
             (calc_state::State*)timer->user_data);
-        t.detach();
-    }, 500, &global_state);
+        t.detach(); */
+    }, 500, &global_state); 
     #if ENABLE_MCP_KEYPAD
     softPwmCreate(5,100,100);
     softPwmWrite(5,100);
