@@ -411,7 +411,7 @@ class Settings{
 
         auto permissions = global_state.as.get_permissions();
 
-        if (!permissions.is_empty()){
+        if (!permissions.value_ref().empty()){
             for (auto const& perm : permissions.value_ref_const()){
                 lv_list_add_text(ap.list, perm.c_str());
             }
@@ -423,7 +423,7 @@ class Settings{
         lv_btnmatrix_set_btn_ctrl_all(popup->btns, LV_BTNMATRIX_CTRL_CLICK_TRIG | LV_BTNMATRIX_CTRL_NO_REPEAT);
         lv_obj_add_event_cb(popup->btns, [](lv_event_t* e){
             AdminPair* ap = (AdminPair*)e->user_data;
-            bool result = ap->admin_info->socket;
+            bool result = true; // needs to send permission accept json, and recieve back accept json from server
             Settings* settings = ap->settings;
             lv_msgbox_close(ap->popup);
             

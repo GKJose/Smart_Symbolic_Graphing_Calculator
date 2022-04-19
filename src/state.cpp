@@ -274,23 +274,23 @@ _AS(Option<std::vector<std::string>>) get_permissions(){
    
     auto s = global_state.as.current_admin.value_ref().socket.value_ref();
     Option<std::vector<std::string>> info_option;
-    while(info_option.value_ref().size() == 0){
+    info_option.value_ref() = *new std::vector<std::string>();
+    while(info_option.value_ref_const().empty()){
         s->poll();
         s->dispatch([&info_option](std::string const& message){
-            nlohmann::json obj = nlohmann::json::parse(message);
-            std::cout << message << std::endl;
+            ordered_json obj = nlohmann::json::parse(message);
             if(validate(obj,schemas::connectionPermissionSchema)){
-                std::cout << "validated!" << std::endl;
-                std::vector<std::string> permissions;
-                permissions.push_back("test");
+
+                info_option.value_ref().push_back(obj["permissions"].dump());
                 //iterate through permissions, pushing them to vector
-                info_option.value_ref() = permissions;
+                std::cout << "Finsihed processing permissions!\n";
             }else{
                 
                 std::cout << "not validated!" << std::endl;
             }
         });
     }
+
     return info_option;
 }
 
@@ -307,9 +307,7 @@ _AS(Option<calc_state::admin_app::AdminInfo>) get_admin_info(std::string const& 
         s->poll();
         s->dispatch([&info_option](std::string const& message){
             nlohmann::json obj = nlohmann::json::parse(message);
-            std::cout << message << std::endl;
             if(validate(obj,schemas::connectionAdminInfoSchema)){
-                std::cout << "validated!" << std::endl;
                 auto adminName = obj["adminName"].dump();
                 std::cout << adminName << std::endl;
                 AdminInfo admin_info;
@@ -317,7 +315,7 @@ _AS(Option<calc_state::admin_app::AdminInfo>) get_admin_info(std::string const& 
                info_option.value_ref() = admin_info;
             }else{
                 
-                std::cout << "not validated!" << std::endl;
+                std::cout << obj["ssgcType"].dump() << " not validated!" << std::endl;
             }
         });
     }
