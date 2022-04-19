@@ -395,19 +395,18 @@ class Settings{
         Settings* settings = (Settings*)e->user_data;
         ap.admin_info = &settings->admin_map[(container*)e->target]; 
         ap.settings = settings;
-        //auto result = global_state.connect_to_admin_app(*ap.admin_info); // returns true if connected, otherwise false
-        static const char* connect_text[] = {"Connect", ""};
+        static const char* connect_text[] = {"Accept", "Decline", ""};
 
         lv_msgbox_t* popup = (lv_msgbox_t*)lv_msgbox_create(
             nullptr, 
             ap.admin_info->name.c_str(), 
-            "Accept the following permissions to connect:", 
+            "Accept the following to connect:", 
             nullptr, 
             true);
         ap.popup = (lv_obj_t*)popup;
         
         ap.list = lv_list_create((lv_obj_t*)popup);
-        lv_obj_set_size(ap.list, 180, 100);
+        lv_obj_set_size(ap.list, 220, 100);
 
         auto permissions = global_state.as.get_permissions();
 
@@ -422,15 +421,29 @@ class Settings{
         lv_btnmatrix_set_map(popup->btns, connect_text);
         lv_btnmatrix_set_btn_ctrl_all(popup->btns, LV_BTNMATRIX_CTRL_CLICK_TRIG | LV_BTNMATRIX_CTRL_NO_REPEAT);
         lv_obj_add_event_cb(popup->btns, [](lv_event_t* e){
+            uint16_t id = lv_btnmatrix_get_selected_btn(e->target);
             AdminPair* ap = (AdminPair*)e->user_data;
-            bool result = true; // needs to send permission accept json, and recieve back accept json from server
+            if(id == 0){
+                auto reply = calc_state::json::permissionAcceptReply;
+                reply["clientIP"] = "127.0.0.1";
+                global_state.as.send_data(reply.dump());
+                
+                
+            }else{
+                auto reply = calc_state::json::permissionRejectReply;
+                reply["clientIP"] = "127.0.0.1";
+                global_state.as.send_data(reply.dump()); 
+                auto s = global_state.as.current_admin.value_ref().socket.value_ref();
+
+                //add thread to recieve the admin removal json
+            }
             Settings* settings = ap->settings;
             lv_msgbox_close(ap->popup);
-            
+
             lv_obj_t* connection_result_popup = lv_msgbox_create(
                 nullptr, 
-                result ? "Connection Successful" : "Connection Failure",
-                result ? "Successfully connected to an administrator." : "Unsuccessfully connected to an adminstrator.",
+                id == 0 ? "Connection Successful" : "Connection Failure",
+                id == 0 ? "Successfully connected to an administrator." : "Unsuccessfully connected to an adminstrator.",
                 nullptr,
                 true);
             lv_obj_center(connection_result_popup); 
@@ -439,7 +452,7 @@ class Settings{
             auto admin_btn_con = settings->container_map[admin_sec][1];
             lv_obj_t* current_network_label = lv_obj_get_child(current_admin_con, 0); // label
             lv_obj_t* btnmat = lv_obj_get_child(admin_btn_con, 0); // get the button matrix
-            if (result){
+            if (id == 0){
                 // Make the disconnect button visible if connection was successful
                 lv_btnmatrix_clear_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN);
             }

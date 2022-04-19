@@ -280,15 +280,39 @@ _AS(Option<std::vector<std::string>>) get_permissions(){
         s->dispatch([&info_option](std::string const& message){
             ordered_json obj = nlohmann::json::parse(message);
             if(validate(obj,schemas::connectionPermissionSchema)){
+                std::cout << obj["permissions"].dump() << std::endl;
+                
+                if(obj["permissions"]["functionRestrictionsEnable"].get<bool>()){
+                    info_option.value_ref().push_back("Functions are restricted.");
+                }
 
-                info_option.value_ref().push_back("Functions Restricted? " + (obj["permissions"]["functionRestrictionsEnable"].get<bool>()?"No":"Yes");
-                info_option.value_ref().push_back("Graphing Restricted? " + (obj["permissions"]["graphingRestrictionsEnable"].get<bool>()?"No":"Yes"));
-                info_option.value_ref().push_back("History Tracking Enabled? " + (obj["permissions"]["historyTrackingEnable"].get<bool>()?"No":"Yes"));
-                info_option.value_ref().push_back("Screen Capture Enabled? " + (obj["permissions"]["screenCaptureEnable"].get<bool>()?"No":"Yes"));
-                info_option.value_ref().push_back("Remote Connection Enabled? " + (obj["permissions"]["remoteConnectionEnable"].get<bool>()?"No":"Yes")));
-                info_option.value_ref().push_back("Settings Override Allowed? " + (obj["permissions"]["settingsOverrideEnable"].get<bool>()?"No":"Yes");
-                info_option.value_ref().push_back("Payload Enabled? " + (obj["permissions"]["payloadEnable"].get<bool>()?"No":"Yes"));
+                if(obj["permissions"]["graphingRestrictionsEnable"].get<bool>()){
+                    info_option.value_ref().push_back("Graphing is restricted.");
+                }
 
+                
+                if(obj["permissions"]["historyTrackingEnable"].get<bool>()){
+                    info_option.value_ref().push_back("History tracking.");
+                }
+
+                if(obj["permissions"]["screenCaptureEnable"].get<bool>()){
+                    info_option.value_ref().push_back("Screen capture.");
+                }
+
+                if(obj["permissions"]["remoteConnectionEnable"].get<bool>()){
+                    info_option.value_ref().push_back("Remote Connection.");
+                }
+
+                if(obj["permissions"]["settingOverrideEnable"].get<bool>()){
+                    info_option.value_ref().push_back("Settings unchangeable.");
+                }
+
+                if(obj["permissions"]["payloadEnable"].get<bool>()){
+                    info_option.value_ref().push_back("Payloads enabled.");
+                }
+                if(info_option.value_ref().empty()){
+                    info_option.value_ref().push_back("Nothing is restricted.");
+                }
                 //iterate through permissions, pushing them to vector
                 std::cout << "Finsihed processing permissions!\n";
             }else{

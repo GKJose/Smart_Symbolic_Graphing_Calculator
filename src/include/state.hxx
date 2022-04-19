@@ -100,10 +100,10 @@ namespace calc_state{
         
         class AdminState {
             wifi::WifiState& ws;
-            Option<AdminInfo> current_admin;
             std::mutex connecting_mutex, disconnecting_mutex, scan_mutex, permission_mutex, info_mutex;
 
             public:
+            Option<AdminInfo> current_admin;
             AdminState(wifi::WifiState& ws);
             /// Attempts to connect to an admin app
             /// Returns a websocket on success.
