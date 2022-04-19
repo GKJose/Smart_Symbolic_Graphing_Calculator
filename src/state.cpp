@@ -238,9 +238,13 @@ _AS(std::vector<calc_state::admin_app::AdminInfo>) scan(std::string const& port)
     while (a != rend){
         /// TODO: Should send information json to admin.
         std::string admin_ip = *a++;
+        AdminInfo admin;
+        admin.ip = admin_ip;
+        admin.port = port;
+        global_state.connect_to_admin_app(admin);
         auto info = get_admin_info(admin_ip);
         if (info.is_empty()){
-            vec.push_back(AdminInfo{ admin_ip, port, "UNKNOWN", OptNone });
+            vec.push_back(AdminInfo{ admin_ip, port, info.value_ref().name, OptNone });
         } else {
             info.value_ref().ip = admin_ip;
             vec.push_back(std::move(info.value()));
@@ -262,15 +266,62 @@ _AS(bool) is_connected() const {
 }
 
 _AS(Option<std::vector<std::string>>) get_permissions(){
+    using namespace calc_state::json;
     const std::lock_guard<std::mutex> guard(permission_mutex);
-    /// TODO: Implement this function.
-    return OptNone;
+     auto connection_request = connectionRequest;
+    connection_request["clientIP"] = "127.0.0.1";
+    global_state.as.send_data(connection_request.dump());
+   
+    auto s = global_state.as.current_admin.value_ref().socket.value_ref();
+    Option<std::vector<std::string>> info_option;
+    while(info_option.value_ref().size() == 0){
+        s->poll();
+        s->dispatch([&info_option](std::string const& message){
+            nlohmann::json obj = nlohmann::json::parse(message);
+            std::cout << message << std::endl;
+            if(validate(obj,schemas::connectionPermissionSchema)){
+                std::cout << "validated!" << std::endl;
+                std::vector<std::string> permissions;
+                permissions.push_back("test");
+                //iterate through permissions, pushing them to vector
+                info_option.value_ref() = permissions;
+            }else{
+                
+                std::cout << "not validated!" << std::endl;
+            }
+        });
+    }
+    return info_option;
 }
 
 _AS(Option<calc_state::admin_app::AdminInfo>) get_admin_info(std::string const& ip){
+    using namespace calc_state::json;
     const std::lock_guard<std::mutex> guard(info_mutex);
-    /// TODO: Implement this function
-    return OptNone;
+    auto connection_info = connectionInfo;
+    connection_info["clientIP"] = "127.0.0.1";
+    global_state.as.send_data(connection_info.dump());
+   
+    auto s = global_state.as.current_admin.value_ref().socket.value_ref();
+    Option<AdminInfo> info_option;
+    while(info_option.value_ref().name == ""){
+        s->poll();
+        s->dispatch([&info_option](std::string const& message){
+            nlohmann::json obj = nlohmann::json::parse(message);
+            std::cout << message << std::endl;
+            if(validate(obj,schemas::connectionAdminInfoSchema)){
+                std::cout << "validated!" << std::endl;
+                auto adminName = obj["adminName"].dump();
+                std::cout << adminName << std::endl;
+                AdminInfo admin_info;
+                admin_info.name = adminName;
+               info_option.value_ref() = admin_info;
+            }else{
+                
+                std::cout << "not validated!" << std::endl;
+            }
+        });
+    }
+    return info_option;
 }
 
 _AS(void) send_data(std::string const& data) const {
@@ -306,9 +357,9 @@ _ADMIN_CALLBACK poll_websocket(AdminState* state){
     } else {
         ready_state->poll();
         ready_state->dispatch([](std::string const& message){
-            json::json obj = json::json::parse(message);
+            ordered_json obj = message;
             if (validate(obj, schemas::connectionAdminInfoSchema)){
-
+                
             } else if (validate(obj, schemas::connectionPermissionSchema)){
 
             } else if (validate(obj, schemas::connectionRevokeSchema)){
@@ -326,7 +377,12 @@ _ADMIN_CALLBACK poll_websocket(AdminState* state){
 _JS(bool) validate(nlohmann::json const& obj, nlohmann::json const& schema){
     json_validator validator(nullptr, nlohmann::json_schema::default_string_format_check);
     validator.set_root_schema(schema);
-    return validator.validate(obj) != nullptr;
+    try{
+        validator.validate(obj);
+        return true;
+    }catch(const std::exception &e){
+        return false;
+    }
 }
 
 // Application state
@@ -359,7 +415,7 @@ _STATE(void) screenshot_handle(){
         (std::istreambuf_iterator<char>(bmp)), 
         std::istreambuf_iterator<char>());
     data["data"] = base64_encode(contents.data(), contents.size(), false);
-    as.send_data(data.dump());
+    //as.send_data(data.dump());
 }
 
 _STATE(bool) connect_to_admin_app(admin_app::AdminInfo& admin){

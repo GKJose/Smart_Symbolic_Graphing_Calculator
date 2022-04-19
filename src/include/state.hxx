@@ -153,17 +153,18 @@ namespace calc_state{
     namespace json {
 
         using nlohmann::json;
+        using nlohmann::ordered_json;
         using nlohmann::json_schema::json_validator;
 
         const std::string _ph = "PLACEHOLDER";
 
-        const json ssgcData = {
+        const ordered_json ssgcData = {
             {"ssgcType", "clientData"},
             {"clientIP", _ph},
             {"clientName", _ph},
             {"data", _ph}
         };
-        const json connectionInfo = {
+        const ordered_json connectionInfo = {
             {"ssgcType", "connectionInfo"},
             {"clientIP", _ph},
             {"clientName", _ph},
@@ -173,7 +174,7 @@ namespace calc_state{
                 {"bugfix",0}
             }}
         };
-        const json connectionRequest = {
+        const ordered_json connectionRequest = {
             {"ssgcType", "connectionRequest"},
             {"clientIP", _ph},
             {"clientName", _ph},
@@ -183,18 +184,18 @@ namespace calc_state{
                 {"bugfix",0}
             }}
         };
-        const json connectionRevoke = {
+        const ordered_json connectionRevoke = {
             {"ssgcType", "clientRevoke"},
             {"revokeReason","clientDisconnection"},
             {"clientIP", _ph},
             {"clientName", _ph}
         }; 
-        const json permissionAcceptReply = {
+        const ordered_json permissionAcceptReply = {
             {"ssgcType","connectionPermissionAccept"},
             {"clientIP", _ph},
             {"clientName", _ph}
         };
-        const json permissionRejectReply = {
+        const ordered_json permissionRejectReply = {
             {"ssgcType","connectionPermissionReject"},
             {"clientIP", _ph},
             {"clientName", _ph}

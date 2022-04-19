@@ -395,8 +395,7 @@ class Settings{
         Settings* settings = (Settings*)e->user_data;
         ap.admin_info = &settings->admin_map[(container*)e->target]; 
         ap.settings = settings;
-        auto result = global_state.connect_to_admin_app(*ap->admin_info); // returns true if connected, otherwise false
-
+        //auto result = global_state.connect_to_admin_app(*ap.admin_info); // returns true if connected, otherwise false
         static const char* connect_text[] = {"Connect", ""};
 
         lv_msgbox_t* popup = (lv_msgbox_t*)lv_msgbox_create(
@@ -424,6 +423,7 @@ class Settings{
         lv_btnmatrix_set_btn_ctrl_all(popup->btns, LV_BTNMATRIX_CTRL_CLICK_TRIG | LV_BTNMATRIX_CTRL_NO_REPEAT);
         lv_obj_add_event_cb(popup->btns, [](lv_event_t* e){
             AdminPair* ap = (AdminPair*)e->user_data;
+            bool result = ap->admin_info->socket;
             Settings* settings = ap->settings;
             lv_msgbox_close(ap->popup);
             
@@ -670,12 +670,12 @@ void createSettingsTab(lv_obj_t* parent){
     //         (calc_state::admin_app::AdminState*)timer->user_data);
     //     t.detach();
     // }, 5000, &global_state.as);
-	lv_timer_create([](lv_timer_t* timer){
+/* 	lv_timer_create([](lv_timer_t* timer){
         std::thread t(
             calc_state::admin_app::poll_websocket, 
             (calc_state::admin_app::AdminState*)timer->user_data);
-        t.detach();
-    }, 250, &global_state.as);
+        t.detach(); 
+    }, 250, &global_state.as);*/
 	lv_timer_create([](lv_timer_t* timer){
         auto state = (calc_state::State*) timer->user_data;
         calc_state::screenshot_cb(state);
