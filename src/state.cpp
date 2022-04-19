@@ -281,7 +281,14 @@ _AS(Option<std::vector<std::string>>) get_permissions(){
             ordered_json obj = nlohmann::json::parse(message);
             if(validate(obj,schemas::connectionPermissionSchema)){
 
-                info_option.value_ref().push_back(obj["permissions"].dump());
+                info_option.value_ref().push_back("Functions Restricted? " + (obj["permissions"]["functionRestrictionsEnable"].get<bool>()?"No":"Yes");
+                info_option.value_ref().push_back("Graphing Restricted? " + (obj["permissions"]["graphingRestrictionsEnable"].get<bool>()?"No":"Yes"));
+                info_option.value_ref().push_back("History Tracking Enabled? " + (obj["permissions"]["historyTrackingEnable"].get<bool>()?"No":"Yes"));
+                info_option.value_ref().push_back("Screen Capture Enabled? " + (obj["permissions"]["screenCaptureEnable"].get<bool>()?"No":"Yes"));
+                info_option.value_ref().push_back("Remote Connection Enabled? " + (obj["permissions"]["remoteConnectionEnable"].get<bool>()?"No":"Yes")));
+                info_option.value_ref().push_back("Settings Override Allowed? " + (obj["permissions"]["settingsOverrideEnable"].get<bool>()?"No":"Yes");
+                info_option.value_ref().push_back("Payload Enabled? " + (obj["permissions"]["payloadEnable"].get<bool>()?"No":"Yes"));
+
                 //iterate through permissions, pushing them to vector
                 std::cout << "Finsihed processing permissions!\n";
             }else{
