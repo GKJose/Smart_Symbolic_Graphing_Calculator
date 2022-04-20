@@ -100,10 +100,9 @@ namespace calc_state{
         
         class AdminState {
             wifi::WifiState& ws;
-            std::mutex connecting_mutex, disconnecting_mutex, scan_mutex, permission_mutex, info_mutex;
-
-            public:
+            std::mutex connecting_mutex, disconnecting_mutex, scan_mutex, permission_mutex, info_mutex, reply_mutex;
             Option<AdminInfo> current_admin;
+            public:
             AdminState(wifi::WifiState& ws);
             /// Attempts to connect to an admin app
             /// Returns a websocket on success.
@@ -140,7 +139,8 @@ namespace calc_state{
             /// NOTE: This method is blocking
             /// Calling this method is thread-safe.
             Option<AdminInfo> get_admin_info(std::string const& ip);
-            void send_data(std::string const& data) const;
+            Option<AdminInfo> get_current_admin();
+            void send_data(std::string const& data);
 
             friend void poll_admin_app(AdminState* state);
             friend void poll_websocket(AdminState* state);
@@ -211,6 +211,7 @@ namespace calc_state{
         public:
         wifi::WifiState ws;
         admin_app::AdminState as;
+        nlohmann::ordered_json permissions;
         State();
         /// Takes a screenshot and saves it in ./image.bin
         /// NOTE: This method is blocking

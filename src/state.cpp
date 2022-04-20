@@ -210,6 +210,12 @@ _AS(void) disconnect(){
     /// TODO: Impement sending disconnection JSON to admin.
     //send_data()
     if (!current_admin.is_empty() && !current_admin.value_ref().socket.is_empty()){
+        auto s = current_admin.value_ref().socket.value_ref();
+        nlohmann::ordered_json obj = calc_state::json::connectionRevoke;
+        global_state.permissions = NULL;
+        obj["clientIP"] = "127.0.0.1";
+        s->send(obj.dump());
+        s->poll();
         current_admin.value_ref().socket.value_ref()->close();
     }
     current_admin = OptNone;
@@ -268,6 +274,7 @@ _AS(bool) is_connected() const {
 _AS(Option<std::vector<std::string>>) get_permissions(){
     using namespace calc_state::json;
     const std::lock_guard<std::mutex> guard(permission_mutex);
+    if(!is_connected()) return OptNone;
      auto connection_request = connectionRequest;
     connection_request["clientIP"] = "127.0.0.1";
     global_state.as.send_data(connection_request.dump());
@@ -280,6 +287,7 @@ _AS(Option<std::vector<std::string>>) get_permissions(){
         s->dispatch([&info_option](std::string const& message){
             ordered_json obj = nlohmann::json::parse(message);
             if(validate(obj,schemas::connectionPermissionSchema)){
+                global_state.permissions = obj;
                 std::cout << obj["permissions"].dump() << std::endl;
                 
                 if(obj["permissions"]["functionRestrictionsEnable"].get<bool>()){
@@ -352,13 +360,17 @@ _AS(Option<calc_state::admin_app::AdminInfo>) get_admin_info(std::string const& 
     }
     return info_option;
 }
+_AS(Option<calc_state::admin_app::AdminInfo>) get_current_admin(){
+    return this->current_admin;
+}
 
-_AS(void) send_data(std::string const& data) const {
+_AS(void) send_data(std::string const& data){
+    const std::lock_guard<std::mutex> guard(reply_mutex);
     if (ws.is_connected() 
         && !current_admin.is_empty() 
         && !current_admin.value_ref_const().socket.is_empty() 
         && current_admin.value_ref_const().socket.value()->getReadyState() == easywsclient::WebSocket::OPEN){
-        current_admin.value_ref_const().socket.value()->send(data);
+            current_admin.value_ref_const().socket.value()->send(data);
     }
 }   
 

@@ -276,7 +276,7 @@ class Settings{
             [=](){global_state.ws.disconnect();},
             "Not connected.");
     }
-
+ 
     template<bool IsBlocking>
     void generic_disconnect(
         lv_obj_t* page, 
@@ -418,26 +418,37 @@ class Settings{
         
 
         popup->btns = lv_btnmatrix_create((lv_obj_t*)popup);
+        
         lv_btnmatrix_set_map(popup->btns, connect_text);
+        lv_btnmatrix_set_btn_width(popup->btns,0,20);
+        lv_btnmatrix_set_btn_width(popup->btns,1,20);
+
         lv_btnmatrix_set_btn_ctrl_all(popup->btns, LV_BTNMATRIX_CTRL_CLICK_TRIG | LV_BTNMATRIX_CTRL_NO_REPEAT);
         lv_obj_add_event_cb(popup->btns, [](lv_event_t* e){
             uint16_t id = lv_btnmatrix_get_selected_btn(e->target);
             AdminPair* ap = (AdminPair*)e->user_data;
+            auto s = global_state.as.get_current_admin().value_ref().socket.value_ref();
+            Settings* settings = ap->settings;
+
             if(id == 0){
                 auto reply = calc_state::json::permissionAcceptReply;
                 reply["clientIP"] = "127.0.0.1";
                 global_state.as.send_data(reply.dump());
-                
+                s->poll();
                 
             }else{
                 auto reply = calc_state::json::permissionRejectReply;
                 reply["clientIP"] = "127.0.0.1";
                 global_state.as.send_data(reply.dump()); 
-                auto s = global_state.as.current_admin.value_ref().socket.value_ref();
-
-                //add thread to recieve the admin removal json
+                s->poll(-1);
+                s->dispatch([](std::string const& message){
+                    nlohmann::ordered_json obj = nlohmann::ordered_json::parse(message);
+                    if(calc_state::json::validate(obj,schemas::connectionRevokeSchema)){
+                        //When we recieve the adminRemoval json, remove admin from list, and disconnect.
+                    }
+                });
+                settings->admin_disconnect();
             }
-            Settings* settings = ap->settings;
             lv_msgbox_close(ap->popup);
 
             lv_obj_t* connection_result_popup = lv_msgbox_create(
@@ -506,11 +517,19 @@ class Settings{
     /// Disconnects from the currently-connected administrator.
     /// Updates the GUI to reflect the disconnection.
     void admin_disconnect(){
-        generic_disconnect<false>(
-            sub_admin_page, 
-            [=]{global_state.as.disconnect();}, 
-            "Not connected."
-        );
+        auto first_sec = section_map[sub_admin_page][0]; 
+        auto first_con = container_map[first_sec][0];
+        auto second_con = container_map[first_sec][1];
+        global_state.as.disconnect();
+        
+        lv_obj_t* first_label = lv_obj_get_child(first_con, 0);
+        lv_obj_t* btnmat = lv_obj_get_child(second_con, 0);
+        lv_label_set_text(first_label, "Not Connected");
+        lv_btnmatrix_set_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN);
+
+        admin_map.clear();
+        update_admin_page();
+      
     }
 
     page* init_page(){
