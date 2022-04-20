@@ -212,7 +212,7 @@ _AS(void) disconnect(){
     if (!current_admin.is_empty() && !current_admin.value_ref().socket.is_empty()){
         auto s = current_admin.value_ref().socket.value_ref();
         nlohmann::ordered_json obj = calc_state::json::connectionRevoke;
-        global_state.permissions = NULL;
+        global_state.permissions = nullptr;
         obj["clientIP"] = "127.0.0.1";
         s->send(obj.dump());
         s->poll();
