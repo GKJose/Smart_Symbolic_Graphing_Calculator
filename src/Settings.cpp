@@ -158,7 +158,7 @@ class Settings{
         #if ENABLE_WIFI
         // asynchronously gather network info.
         settings->async_wifi_scan_handle = std::async(std::launch::async, [=]{
-            settings->available_wifi_networks = calc_state::global_state.ws.scan();
+            settings->available_wifi_networks = global_state.ws.scan();
             settings->update_wifi_networks(); // show new networks in the gui.
             return 0;
         });

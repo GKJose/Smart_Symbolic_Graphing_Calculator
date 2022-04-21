@@ -56,6 +56,8 @@ if(MCP_KEYPAD_ENABLE)
 endif()
 
 if(LINUX_FRAMEBUFFER_ENABLE)
+    find_library(libm m REQUIRED)
+    find_library(libpthread pthread REQUIRED)
     set(ENABLE_LINUX_FRAMEBUFFER 1)
 endif()
 

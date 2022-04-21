@@ -1,4 +1,6 @@
-
+if(PI_ENABLE)
+add_compile_options(-fpermissive)
+endif()
 set(SOURCE_FILES state.cpp main.cpp Calculator.cpp graph.cpp graphing.cpp Keypad.cpp MCP23017.cpp Settings.cpp tabs.cpp easywsclient.cpp base64.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
