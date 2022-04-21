@@ -207,12 +207,14 @@ namespace calc_state{
     /// Holds general state of the application.
     class State{
         std::mutex screenshot_mutex;
+        lv_timer_t* screenshotTimer;
 
         public:
         wifi::WifiState ws;
         admin_app::AdminState as;
         nlohmann::ordered_json permissions;
         State();
+        void set_screenshot_timer();
         /// Takes a screenshot and saves it in ./image.bin
         /// NOTE: This method is blocking
         ///

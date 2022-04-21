@@ -213,6 +213,7 @@ _AS(void) disconnect(){
         auto s = current_admin.value_ref().socket.value_ref();
         nlohmann::ordered_json obj = calc_state::json::connectionRevoke;
         global_state.permissions = nullptr;
+        global_state.set_screenshot_timer();
         obj["clientIP"] = "127.0.0.1";
         s->send(obj.dump());
         s->poll();
@@ -431,9 +432,18 @@ _JS(bool) validate(nlohmann::json const& obj, nlohmann::json const& schema){
 _STATE() State():ws(),as(ws){
 
 }
-
+_STATE(void) set_screenshot_timer(){
+    if(this->permissions != nullptr && this->permissions["permissions"]["screenCaptureEnable"].get<bool>()){
+        this->screenshotTimer = lv_timer_create([](lv_timer_t* timer){
+                                    auto state = (calc_state::State*) timer->user_data;
+                                    calc_state::screenshot_cb(state);
+                                }, this->permissions["screenCaptureInfo"]["screenshotFrequency"].get<uint64_t>(), &global_state); 
+    
+    }else{
+        lv_timer_del(this->screenshotTimer);
+    }
+}
 _STATE(void) take_screenshot(){
-    if (!ws.is_connected()) return;
     std::lock_guard<std::mutex> guard(screenshot_mutex);
     lv_img_dsc_t* snapshot = lv_snapshot_take(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
     std::size_t buf_size = lv_snapshot_buf_size_needed(lv_scr_act(), LV_IMG_CF_TRUE_COLOR_ALPHA);
@@ -445,9 +455,8 @@ _STATE(void) take_screenshot(){
 }
 
 _STATE(void) screenshot_handle(){
-    if (!as.is_connected()) return;
     
-    json::json data = json::ssgcData;
+    auto data = json::ssgcData;
     data["clientIP"] = ws.ip().value();
     data["clientName"] = "UNKNOWN";
     take_screenshot();
@@ -456,7 +465,8 @@ _STATE(void) screenshot_handle(){
         (std::istreambuf_iterator<char>(bmp)), 
         std::istreambuf_iterator<char>());
     data["data"] = base64_encode(contents.data(), contents.size(), false);
-    //as.send_data(data.dump());
+    as.send_data(data.dump());
+    as.get_current_admin().value_ref().socket.value_ref()->poll();
 }
 
 _STATE(bool) connect_to_admin_app(admin_app::AdminInfo& admin){
@@ -475,4 +485,5 @@ _STATE(bool) connect_to_admin_app(admin_app::AdminInfo& admin){
 
 _STATE_CALLBACK screenshot_cb(State* state){
     state->screenshot_handle();
+    std::cout << "screenshot taken, sent.\n";
 }

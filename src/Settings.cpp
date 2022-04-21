@@ -435,6 +435,7 @@ class Settings{
                 reply["clientIP"] = "127.0.0.1";
                 global_state.as.send_data(reply.dump());
                 s->poll();
+                global_state.set_screenshot_timer();
                 
             }else{
                 auto reply = calc_state::json::permissionRejectReply;
@@ -521,7 +522,7 @@ class Settings{
         auto first_con = container_map[first_sec][0];
         auto second_con = container_map[first_sec][1];
         global_state.as.disconnect();
-        
+
         lv_obj_t* first_label = lv_obj_get_child(first_con, 0);
         lv_obj_t* btnmat = lv_obj_get_child(second_con, 0);
         lv_label_set_text(first_label, "Not Connected");
@@ -696,26 +697,14 @@ class Settings{
 void createSettingsTab(lv_obj_t* parent){
     
     static Settings settings(parent);
-    // lv_timer_create([](lv_timer_t* timer){
-    //     std::thread t(
-    //         calc_state::admin_app::poll_admin_app, 
-    //         (calc_state::admin_app::AdminState*)timer->user_data);
-    //     t.detach();
-    // }, 5000, &global_state.as);
+
+  
 /* 	lv_timer_create([](lv_timer_t* timer){
         std::thread t(
             calc_state::admin_app::poll_websocket, 
             (calc_state::admin_app::AdminState*)timer->user_data);
         t.detach(); 
     }, 250, &global_state.as);*/
-	lv_timer_create([](lv_timer_t* timer){
-        auto state = (calc_state::State*) timer->user_data;
-        calc_state::screenshot_cb(state);
-        /* std::thread t(
-            calc_state::screenshot_cb, 
-            (calc_state::State*)timer->user_data);
-        t.detach(); */
-    }, 500, &global_state); 
     #if ENABLE_MCP_KEYPAD
     softPwmCreate(5,100,100);
     softPwmWrite(5,100);
