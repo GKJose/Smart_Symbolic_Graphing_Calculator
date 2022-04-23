@@ -1,3 +1,4 @@
+
 #include <Settings.hxx>
 #include <iostream>
 #include <map>
@@ -70,7 +71,6 @@ class Settings{
 	// 				 "data":""})"_json;
 
     public:
-
     Settings(lv_obj_t* parent):parent(parent),menu(lv_menu_create(parent)){
         lv_menu_set_mode_root_back_btn(menu,LV_MENU_ROOT_BACK_BTN_DISABLED);
         lv_obj_add_event_cb(menu,back_event_handler,LV_EVENT_CLICKED,menu);
@@ -95,6 +95,24 @@ class Settings{
             global_state.screenshot_handle();
             return 0;
         });
+    }
+
+    /// Disconnects from the currently-connected administrator.
+    /// Updates the GUI to reflect the disconnection.
+    void admin_disconnect(){
+        auto first_sec = section_map[sub_admin_page][0]; 
+        auto first_con = container_map[first_sec][0];
+        auto second_con = container_map[first_sec][1];
+        global_state.as.disconnect();
+
+        lv_obj_t* first_label = lv_obj_get_child(first_con, 0);
+        lv_obj_t* btnmat = lv_obj_get_child(second_con, 0);
+        lv_label_set_text(first_label, "Not Connected");
+        lv_btnmatrix_set_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN);
+
+        admin_map.clear();
+        update_admin_page();
+      
     }
     private:
 
@@ -436,6 +454,7 @@ class Settings{
                 global_state.as.send_data(reply.dump());
                 s->poll();
                 global_state.set_screenshot_timer();
+                global_state.set_websocket_timer();
                 
             }else{
                 auto reply = calc_state::json::permissionRejectReply;
@@ -511,26 +530,6 @@ class Settings{
                 delete str; // thread has to clean up
             }).detach();
         
-    }
-
-    
-
-    /// Disconnects from the currently-connected administrator.
-    /// Updates the GUI to reflect the disconnection.
-    void admin_disconnect(){
-        auto first_sec = section_map[sub_admin_page][0]; 
-        auto first_con = container_map[first_sec][0];
-        auto second_con = container_map[first_sec][1];
-        global_state.as.disconnect();
-
-        lv_obj_t* first_label = lv_obj_get_child(first_con, 0);
-        lv_obj_t* btnmat = lv_obj_get_child(second_con, 0);
-        lv_label_set_text(first_label, "Not Connected");
-        lv_btnmatrix_set_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN);
-
-        admin_map.clear();
-        update_admin_page();
-      
     }
 
     page* init_page(){
@@ -697,14 +696,6 @@ class Settings{
 void createSettingsTab(lv_obj_t* parent){
     
     static Settings settings(parent);
-
-  
-/* 	lv_timer_create([](lv_timer_t* timer){
-        std::thread t(
-            calc_state::admin_app::poll_websocket, 
-            (calc_state::admin_app::AdminState*)timer->user_data);
-        t.detach(); 
-    }, 250, &global_state.as);*/
     #if ENABLE_MCP_KEYPAD
     softPwmCreate(5,100,100);
     softPwmWrite(5,100);

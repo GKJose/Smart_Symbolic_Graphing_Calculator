@@ -208,13 +208,14 @@ namespace calc_state{
     class State{
         std::mutex screenshot_mutex;
         lv_timer_t* screenshotTimer;
-
+        lv_timer_t* pollWebsocketTimer;
         public:
         wifi::WifiState ws;
         admin_app::AdminState as;
         nlohmann::ordered_json permissions;
         State();
         void set_screenshot_timer();
+        void set_websocket_timer();
         /// Takes a screenshot and saves it in ./image.bin
         /// NOTE: This method is blocking
         ///

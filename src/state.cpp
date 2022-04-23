@@ -15,6 +15,7 @@
 
 /// global state used throughout the application.
 using calc_state::State;
+extern void* settings;
 State global_state;
 
 // Wifi connection
@@ -214,6 +215,7 @@ _AS(void) disconnect(){
         nlohmann::ordered_json obj = calc_state::json::connectionRevoke;
         global_state.permissions = nullptr;
         global_state.set_screenshot_timer();
+        global_state.set_websocket_timer();
         obj["clientIP"] = "127.0.0.1";
         s->send(obj.dump());
         s->poll();
@@ -398,14 +400,11 @@ _ADMIN_CALLBACK poll_websocket(AdminState* state){
         state->current_admin.value_ref().socket = OptNone;
     } else {
         ready_state->poll();
-        ready_state->dispatch([](std::string const& message){
-            ordered_json obj = message;
-            if (validate(obj, schemas::connectionAdminInfoSchema)){
-                
-            } else if (validate(obj, schemas::connectionPermissionSchema)){
-
-            } else if (validate(obj, schemas::connectionRevokeSchema)){
-
+        ready_state->dispatch([ready_state](std::string const& message){
+            ordered_json obj = ordered_json::parse(message);
+            if (validate(obj, schemas::connectionRevokeSchema)){
+                lv_obj_center(lv_msgbox_create(nullptr,"Admin Info.","The admin has removed you.",nullptr,true));
+                global_state.permissions = nullptr;
             } else {
                 std::cout << "Unidentified JSON recieved!\n"; // spooky
             }
@@ -431,6 +430,19 @@ _JS(bool) validate(nlohmann::json const& obj, nlohmann::json const& schema){
 
 _STATE() State():ws(),as(ws){
 
+}
+_STATE(void) set_websocket_timer(){
+
+    if(this->as.is_connected()){
+        this->pollWebsocketTimer =lv_timer_create([](lv_timer_t* timer){
+        std::thread t(
+            calc_state::admin_app::poll_websocket, 
+            (calc_state::admin_app::AdminState*)timer->user_data);
+        t.detach(); 
+    }, 250, &global_state.as);
+    }else{
+        lv_timer_del(this->pollWebsocketTimer);
+    }
 }
 _STATE(void) set_screenshot_timer(){
     if(this->permissions != nullptr && this->permissions["permissions"]["screenCaptureEnable"].get<bool>()){
