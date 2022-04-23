@@ -1,7 +1,7 @@
 #include <state.hxx>
 #include <iostream>
 #include <schemas.hpp>
-
+#include <Settings.hxx>
 #define _WS(rettype) rettype calc_state::wifi::WifiState::
 #define _WIFI_CALLBACK void calc_state::wifi::
 
@@ -350,7 +350,7 @@ _AS(Option<calc_state::admin_app::AdminInfo>) get_admin_info(std::string const& 
         s->dispatch([&info_option](std::string const& message){
             nlohmann::json obj = nlohmann::json::parse(message);
             if(validate(obj,schemas::connectionAdminInfoSchema)){
-                auto adminName = obj["adminName"].dump();
+                auto adminName = obj["adminName"].get<std::string>();
                 std::cout << adminName << std::endl;
                 AdminInfo admin_info;
                 admin_info.name = adminName;
@@ -405,6 +405,7 @@ _ADMIN_CALLBACK poll_websocket(AdminState* state){
             if (validate(obj, schemas::connectionRevokeSchema)){
                 lv_obj_center(lv_msgbox_create(nullptr,"Admin Info.","The admin has removed you.",nullptr,true));
                 global_state.permissions = nullptr;
+                forceDisconnect();
             } else {
                 std::cout << "Unidentified JSON recieved!\n"; // spooky
             }

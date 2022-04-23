@@ -40,6 +40,7 @@ lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char * txt,
 lv_obj_t * create_button(lv_obj_t * parent, const char * txt);
 
 using namespace schemas;
+void* setting;
 class Settings{
     using container = lv_obj_t;
     using page = lv_obj_t;
@@ -71,6 +72,7 @@ class Settings{
 	// 				 "data":""})"_json;
 
     public:
+    
     Settings(lv_obj_t* parent):parent(parent),menu(lv_menu_create(parent)){
         lv_menu_set_mode_root_back_btn(menu,LV_MENU_ROOT_BACK_BTN_DISABLED);
         lv_obj_add_event_cb(menu,back_event_handler,LV_EVENT_CLICKED,menu);
@@ -88,8 +90,9 @@ class Settings{
         init_admin_page();
 
         lv_event_send(lv_obj_get_child(lv_obj_get_child(lv_menu_get_cur_sidebar_page(menu), 0), 0), LV_EVENT_CLICKED, nullptr);  
+        setting = this;
     }
-
+    friend void forceDisconnect();
     void screenshot_handle(){
         async_screenshot_handle = std::async(std::launch::async, [=]{
             global_state.screenshot_handle();
@@ -461,13 +464,14 @@ class Settings{
                 reply["clientIP"] = "127.0.0.1";
                 global_state.as.send_data(reply.dump()); 
                 s->poll(-1);
-                s->dispatch([](std::string const& message){
+                s->dispatch([settings](std::string const& message){
                     nlohmann::ordered_json obj = nlohmann::ordered_json::parse(message);
                     if(calc_state::json::validate(obj,schemas::connectionRevokeSchema)){
                         //When we recieve the adminRemoval json, remove admin from list, and disconnect.
+                        settings->admin_disconnect();
+                        
                     }
                 });
-                settings->admin_disconnect();
             }
             lv_msgbox_close(ap->popup);
 
@@ -702,7 +706,10 @@ void createSettingsTab(lv_obj_t* parent){
     #endif
 	
 }
-
+void forceDisconnect(){
+    Settings* settings = (Settings*)setting;
+    settings->admin_disconnect();
+}
     
 // }
 // static void switch_handler(lv_event_t * e)
@@ -718,8 +725,7 @@ void createSettingsTab(lv_obj_t* parent){
 //         else {
 //             lv_menu_set_sidebar_page(menu, NULL);
 //             lv_menu_clear_history(menu); /* Clear history because we will be showing the root page later */
-//             lv_menu_set_page(menu, root_page);
-//         }
+//             lv_menu_set_page(menu,dump()
 //     }
 // }
 
