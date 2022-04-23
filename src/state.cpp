@@ -252,12 +252,14 @@ _AS(std::vector<calc_state::admin_app::AdminInfo>) scan(std::string const& port)
         admin.port = port;
         global_state.connect_to_admin_app(admin);
         auto info = get_admin_info(admin_ip);
-        if (info.is_empty()){
-            vec.push_back(AdminInfo{ admin_ip, port, info.value_ref().name, OptNone });
+        if (!info.is_empty()){
+            vec.push_back(AdminInfo{ admin_ip, port,"", OptNone });
         } else {
             info.value_ref().ip = admin_ip;
             vec.push_back(std::move(info.value()));
-        }   
+        }
+        global_state.as.disconnect();
+        info = OptNone;   
     }
     return vec;
 }
@@ -307,7 +309,7 @@ _AS(Option<std::vector<std::string>>) get_permissions(){
                 }
 
                 if(obj["permissions"]["screenCaptureEnable"].get<bool>()){
-                    info_option.value_ref().push_back("Screen capture.");
+                    info_option.value_ref().push_back("Screen capture enabled.");
                 }
 
                 if(obj["permissions"]["remoteConnectionEnable"].get<bool>()){
@@ -346,12 +348,13 @@ _AS(Option<calc_state::admin_app::AdminInfo>) get_admin_info(std::string const& 
     auto s = global_state.as.current_admin.value_ref().socket.value_ref();
     Option<AdminInfo> info_option;
     while(info_option.value_ref().name == ""){
-        s->poll();
-        s->dispatch([&info_option](std::string const& message){
+        s->poll(-1);
+        s->dispatch([&info_option,ip](std::string const& message){
             nlohmann::json obj = nlohmann::json::parse(message);
             if(validate(obj,schemas::connectionAdminInfoSchema)){
                 auto adminName = obj["adminName"].get<std::string>();
                 std::cout << adminName << std::endl;
+                std::cout << ip << std::endl;
                 AdminInfo admin_info;
                 admin_info.name = adminName;
                info_option.value_ref() = admin_info;
@@ -400,12 +403,14 @@ _ADMIN_CALLBACK poll_websocket(AdminState* state){
         state->current_admin.value_ref().socket = OptNone;
     } else {
         ready_state->poll();
-        ready_state->dispatch([ready_state](std::string const& message){
+        ready_state->dispatch([](std::string const& message){
             ordered_json obj = ordered_json::parse(message);
             if (validate(obj, schemas::connectionRevokeSchema)){
                 lv_obj_center(lv_msgbox_create(nullptr,"Admin Info.","The admin has removed you.",nullptr,true));
-                global_state.permissions = nullptr;
                 forceDisconnect();
+                global_state.permissions = nullptr;
+                global_state.set_websocket_timer();
+                global_state.set_screenshot_timer();
             } else {
                 std::cout << "Unidentified JSON recieved!\n"; // spooky
             }
@@ -441,19 +446,22 @@ _STATE(void) set_websocket_timer(){
             (calc_state::admin_app::AdminState*)timer->user_data);
         t.detach(); 
     }, 250, &global_state.as);
-    }else{
+    }else if(this->pollWebsocketTimer != nullptr){
         lv_timer_del(this->pollWebsocketTimer);
+        this->pollWebsocketTimer = nullptr;
     }
 }
 _STATE(void) set_screenshot_timer(){
-    if(this->permissions != nullptr && this->permissions["permissions"]["screenCaptureEnable"].get<bool>()){
+    using namespace nlohmann;
+    if(this->permissions != nullptr &&this->permissions["permissions"]["screenCaptureEnable"].get<bool>()){
         this->screenshotTimer = lv_timer_create([](lv_timer_t* timer){
                                     auto state = (calc_state::State*) timer->user_data;
                                     calc_state::screenshot_cb(state);
                                 }, this->permissions["screenCaptureInfo"]["screenshotFrequency"].get<uint64_t>(), &global_state); 
     
-    }else{
+    }else if(this->permissions == nullptr && this->screenshotTimer != nullptr){
         lv_timer_del(this->screenshotTimer);
+        this->screenshotTimer = nullptr;
     }
 }
 _STATE(void) take_screenshot(){

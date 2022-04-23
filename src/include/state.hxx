@@ -213,6 +213,7 @@ namespace calc_state{
         wifi::WifiState ws;
         admin_app::AdminState as;
         nlohmann::ordered_json permissions;
+        std::string port;
         State();
         void set_screenshot_timer();
         void set_websocket_timer();

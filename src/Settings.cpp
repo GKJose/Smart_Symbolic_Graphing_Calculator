@@ -93,6 +93,25 @@ class Settings{
         setting = this;
     }
     friend void forceDisconnect();
+    void delete_admin_buttons(){
+        auto second_sec = section_map[sub_admin_page][1];
+        std::string text = "Connected to an admin.";
+        admin_map.clear();
+        for(auto button:container_map[second_sec]){
+            lv_obj_del(button);
+        }
+        container_map.erase(second_sec);
+
+        auto first_sec = section_map[sub_admin_page][0]; 
+        auto first_con = container_map[first_sec][0];
+        auto second_con = container_map[first_sec][1];
+
+        lv_obj_t* first_label = lv_obj_get_child(first_con, 0);
+        lv_obj_t* btnmat = lv_obj_get_child(second_con, 0);
+        lv_label_set_text(first_label, text.c_str());
+        lv_btnmatrix_set_btn_ctrl(btnmat, 0, LV_BTNMATRIX_CTRL_HIDDEN);
+
+    }
     void screenshot_handle(){
         async_screenshot_handle = std::async(std::launch::async, [=]{
             global_state.screenshot_handle();
@@ -106,15 +125,16 @@ class Settings{
         auto first_sec = section_map[sub_admin_page][0]; 
         auto first_con = container_map[first_sec][0];
         auto second_con = container_map[first_sec][1];
+        
         global_state.as.disconnect();
 
         lv_obj_t* first_label = lv_obj_get_child(first_con, 0);
         lv_obj_t* btnmat = lv_obj_get_child(second_con, 0);
-        lv_label_set_text(first_label, "Not Connected");
+        delete_admin_buttons();
+        lv_label_set_text(first_label, "Admin session search.");
         lv_btnmatrix_set_btn_ctrl(btnmat, 1, LV_BTNMATRIX_CTRL_HIDDEN);
-
-        admin_map.clear();
-        update_admin_page();
+        lv_btnmatrix_clear_btn_ctrl(btnmat, 0,LV_BTNMATRIX_CTRL_HIDDEN);
+        //update_admin_page();
       
     }
     private:
@@ -416,6 +436,7 @@ class Settings{
         Settings* settings = (Settings*)e->user_data;
         ap.admin_info = &settings->admin_map[(container*)e->target]; 
         ap.settings = settings;
+        ap.admin_info->port = global_state.port;
         static const char* connect_text[] = {"Accept", "Decline", ""};
 
         lv_msgbox_t* popup = (lv_msgbox_t*)lv_msgbox_create(
@@ -428,7 +449,7 @@ class Settings{
         
         ap.list = lv_list_create((lv_obj_t*)popup);
         lv_obj_set_size(ap.list, 220, 100);
-
+        global_state.connect_to_admin_app(*ap.admin_info);
         auto permissions = global_state.as.get_permissions();
 
         if (!permissions.value_ref().empty()){
@@ -458,20 +479,14 @@ class Settings{
                 s->poll();
                 global_state.set_screenshot_timer();
                 global_state.set_websocket_timer();
+                settings->delete_admin_buttons();
+                
                 
             }else{
                 auto reply = calc_state::json::permissionRejectReply;
                 reply["clientIP"] = "127.0.0.1";
                 global_state.as.send_data(reply.dump()); 
-                s->poll(-1);
-                s->dispatch([settings](std::string const& message){
-                    nlohmann::ordered_json obj = nlohmann::ordered_json::parse(message);
-                    if(calc_state::json::validate(obj,schemas::connectionRevokeSchema)){
-                        //When we recieve the adminRemoval json, remove admin from list, and disconnect.
-                        settings->admin_disconnect();
-                        
-                    }
-                });
+                settings->admin_disconnect();
             }
             lv_msgbox_close(ap->popup);
 
@@ -520,11 +535,12 @@ class Settings{
                 delete str;
             }
         }
+        global_state.port = str->size() > 0 ? *str : "6969";
         std::thread([=]{
             generic_update<AdminInfo>(
                 sub_admin_page,
                 admin_map,
-                global_state.as.scan(str->size() > 0 ? *str : "6969"), // this is blocking, but because this is in a new thread it doesn't matter.
+                global_state.as.scan(global_state.port), // this is blocking, but because this is in a new thread it doesn't matter.
                 [=](container* con, AdminInfo const& admin){
                     create_text(con, nullptr, admin.name.c_str(), LV_MENU_ITEM_BUILDER_VARIANT_1);
                     create_text(con, nullptr, admin.ip.c_str(), LV_MENU_ITEM_BUILDER_VARIANT_1);
@@ -533,7 +549,6 @@ class Settings{
                 );
                 delete str; // thread has to clean up
             }).detach();
-        
     }
 
     page* init_page(){
