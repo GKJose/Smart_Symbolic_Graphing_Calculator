@@ -533,6 +533,7 @@ class Settings{
                 lv_obj_t* msgbox = lv_msgbox_create(nullptr, "ERROR", "Invalid port number.", nullptr, true);
                 lv_obj_center(msgbox);
                 delete str;
+                return;
             }
         }
         global_state.port = str->size() > 0 ? *str : "6969";
