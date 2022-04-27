@@ -1,0 +1,661 @@
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp: In member function ‘std::shared_ptr<{anonymous}::schema> nlohmann::json_schema::root_schema::get_or_create_ref(const nlohmann::json_uri&)’:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:35: error: no match for ‘operator!=’ (operand types are ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} and ‘const char [1]’)
+  219 |                 if (uri.pointer() != "") {
+      |                     ~~~~~~~~~~~~~ ^~ ~~
+      |                                |     |
+      |                                |     const char [1]
+      |                                const json_pointer {aka const nlohmann::json_pointer<std::__cxx11::basic_string<char> >}
+In file included from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:13337:13: note: candidate: ‘template<class RefStringTypeLhs, class RefStringTypeRhs> bool nlohmann::operator!=(const nlohmann::json_pointer<RefStringType>&, const nlohmann::json_pointer<RefStringTypeRhs>&)’
+13337 | inline bool operator!=(json_pointer<RefStringTypeLhs> const& lhs,
+      |             ^~~~~~~~
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:13337:13: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const nlohmann::json_pointer<RefStringTypeRhs>’ and ‘const char [1]’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/bits/stl_algobase.h:67,
+                 from /usr/include/c++/11.2.0/algorithm:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:54,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/stl_iterator.h:1137:5: note: candidate: ‘template<class _IteratorL, class _IteratorR, class _Container> bool __gnu_cxx::operator!=(const __gnu_cxx::__normal_iterator<_IteratorL, _Container>&, const __gnu_cxx::__normal_iterator<_IteratorR, _Container>&)’
+ 1137 |     operator!=(const __normal_iterator<_IteratorL, _Container>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_iterator.h:1137:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const __gnu_cxx::__normal_iterator<_IteratorL, _Container>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/bits/stl_algobase.h:67,
+                 from /usr/include/c++/11.2.0/algorithm:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:54,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/stl_iterator.h:1145:5: note: candidate: ‘template<class _Iterator, class _Container> bool __gnu_cxx::operator!=(const __gnu_cxx::__normal_iterator<_Iterator, _Container>&, const __gnu_cxx::__normal_iterator<_Iterator, _Container>&)’
+ 1145 |     operator!=(const __normal_iterator<_Iterator, _Container>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_iterator.h:1145:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const __gnu_cxx::__normal_iterator<_Iterator, _Container>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/x86_64-pc-linux-gnu/bits/c++allocator.h:33,
+                 from /usr/include/c++/11.2.0/bits/allocator.h:46,
+                 from /usr/include/c++/11.2.0/string:41,
+                 from /usr/include/c++/11.2.0/bits/locale_classes.h:40,
+                 from /usr/include/c++/11.2.0/bits/ios_base.h:41,
+                 from /usr/include/c++/11.2.0/streambuf:41,
+                 from /usr/include/c++/11.2.0/bits/streambuf_iterator.h:35,
+                 from /usr/include/c++/11.2.0/iterator:66,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/ext/new_allocator.h:190:9: note: candidate: ‘template<class _Up> bool __gnu_cxx::operator!=(const __gnu_cxx::new_allocator<char>&, const __gnu_cxx::new_allocator<_Tp>&)’
+  190 |         operator!=(const new_allocator&, const new_allocator<_Up>&)
+      |         ^~~~~~~~
+/usr/include/c++/11.2.0/ext/new_allocator.h:190:9: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const __gnu_cxx::new_allocator<_Tp>’ and ‘const char [1]’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/utility:70,
+                 from /usr/include/c++/11.2.0/algorithm:60,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:54,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/stl_pair.h:496:5: note: candidate: ‘template<class _T1, class _T2> constexpr bool std::operator!=(const std::pair<_T1, _T2>&, const std::pair<_T1, _T2>&)’
+  496 |     operator!=(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_pair.h:496:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::pair<_T1, _T2>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/bits/stl_algobase.h:67,
+                 from /usr/include/c++/11.2.0/algorithm:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:54,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/stl_iterator.h:431:5: note: candidate: ‘template<class _Iterator> bool std::operator!=(const std::reverse_iterator<_Iterator>&, const std::reverse_iterator<_Iterator>&)’
+  431 |     operator!=(const reverse_iterator<_Iterator>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_iterator.h:431:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::reverse_iterator<_Iterator>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/bits/stl_algobase.h:67,
+                 from /usr/include/c++/11.2.0/algorithm:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:54,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/stl_iterator.h:470:5: note: candidate: ‘template<class _IteratorL, class _IteratorR> bool std::operator!=(const std::reverse_iterator<_Iterator>&, const std::reverse_iterator<_IteratorR>&)’
+  470 |     operator!=(const reverse_iterator<_IteratorL>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_iterator.h:470:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::reverse_iterator<_Iterator>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/bits/stl_algobase.h:67,
+                 from /usr/include/c++/11.2.0/algorithm:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:54,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/stl_iterator.h:1550:5: note: candidate: ‘template<class _IteratorL, class _IteratorR> bool std::operator!=(const std::move_iterator<_IteratorL>&, const std::move_iterator<_IteratorR>&)’
+ 1550 |     operator!=(const move_iterator<_IteratorL>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_iterator.h:1550:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::move_iterator<_IteratorL>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/bits/stl_algobase.h:67,
+                 from /usr/include/c++/11.2.0/algorithm:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:54,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/stl_iterator.h:1607:5: note: candidate: ‘template<class _Iterator> bool std::operator!=(const std::move_iterator<_IteratorL>&, const std::move_iterator<_IteratorL>&)’
+ 1607 |     operator!=(const move_iterator<_Iterator>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_iterator.h:1607:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::move_iterator<_IteratorL>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/tuple:39,
+                 from /usr/include/c++/11.2.0/functional:54,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:56,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/array:305:5: note: candidate: ‘template<class _Tp, long unsigned int _Nm> bool std::operator!=(const std::array<_Tp, _Nm>&, const std::array<_Tp, _Nm>&)’
+  305 |     operator!=(const array<_Tp, _Nm>& __one, const array<_Tp, _Nm>& __two)
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/array:305:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::array<_Tp, _Nm>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/functional:54,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:56,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/tuple:1568:5: note: candidate: ‘template<class ... _TElements, class ... _UElements> constexpr bool std::operator!=(const std::tuple<_Tps ...>&, const std::tuple<_Types ...>&)’
+ 1568 |     operator!=(const tuple<_TElements...>& __t,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/tuple:1568:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::tuple<_Tps ...>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/functional:59,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:56,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/std_function.h:707:5: note: candidate: ‘template<class _Res, class ... _Args> bool std::operator!=(const std::function<_Res(_ArgTypes ...)>&, std::nullptr_t)’
+  707 |     operator!=(const function<_Res(_Args...)>& __f, nullptr_t) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/std_function.h:707:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::function<_Res(_ArgTypes ...)>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/functional:59,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:56,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/std_function.h:713:5: note: candidate: ‘template<class _Res, class ... _Args> bool std::operator!=(std::nullptr_t, const std::function<_Res(_ArgTypes ...)>&)’
+  713 |     operator!=(nullptr_t, const function<_Res(_Args...)>& __f) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/std_function.h:713:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const std::function<_Res(_ArgTypes ...)>’ and ‘const char [1]’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/iosfwd:40,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:59,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/postypes.h:227:5: note: candidate: ‘template<class _StateT> bool std::operator!=(const std::fpos<_StateT>&, const std::fpos<_StateT>&)’
+  227 |     operator!=(const fpos<_StateT>& __lhs, const fpos<_StateT>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/postypes.h:227:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::fpos<_StateT>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/string:41,
+                 from /usr/include/c++/11.2.0/bits/locale_classes.h:40,
+                 from /usr/include/c++/11.2.0/bits/ios_base.h:41,
+                 from /usr/include/c++/11.2.0/streambuf:41,
+                 from /usr/include/c++/11.2.0/bits/streambuf_iterator.h:35,
+                 from /usr/include/c++/11.2.0/iterator:66,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/allocator.h:237:5: note: candidate: ‘template<class _T1, class _T2> bool std::operator!=(const std::allocator<_CharT>&, const std::allocator<_T2>&)’
+  237 |     operator!=(const allocator<_T1>&, const allocator<_T2>&)
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/allocator.h:237:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::allocator<_CharT>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/string:55,
+                 from /usr/include/c++/11.2.0/bits/locale_classes.h:40,
+                 from /usr/include/c++/11.2.0/bits/ios_base.h:41,
+                 from /usr/include/c++/11.2.0/streambuf:41,
+                 from /usr/include/c++/11.2.0/bits/streambuf_iterator.h:35,
+                 from /usr/include/c++/11.2.0/iterator:66,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/basic_string.h:6301:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> bool std::operator!=(const std::__cxx11::basic_string<_CharT, _Traits, _Alloc>&, const std::__cxx11::basic_string<_CharT, _Traits, _Alloc>&)’
+ 6301 |     operator!=(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/basic_string.h:6301:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::__cxx11::basic_string<_CharT, _Traits, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/string:55,
+                 from /usr/include/c++/11.2.0/bits/locale_classes.h:40,
+                 from /usr/include/c++/11.2.0/bits/ios_base.h:41,
+                 from /usr/include/c++/11.2.0/streambuf:41,
+                 from /usr/include/c++/11.2.0/bits/streambuf_iterator.h:35,
+                 from /usr/include/c++/11.2.0/iterator:66,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/basic_string.h:6314:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> bool std::operator!=(const _CharT*, const std::__cxx11::basic_string<_CharT, _Traits, _Alloc>&)’
+ 6314 |     operator!=(const _CharT* __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/basic_string.h:6314:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const _CharT*’ and ‘nlohmann::json_pointer<std::__cxx11::basic_string<char> >’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/string:55,
+                 from /usr/include/c++/11.2.0/bits/locale_classes.h:40,
+                 from /usr/include/c++/11.2.0/bits/ios_base.h:41,
+                 from /usr/include/c++/11.2.0/streambuf:41,
+                 from /usr/include/c++/11.2.0/bits/streambuf_iterator.h:35,
+                 from /usr/include/c++/11.2.0/iterator:66,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/basic_string.h:6326:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> bool std::operator!=(const std::__cxx11::basic_string<_CharT, _Traits, _Alloc>&, const _CharT*)’
+ 6326 |     operator!=(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/basic_string.h:6326:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::__cxx11::basic_string<_CharT, _Traits, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/iterator:66,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/streambuf_iterator.h:232:5: note: candidate: ‘template<class _CharT, class _Traits> bool std::operator!=(const std::istreambuf_iterator<_CharT, _Traits>&, const std::istreambuf_iterator<_CharT, _Traits>&)’
+  232 |     operator!=(const istreambuf_iterator<_CharT, _Traits>& __a,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/streambuf_iterator.h:232:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::istreambuf_iterator<_CharT, _Traits>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/memory:76,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:62,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/unique_ptr.h:774:5: note: candidate: ‘template<class _Tp, class _Dp, class _Up, class _Ep> bool std::operator!=(const std::unique_ptr<_Tp, _Dp>&, const std::unique_ptr<_Up, _Ep>&)’
+  774 |     operator!=(const unique_ptr<_Tp, _Dp>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/unique_ptr.h:774:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::unique_ptr<_Tp, _Dp>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/memory:76,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:62,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/unique_ptr.h:781:5: note: candidate: ‘template<class _Tp, class _Dp> bool std::operator!=(const std::unique_ptr<_Tp, _Dp>&, std::nullptr_t)’
+  781 |     operator!=(const unique_ptr<_Tp, _Dp>& __x, nullptr_t) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/unique_ptr.h:781:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::unique_ptr<_Tp, _Dp>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/memory:76,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:62,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/unique_ptr.h:787:5: note: candidate: ‘template<class _Tp, class _Dp> bool std::operator!=(std::nullptr_t, const std::unique_ptr<_Tp, _Dp>&)’
+  787 |     operator!=(nullptr_t, const unique_ptr<_Tp, _Dp>& __x) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/unique_ptr.h:787:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const std::unique_ptr<_Tp, _Dp>’ and ‘const char [1]’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/bits/shared_ptr.h:53,
+                 from /usr/include/c++/11.2.0/memory:77,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:62,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/shared_ptr_base.h:1441:5: note: candidate: ‘template<class _Tp1, class _Tp2, __gnu_cxx::_Lock_policy _Lp> bool std::operator!=(const std::__shared_ptr<_Tp1, _Lp>&, const std::__shared_ptr<_Tp2, _Lp>&)’
+ 1441 |     operator!=(const __shared_ptr<_Tp1, _Lp>& __a,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/shared_ptr_base.h:1441:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::__shared_ptr<_Tp1, _Lp>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/bits/shared_ptr.h:53,
+                 from /usr/include/c++/11.2.0/memory:77,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:62,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/shared_ptr_base.h:1447:5: note: candidate: ‘template<class _Tp, __gnu_cxx::_Lock_policy _Lp> bool std::operator!=(const std::__shared_ptr<_Tp, _Lp>&, std::nullptr_t)’
+ 1447 |     operator!=(const __shared_ptr<_Tp, _Lp>& __a, nullptr_t) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/shared_ptr_base.h:1447:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::__shared_ptr<_Tp, _Lp>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/bits/shared_ptr.h:53,
+                 from /usr/include/c++/11.2.0/memory:77,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:62,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/shared_ptr_base.h:1452:5: note: candidate: ‘template<class _Tp, __gnu_cxx::_Lock_policy _Lp> bool std::operator!=(std::nullptr_t, const std::__shared_ptr<_Tp, _Lp>&)’
+ 1452 |     operator!=(nullptr_t, const __shared_ptr<_Tp, _Lp>& __a) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/shared_ptr_base.h:1452:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const std::__shared_ptr<_Tp, _Lp>’ and ‘const char [1]’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/memory:77,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:62,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/shared_ptr.h:470:5: note: candidate: ‘template<class _Tp, class _Up> bool std::operator!=(const std::shared_ptr<_Tp>&, const std::shared_ptr<_Tp>&)’
+  470 |     operator!=(const shared_ptr<_Tp>& __a, const shared_ptr<_Up>& __b) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/shared_ptr.h:470:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::shared_ptr<_Tp>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/memory:77,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:62,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/shared_ptr.h:476:5: note: candidate: ‘template<class _Tp> bool std::operator!=(const std::shared_ptr<_Tp>&, std::nullptr_t)’
+  476 |     operator!=(const shared_ptr<_Tp>& __a, nullptr_t) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/shared_ptr.h:476:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::shared_ptr<_Tp>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/memory:77,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:62,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/shared_ptr.h:482:5: note: candidate: ‘template<class _Tp> bool std::operator!=(std::nullptr_t, const std::shared_ptr<_Tp>&)’
+  482 |     operator!=(nullptr_t, const shared_ptr<_Tp>& __a) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/shared_ptr.h:482:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const std::shared_ptr<_Tp>’ and ‘const char [1]’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/vector:67,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:66,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/stl_vector.h:1937:5: note: candidate: ‘template<class _Tp, class _Alloc> bool std::operator!=(const std::vector<_Tp, _Alloc>&, const std::vector<_Tp, _Alloc>&)’
+ 1937 |     operator!=(const vector<_Tp, _Alloc>& __x, const vector<_Tp, _Alloc>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_vector.h:1937:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::vector<_Tp, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/forward_list:38,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:79,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/forward_list.h:1476:5: note: candidate: ‘template<class _Tp, class _Alloc> bool std::operator!=(const std::forward_list<_Tp, _Alloc>&, const std::forward_list<_Tp, _Alloc>&)’
+ 1476 |     operator!=(const forward_list<_Tp, _Alloc>& __lx,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/forward_list.h:1476:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::forward_list<_Tp, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/map:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:81,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/stl_map.h:1508:5: note: candidate: ‘template<class _Key, class _Tp, class _Compare, class _Alloc> bool std::operator!=(const std::map<_Key, _Tp, _Compare, _Alloc>&, const std::map<_Key, _Tp, _Compare, _Alloc>&)’
+ 1508 |     operator!=(const map<_Key, _Tp, _Compare, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_map.h:1508:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::map<_Key, _Tp, _Compare, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/map:62,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:81,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/stl_multimap.h:1173:5: note: candidate: ‘template<class _Key, class _Tp, class _Compare, class _Alloc> bool std::operator!=(const std::multimap<_Key, _Tp, _Compare, _Alloc>&, const std::multimap<_Key, _Tp, _Compare, _Alloc>&)’
+ 1173 |     operator!=(const multimap<_Key, _Tp, _Compare, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_multimap.h:1173:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::multimap<_Key, _Tp, _Compare, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/unordered_map:47,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:85,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/unordered_map.h:2141:5: note: candidate: ‘template<class _Key, class _Tp, class _Hash, class _Pred, class _Alloc> bool std::operator!=(const std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>&, const std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>&)’
+ 2141 |     operator!=(const unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/unordered_map.h:2141:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/unordered_map:47,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:85,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/unordered_map.h:2155:5: note: candidate: ‘template<class _Key, class _Tp, class _Hash, class _Pred, class _Alloc> bool std::operator!=(const std::unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>&, const std::unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>&)’
+ 2155 |     operator!=(const unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/unordered_map.h:2155:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/valarray:603,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:87,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/valarray_after.h:418:5: note: candidate: ‘template<class _Dom1, class _Dom2> std::_Expr<std::__detail::_BinClos<std::__not_equal_to, std::_Expr, std::_Expr, _Dom1, _Dom2>, typename std::__fun<std::__not_equal_to, typename _Dom1::value_type>::result_type> std::operator!=(const std::_Expr<_Dom1, typename _Dom1::value_type>&, const std::_Expr<_Dom2, typename _Dom2::value_type>&)’
+  418 |     _DEFINE_EXPR_BINARY_OPERATOR(!=, struct std::__not_equal_to)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/11.2.0/bits/valarray_after.h:418:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::_Expr<_Dom1, typename _Dom1::value_type>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/valarray:603,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:87,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/valarray_after.h:418:5: note: candidate: ‘template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__not_equal_to, std::_Expr, std::_Constant, _Dom, typename _Dom::value_type>, typename std::__fun<std::__not_equal_to, typename _Dom1::value_type>::result_type> std::operator!=(const std::_Expr<_Dom1, typename _Dom1::value_type>&, const typename _Dom::value_type&)’
+  418 |     _DEFINE_EXPR_BINARY_OPERATOR(!=, struct std::__not_equal_to)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/11.2.0/bits/valarray_after.h:418:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::_Expr<_Dom1, typename _Dom1::value_type>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/valarray:603,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:87,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/valarray_after.h:418:5: note: candidate: ‘template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__not_equal_to, std::_Constant, std::_Expr, typename _Dom::value_type, _Dom>, typename std::__fun<std::__not_equal_to, typename _Dom1::value_type>::result_type> std::operator!=(const typename _Dom::value_type&, const std::_Expr<_Dom1, typename _Dom1::value_type>&)’
+  418 |     _DEFINE_EXPR_BINARY_OPERATOR(!=, struct std::__not_equal_to)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/11.2.0/bits/valarray_after.h:418:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const std::_Expr<_Dom1, typename _Dom1::value_type>’ and ‘const char [1]’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/valarray:603,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:87,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/valarray_after.h:418:5: note: candidate: ‘template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__not_equal_to, std::_Expr, std::_ValArray, _Dom, typename _Dom::value_type>, typename std::__fun<std::__not_equal_to, typename _Dom1::value_type>::result_type> std::operator!=(const std::_Expr<_Dom1, typename _Dom1::value_type>&, const std::valarray<typename _Dom::value_type>&)’
+  418 |     _DEFINE_EXPR_BINARY_OPERATOR(!=, struct std::__not_equal_to)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/11.2.0/bits/valarray_after.h:418:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::_Expr<_Dom1, typename _Dom1::value_type>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/valarray:603,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:87,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/valarray_after.h:418:5: note: candidate: ‘template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__not_equal_to, std::_ValArray, std::_Expr, typename _Dom::value_type, _Dom>, typename std::__fun<std::__not_equal_to, typename _Dom1::value_type>::result_type> std::operator!=(const std::valarray<typename _Dom::value_type>&, const std::_Expr<_Dom1, typename _Dom1::value_type>&)’
+  418 |     _DEFINE_EXPR_BINARY_OPERATOR(!=, struct std::__not_equal_to)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/11.2.0/bits/valarray_after.h:418:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const std::_Expr<_Dom1, typename _Dom1::value_type>’ and ‘const char [1]’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:87,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/valarray:1198:1: note: candidate: ‘template<class _Tp> std::_Expr<std::__detail::_BinClos<std::__not_equal_to, std::_ValArray, std::_ValArray, _Tp, _Tp>, typename std::__fun<std::__not_equal_to, _Tp>::result_type> std::operator!=(const std::valarray<_Tp>&, const std::valarray<_Tp>&)’
+ 1198 | _DEFINE_BINARY_OPERATOR(!=, __not_equal_to)
+      | ^~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/11.2.0/valarray:1198:1: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::valarray<_Tp>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:87,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/valarray:1198:1: note: candidate: ‘template<class _Tp> std::_Expr<std::__detail::_BinClos<std::__not_equal_to, std::_ValArray, std::_Constant, _Tp, _Tp>, typename std::__fun<std::__not_equal_to, _Tp>::result_type> std::operator!=(const std::valarray<_Tp>&, const typename std::valarray<_Tp>::value_type&)’
+ 1198 | _DEFINE_BINARY_OPERATOR(!=, __not_equal_to)
+      | ^~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/11.2.0/valarray:1198:1: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::valarray<_Tp>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:87,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/valarray:1198:1: note: candidate: ‘template<class _Tp> std::_Expr<std::__detail::_BinClos<std::__not_equal_to, std::_Constant, std::_ValArray, _Tp, _Tp>, typename std::__fun<std::__not_equal_to, _Tp>::result_type> std::operator!=(const typename std::valarray<_Tp>::value_type&, const std::valarray<_Tp>&)’
+ 1198 | _DEFINE_BINARY_OPERATOR(!=, __not_equal_to)
+      | ^~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/11.2.0/valarray:1198:1: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const std::valarray<_Tp>’ and ‘const char [1]’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/deque:67,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:13:
+/usr/include/c++/11.2.0/bits/stl_deque.h:2291:5: note: candidate: ‘template<class _Tp, class _Alloc> bool std::operator!=(const std::deque<_Tp, _Alloc>&, const std::deque<_Tp, _Alloc>&)’
+ 2291 |     operator!=(const deque<_Tp, _Alloc>& __x, const deque<_Tp, _Alloc>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_deque.h:2291:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::deque<_Tp, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/set:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:15:
+/usr/include/c++/11.2.0/bits/stl_set.h:1030:5: note: candidate: ‘template<class _Key, class _Compare, class _Alloc> bool std::operator!=(const std::set<_Key, _Compare, _Alloc>&, const std::set<_Key, _Compare, _Alloc>&)’
+ 1030 |     operator!=(const set<_Key, _Compare, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_set.h:1030:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::set<_Key, _Compare, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/set:62,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:15:
+/usr/include/c++/11.2.0/bits/stl_multiset.h:1016:5: note: candidate: ‘template<class _Key, class _Compare, class _Alloc> bool std::operator!=(const std::multiset<_Key, _Compare, _Alloc>&, const std::multiset<_Key, _Compare, _Alloc>&)’
+ 1016 |     operator!=(const multiset<_Key, _Compare, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_multiset.h:1016:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::multiset<_Key, _Compare, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/stack:61,
+                 from /usr/include/c++/11.2.0/regex:47,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:30:
+/usr/include/c++/11.2.0/bits/stl_stack.h:343:5: note: candidate: ‘template<class _Tp, class _Seq> bool std::operator!=(const std::stack<_Tp, _Seq>&, const std::stack<_Tp, _Seq>&)’
+  343 |     operator!=(const stack<_Tp, _Seq>& __x, const stack<_Tp, _Seq>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/stl_stack.h:343:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::stack<_Tp, _Seq>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/regex:63,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:30:
+/usr/include/c++/11.2.0/bits/regex.h:1066:5: note: candidate: ‘template<class _BiIter> bool std::__cxx11::operator!=(const std::__cxx11::sub_match<_BiIter>&, const std::__cxx11::sub_match<_BiIter>&)’
+ 1066 |     operator!=(const sub_match<_BiIter>& __lhs, const sub_match<_BiIter>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/regex.h:1066:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::__cxx11::sub_match<_BiIter>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/regex:63,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:30:
+/usr/include/c++/11.2.0/bits/regex.h:1146:5: note: candidate: ‘template<class _Bi_iter, class _Ch_traits, class _Ch_alloc> bool std::__cxx11::operator!=(std::__cxx11::__sub_match_string<_Bi_iter, _Ch_traits, _Ch_alloc>&, const std::__cxx11::sub_match<_BiIter>&)’
+ 1146 |     operator!=(const __sub_match_string<_Bi_iter, _Ch_traits, _Ch_alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/regex.h:1146:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘std::__cxx11::__sub_match_string<_Bi_iter, _Ch_traits, _Ch_alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/regex:63,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:30:
+/usr/include/c++/11.2.0/bits/regex.h:1239:5: note: candidate: ‘template<class _Bi_iter, class _Ch_traits, class _Ch_alloc> bool std::__cxx11::operator!=(const std::__cxx11::sub_match<_BiIter>&, std::__cxx11::__sub_match_string<_Bi_iter, _Ch_traits, _Ch_alloc>&)’
+ 1239 |     operator!=(const sub_match<_Bi_iter>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/regex.h:1239:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::__cxx11::sub_match<_BiIter>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/regex:63,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:30:
+/usr/include/c++/11.2.0/bits/regex.h:1313:5: note: candidate: ‘template<class _Bi_iter> bool std::__cxx11::operator!=(const typename std::iterator_traits<_Iter>::value_type*, const std::__cxx11::sub_match<_BiIter>&)’
+ 1313 |     operator!=(typename iterator_traits<_Bi_iter>::value_type const* __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/regex.h:1313:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const std::__cxx11::sub_match<_BiIter>’ and ‘const char [1]’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/regex:63,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:30:
+/usr/include/c++/11.2.0/bits/regex.h:1407:5: note: candidate: ‘template<class _Bi_iter> bool std::__cxx11::operator!=(const std::__cxx11::sub_match<_BiIter>&, const typename std::iterator_traits<_Iter>::value_type*)’
+ 1407 |     operator!=(const sub_match<_Bi_iter>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/regex.h:1407:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::__cxx11::sub_match<_BiIter>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/regex:63,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:30:
+/usr/include/c++/11.2.0/bits/regex.h:1481:5: note: candidate: ‘template<class _Bi_iter> bool std::__cxx11::operator!=(const typename std::iterator_traits<_Iter>::value_type&, const std::__cxx11::sub_match<_BiIter>&)’
+ 1481 |     operator!=(typename iterator_traits<_Bi_iter>::value_type const& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/regex.h:1481:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   mismatched types ‘const std::__cxx11::sub_match<_BiIter>’ and ‘const char [1]’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/regex:63,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:30:
+/usr/include/c++/11.2.0/bits/regex.h:1581:5: note: candidate: ‘template<class _Bi_iter> bool std::__cxx11::operator!=(const std::__cxx11::sub_match<_BiIter>&, const typename std::iterator_traits<_Iter>::value_type&)’
+ 1581 |     operator!=(const sub_match<_Bi_iter>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/regex.h:1581:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::__cxx11::sub_match<_BiIter>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/regex:63,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:30:
+/usr/include/c++/11.2.0/bits/regex.h:2128:5: note: candidate: ‘template<class _Bi_iter, class _Alloc> bool std::__cxx11::operator!=(const std::__cxx11::match_results<_BiIter, _Alloc>&, const std::__cxx11::match_results<_BiIter, _Alloc>&)’
+ 2128 |     operator!=(const match_results<_Bi_iter, _Alloc>& __m1,
+      |     ^~~~~~~~
+/usr/include/c++/11.2.0/bits/regex.h:2128:5: note:   template argument deduction/substitution failed:
+/home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:219:38: note:   ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} is not derived from ‘const std::__cxx11::match_results<_BiIter, _Alloc>’
+  219 |                 if (uri.pointer() != "") {
+      |                                      ^~
+In file included from /usr/include/c++/11.2.0/string:41,
+                 from /usr/include/c++/11.2.0/bits/locale_classes.h:40,
+                 from /usr/include/c++/11.2.0/bits/ios_base.h:41,
+                 from /usr/include/c++/11.2.0/streambuf:41,
+                 from /usr/include/c++/11.2.0/bits/streambuf_iterator.h:35,
+                 from /usr/include/c++/11.2.0/iterator:66,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/bits/allocator.h:221:7: note: candidate: ‘bool std::operator!=(const std::allocator<char>&, const std::allocator<char>&)’
+  221 |       operator!=(const allocator&, const allocator&) _GLIBCXX_NOTHROW
+      |       ^~~~~~~~
+/usr/include/c++/11.2.0/bits/allocator.h:221:18: note:   no known conversion for argument 1 from ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} to ‘const std::allocator<char>&’
+  221 |       operator!=(const allocator&, const allocator&) _GLIBCXX_NOTHROW
+      |                  ^~~~~~~~~~~~~~~~
+In file included from /usr/include/c++/11.2.0/bits/ios_base.h:46,
+                 from /usr/include/c++/11.2.0/streambuf:41,
+                 from /usr/include/c++/11.2.0/bits/streambuf_iterator.h:35,
+                 from /usr/include/c++/11.2.0/iterator:66,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json/single_include/nlohmann/json.hpp:61,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/nlohmann/json-schema.hpp:24,
+                 from /home/movrax/Documents/Smart_Symbolic_Graphing_Calculator/json-schema-validator/src/json-validator.cpp:9:
+/usr/include/c++/11.2.0/system_error:400:3: note: candidate: ‘bool std::operator!=(const std::error_code&, const std::error_code&)’
+  400 |   operator!=(const error_code& __lhs, const error_code& __rhs) noexcept
+      |   ^~~~~~~~
+/usr/include/c++/11.2.0/system_error:400:32: note:   no known conversion for argument 1 from ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} to ‘const std::error_code&’
+  400 |   operator!=(const error_code& __lhs, const error_code& __rhs) noexcept
+      |              ~~~~~~~~~~~~~~~~~~^~~~~
+/usr/include/c++/11.2.0/system_error:406:3: note: candidate: ‘bool std::operator!=(const std::error_code&, const std::error_condition&)’
+  406 |   operator!=(const error_code& __lhs, const error_condition& __rhs) noexcept
+      |   ^~~~~~~~
+/usr/include/c++/11.2.0/system_error:406:32: note:   no known conversion for argument 1 from ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} to ‘const std::error_code&’
+  406 |   operator!=(const error_code& __lhs, const error_condition& __rhs) noexcept
+      |              ~~~~~~~~~~~~~~~~~~^~~~~
+/usr/include/c++/11.2.0/system_error:412:3: note: candidate: ‘bool std::operator!=(const std::error_condition&, const std::error_code&)’
+  412 |   operator!=(const error_condition& __lhs, const error_code& __rhs) noexcept
+      |   ^~~~~~~~
+/usr/include/c++/11.2.0/system_error:412:37: note:   no known conversion for argument 1 from ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} to ‘const std::error_condition&’
+  412 |   operator!=(const error_condition& __lhs, const error_code& __rhs) noexcept
+      |              ~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+/usr/include/c++/11.2.0/system_error:417:3: note: candidate: ‘bool std::operator!=(const std::error_condition&, const std::error_condition&)’
+  417 |   operator!=(const error_condition& __lhs,
+      |   ^~~~~~~~
+/usr/include/c++/11.2.0/system_error:417:37: note:   no known conversion for argument 1 from ‘const json_pointer’ {aka ‘const nlohmann::json_pointer<std::__cxx11::basic_string<char> >’} to ‘const std::error_condition&’
+  417 |   operator!=(const error_condition& __lhs,
+      |              ~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+make[3]: *** [json-schema-validator/CMakeFiles/nlohmann_json_schema_validator.dir/build.make:104: json-schema-validator/CMakeFiles/nlohmann_json_schema_validator.dir/src/json-validator.cpp.o] Error 1
+make[2]: *** [CMakeFiles/Makefile2:1120: json-schema-validator/CMakeFiles/nlohmann_json_schema_validator.dir/all] Error 2
+make[1]: *** [CMakeFiles/Makefile2:1155: src/CMakeFiles/SSGC.dir/rule] Error 2
+make: *** [Makefile:608: SSGC] Error 2
