@@ -1,3 +1,11 @@
 {
-    "length": 0
+    "entries": [
+        {
+            "Input ID": "04/26/22-22:57:07",
+            "input": "1+1",
+            "output": "2",
+            "user": "guest"
+        }
+    ],
+    "length": 1
 }

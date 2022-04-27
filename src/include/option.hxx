@@ -40,6 +40,9 @@ public:
     constexpr T& value_ref(){
         return _value;
     }
+    constexpr T const& value_ref_const() const noexcept{
+        return _value;
+    }
 
     template<typename R>
 	Option<R> map(R (*func)(T)){

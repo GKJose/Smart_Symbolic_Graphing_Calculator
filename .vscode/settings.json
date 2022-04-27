@@ -77,5 +77,6 @@
         "forward_list": "cpp",
         "shared_mutex": "cpp",
         "span": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

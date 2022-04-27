@@ -16,7 +16,7 @@ static lv_obj_t* textArea;
 #if ENABLE_MCP_KEYPAD
 static Keypad keypad;
 #endif
-
+#include <state.hxx>
 /*Areas holds a list of pointers to the active text areas.
   (1 Input, 1 Output) = 1 Entry to the calculator.
   After 50 Entries the main screen clears to prevent memory overfill.
@@ -364,8 +364,27 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
 
         auto solution = static_cast<Solve*>(e->user_data);
         std::string func_expression = std::string(lv_textarea_get_text(e->target));
-        std::string output = solution->call_giac(func_expression);
-        std::cout << output;
+		std::string output;
+		//Check to see if functions are restricted
+		if(global_state.permissions != nullptr && global_state.permissions["permissions"]["functionRestrictionsEnable"].get<bool>()){
+			auto found = std::string::npos;
+			
+			std::vector<std::string> blacklistedFunctions = (global_state.permissions["functionBlacklist"] != nlohmann::detail::value_t::null) ? global_state.permissions["functionBlacklist"].get<std::vector<std::string>>() : std::vector<std::string>();
+			for(std::string function: blacklistedFunctions){
+				found = func_expression.find(function);
+				if(found != std::string::npos){
+					break;
+				}
+			}
+			if(found == std::string::npos){
+				output = solution->call_giac(func_expression);
+
+			}else{
+				output = "Function is blacklisted!";
+			}
+		}else{
+			output = solution->call_giac(func_expression);
+		}
 
 		/*Reading Time Info For Logging.*/
 		time_t rawtime;

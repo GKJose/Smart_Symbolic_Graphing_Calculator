@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <stack>
 #include <Calculator.h>
-
+#include <state.hxx>
 // #if ENABLE_EXPERIMENTAL_PLOTTING
 // #include <armadillo>
 // #endif
@@ -51,12 +51,37 @@ namespace graphing {
         auto func_str = graph->get_function_button_selected_str();
         auto func_id = graph->get_function_button_selected_id();
         auto func_expression = std::string(lv_textarea_get_text(event->target));
+        auto func_textArea = (lv_obj_t*) event->target;
         auto plot = graph->get_plot(func_id);
         std::cout << "TEXTAREA_CB: " << func_str << " " << func_expression << " " << func_id << "\n";
-        graph->update_function(func_str + "(x):=" + func_expression);
-        plot->name = std::move(func_str);
-        plot->change_expression(std::move(func_expression));
-        graph->update();  
+        if(global_state.permissions != nullptr && global_state.permissions["permissions"]["graphingRestrictionsEnable"].get<bool>()){
+			auto found = std::string::npos;
+			
+			std::vector<std::string> blacklistedFunctions = (global_state.permissions["graphingInfo"]["graphingBlacklist"] != nlohmann::detail::value_t::null) ? global_state.permissions["graphingInfo"]["graphingBlacklist"].get<std::vector<std::string>>() : std::vector<std::string>();
+			for(std::string function: blacklistedFunctions){
+				found = func_expression.find(function);
+				if(found != std::string::npos){
+					break;
+				}
+			}
+			if(found == std::string::npos){
+				graph->update_function(func_str + "(x):=" + func_expression);
+                plot->name = std::move(func_str);
+                plot->change_expression(std::move(func_expression));
+                graph->update(); 
+
+			}else{
+                auto msgbox = lv_msgbox_create(NULL,"Blacklisted Function","The function is blacklisted!",nullptr,true);
+                lv_obj_center(msgbox);
+				lv_textarea_set_text(func_textArea,"");
+			}
+		}else{
+            graph->update_function(func_str + "(x):=" + func_expression);
+            plot->name = std::move(func_str);
+            plot->change_expression(std::move(func_expression));
+            graph->update();
+		}
+          
     }
 
     static void dropdown_button_cb(lv_event_t* event){
@@ -384,6 +409,7 @@ namespace graphing {
         lv_obj_align(function_button, LV_ALIGN_TOP_MID, 50, 10);
         lv_obj_add_event_cb(function_button, dropdown_button_cb, LV_EVENT_VALUE_CHANGED, this);
 
+        #if 0
         // options button initialization
         options_button = lv_dropdown_create(canvas);
         lv_dropdown_set_options_static(options_button, options_button_text.c_str());
@@ -391,6 +417,7 @@ namespace graphing {
         lv_obj_add_style(options_button, &function_button_style, LV_PART_ITEMS);
         lv_obj_set_size(options_button, 40, 30);
         lv_obj_align(options_button, LV_ALIGN_TOP_LEFT, 5, 10);
+        #endif
 
         // axes style initialization
         lv_draw_line_dsc_init(&axes_style);
@@ -673,9 +700,11 @@ namespace graphing {
         }
         draw_ticks();
         auto elapsed = lv_tick_elaps(start);
+        #if 0
         // ms/f -> f/s
         std::sprintf(buf, "%.2lf", 1.0/(((double)elapsed)/1000.0));
         lv_canvas_draw_text(canvas, 10, 10, 100, &label, buf);
+        #endif
     }
 
     std::string Graph::next_function_name(){
