@@ -216,7 +216,9 @@ _AS(void) disconnect(){
         global_state.permissions = nullptr;
         global_state.set_screenshot_timer();
         global_state.set_websocket_timer();
-        obj["clientIP"] = "127.0.0.1";
+        
+        obj["clientIP"] = ws.ip() ? ws.ip().value() : "127.0.0.1";
+        obj["clientName"] = device_name();
         s->send(obj.dump());
         s->poll();
         current_admin.value_ref().socket.value_ref()->close();
@@ -281,7 +283,8 @@ _AS(Option<std::vector<std::string>>) get_permissions(){
     const std::lock_guard<std::mutex> guard(permission_mutex);
     if(!is_connected()) return OptNone;
      auto connection_request = connectionRequest;
-    connection_request["clientIP"] = "127.0.0.1";
+    connection_request["clientIP"] = ws.ip() ? ws.ip().value() : "127.0.0.1";
+    connection_request["clientName"] = device_name();
     global_state.as.send_data(connection_request.dump());
    
     auto s = global_state.as.current_admin.value_ref().socket.value_ref();
@@ -342,7 +345,8 @@ _AS(Option<calc_state::admin_app::AdminInfo>) get_admin_info(std::string const& 
     using namespace calc_state::json;
     const std::lock_guard<std::mutex> guard(info_mutex);
     auto connection_info = connectionInfo;
-    connection_info["clientIP"] = "127.0.0.1";
+    connection_info["clientIP"] = ws.ip() ? ws.ip().value() : "127.0.0.1";;
+    connection_info["clientName"] = device_name();
     global_state.as.send_data(connection_info.dump());
    
     auto s = global_state.as.current_admin.value_ref().socket.value_ref();
@@ -361,6 +365,7 @@ _AS(Option<calc_state::admin_app::AdminInfo>) get_admin_info(std::string const& 
             }else{
                 
                 std::cout << obj["ssgcType"].dump() << " not validated!" << std::endl;
+                std::cout << "DUMP:\n" << obj.dump();
             }
         });
     }
@@ -378,7 +383,15 @@ _AS(void) send_data(std::string const& data){
         && current_admin.value_ref_const().socket.value()->getReadyState() == easywsclient::WebSocket::OPEN){
             current_admin.value_ref_const().socket.value()->send(data);
     }
-}   
+}  
+
+_AS(void) set_device_name(std::string new_name){
+    _device_name = new_name;
+}
+
+_AS(std::string) device_name() const {
+    return _device_name;
+}
 
 _ADMIN_CALLBACK poll_admin_app(AdminState* state) {
     /// I don't think that polling the admin app is necessary anymore.
@@ -478,8 +491,8 @@ _STATE(void) take_screenshot(){
 _STATE(void) screenshot_handle(){
     
     auto data = json::ssgcData;
-    data["clientIP"] = ws.ip().value();
-    data["clientName"] = "UNKNOWN";
+    data["clientIP"] = ws.ip() ? ws.ip().value() : "127.0.0.1";;
+    data["clientName"] = as.device_name();
     take_screenshot();
     std::ifstream bmp("image.bmp", std::ios::in | std::ios::binary);
     std::vector<uint8_t> contents(
