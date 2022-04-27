@@ -125,7 +125,7 @@ class Settings{
         auto first_sec = section_map[sub_admin_page][0]; 
         auto first_con = container_map[first_sec][0];
         auto second_con = container_map[first_sec][1];
-        
+
         global_state.as.disconnect();
 
         lv_obj_t* first_label = lv_obj_get_child(first_con, 0);
@@ -425,19 +425,31 @@ class Settings{
         if (id == 1){ // disconnect button pressed
             settings->admin_disconnect();
         } else { // scan button pressed
+            section* first_sec = settings->section_map.at(settings->sub_admin_page).at(0);
+            container* ta_con = settings->container_map.at(first_sec).at(2); // textarea container
+            std::string name = lv_textarea_get_text(lv_obj_get_child(ta_con, 1));
+            if (name == "")
+                name = "UNKNOWN";
+            global_state.as.set_device_name(std::move(name));
 
             settings->update_admin_page();
         }
     }
 
     static void admin_msgbox_cb(lv_event_t* e){
-        using AdminPair = struct {Settings* settings; lv_obj_t* list; AdminInfo* admin_info; lv_obj_t* popup;};
+        using AdminPair = struct {Settings* settings; lv_obj_t* list; AdminInfo* admin_info; lv_obj_t* popup; lv_obj_t* name_textarea;};
         static AdminPair ap;
         Settings* settings = (Settings*)e->user_data;
         ap.admin_info = &settings->admin_map[(container*)e->target]; 
         ap.settings = settings;
         ap.admin_info->port = global_state.port;
         static const char* connect_text[] = {"Accept", "Decline", ""};
+
+        section* first_sec = settings->section_map.at(settings->sub_admin_page).at(0);
+        container* ta_con = settings->container_map.at(first_sec).at(2); // textarea container
+
+        lv_obj_t* name_ta = lv_obj_get_child(ta_con, 1); // name textarea
+        ap.name_textarea = name_ta;
 
         lv_msgbox_t* popup = (lv_msgbox_t*)lv_msgbox_create(
             nullptr, 
@@ -471,6 +483,12 @@ class Settings{
             AdminPair* ap = (AdminPair*)e->user_data;
             auto s = global_state.as.get_current_admin().value_ref().socket.value_ref();
             Settings* settings = ap->settings;
+
+            std::string name = lv_textarea_get_text(ap->name_textarea);
+            if (name == "")
+                name = "UNKNOWN";
+
+            global_state.as.set_device_name(std::move(name));
 
             if(id == 0){
                 auto reply = calc_state::json::permissionAcceptReply;
@@ -676,6 +694,7 @@ class Settings{
         
         container* port_con = create_container(sec);
         lv_obj_t* port_textarea = lv_textarea_create(port_con);
+        lv_obj_t* name_textarea = lv_textarea_create(port_con);
 
         static lv_style_t btnmat_style_bg, btnmat_style;
         // background style
@@ -698,8 +717,12 @@ class Settings{
         lv_obj_add_event_cb(btnmat, admin_scan_cb, LV_EVENT_VALUE_CHANGED, this);
         // port textarea setup
         lv_textarea_set_one_line(port_textarea, true);
-        lv_textarea_set_placeholder_text(port_textarea, "PORT # (default: 6969)");
+        lv_textarea_set_placeholder_text(port_textarea, "PORT #");
         lv_obj_set_flex_grow(port_textarea, true);
+        // name textarea setup
+        lv_textarea_set_one_line(name_textarea, true);
+        lv_textarea_set_placeholder_text(name_textarea, "NAME");
+        lv_obj_set_flex_grow(name_textarea, true);
 
         create_section(sub_admin_page); // section to populate with admin info.
         container* admin_con = create_root_text_container(sub_admin_page, LV_SYMBOL_TRASH, "Admin");

@@ -102,6 +102,7 @@ namespace calc_state{
             wifi::WifiState& ws;
             std::mutex connecting_mutex, disconnecting_mutex, scan_mutex, permission_mutex, info_mutex, reply_mutex;
             Option<AdminInfo> current_admin;
+            std::string _device_name = "UNKNOWN";
             public:
             AdminState(wifi::WifiState& ws);
             /// Attempts to connect to an admin app
@@ -141,6 +142,8 @@ namespace calc_state{
             Option<AdminInfo> get_admin_info(std::string const& ip);
             Option<AdminInfo> get_current_admin();
             void send_data(std::string const& data);
+            void set_device_name(std::string new_name);
+            std::string device_name() const;
 
             friend void poll_admin_app(AdminState* state);
             friend void poll_websocket(AdminState* state);
