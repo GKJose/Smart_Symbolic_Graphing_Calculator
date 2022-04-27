@@ -409,6 +409,7 @@ namespace graphing {
         lv_obj_align(function_button, LV_ALIGN_TOP_MID, 50, 10);
         lv_obj_add_event_cb(function_button, dropdown_button_cb, LV_EVENT_VALUE_CHANGED, this);
 
+        #if 0
         // options button initialization
         options_button = lv_dropdown_create(canvas);
         lv_dropdown_set_options_static(options_button, options_button_text.c_str());
@@ -416,6 +417,7 @@ namespace graphing {
         lv_obj_add_style(options_button, &function_button_style, LV_PART_ITEMS);
         lv_obj_set_size(options_button, 40, 30);
         lv_obj_align(options_button, LV_ALIGN_TOP_LEFT, 5, 10);
+        #endif
 
         // axes style initialization
         lv_draw_line_dsc_init(&axes_style);
@@ -698,9 +700,11 @@ namespace graphing {
         }
         draw_ticks();
         auto elapsed = lv_tick_elaps(start);
+        #if 0
         // ms/f -> f/s
         std::sprintf(buf, "%.2lf", 1.0/(((double)elapsed)/1000.0));
         lv_canvas_draw_text(canvas, 10, 10, 100, &label, buf);
+        #endif
     }
 
     std::string Graph::next_function_name(){
