@@ -18,7 +18,6 @@
 #include <string>
 #include <sstream>
 #include <unistd.h>
-//#include <giac/config.h>
 #include <tabs.hxx>
 
 #include <iostream>
@@ -41,10 +40,7 @@ namespace Calculator{
 	void storeFunctionTA(lv_obj_t* ta);
 	void storeWifiTA(lv_obj_t* ta);
 	static void clear_scr_btn_event_handler(lv_event_t* e);
-	static void input_history_ta_event_handler(lv_event_t* e);
-
-
-	
+	static void input_history_ta_event_handler(lv_event_t* e);	
 }
 
 #endif

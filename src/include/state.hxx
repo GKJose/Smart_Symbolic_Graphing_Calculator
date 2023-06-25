@@ -225,7 +225,7 @@ namespace calc_state{
         ///
         void take_screenshot();
         void screenshot_handle();
-        bool connect_to_admin_app(admin_app::AdminInfo& admin);
+        bool connect_to_admin_app(admin_app::AdminInfo const& admin);
         
         friend void screenshot_cb(State* state);
     };

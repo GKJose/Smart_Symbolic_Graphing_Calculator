@@ -4,6 +4,7 @@
 #include <string>
 #include <future>
 #include <stdio.h>
+#include <array>
 
 inline std::future<std::string> run_async_cmd(std::string const& cmd){
     auto cmd_lambda = [cmd]{

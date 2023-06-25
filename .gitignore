@@ -80,6 +80,8 @@ schemas/Makefile
 schemas/CMakeFiles
 image.bin
 image.bmp
+history.bin
+offsets.bin
 #tests
 tests/CMakeFiles/
 tests/cmake_install.cmake

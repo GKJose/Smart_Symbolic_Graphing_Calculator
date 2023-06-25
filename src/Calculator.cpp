@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <unistd.h>
+#include <history.hxx>
 #if ENABLE_MCP_KEYPAD
 #include <Keypad.hxx>
 #endif
@@ -29,7 +30,7 @@ static lv_obj_t* toggle_kb_btn;
 static lv_obj_t* clear_scr_btn;
 static lv_obj_t* tabview;
 static lv_obj_t* functionTextArea;
-static lv_obj_t* wifiTextArea;
+// static lv_obj_t* wifiTextArea;
 class Solve
 {
     public:
@@ -284,7 +285,7 @@ void Calculator::update(lv_timer_t * timer){
 }
 void Calculator::main_screen_driver(lv_obj_t* parent, bool first_screen)
 {
-    static Solve solution;
+    static Solve solver;
     total = 0;
     /*Create a keyboard*/
     kb = lv_keyboard_create(parent);
@@ -301,7 +302,7 @@ void Calculator::main_screen_driver(lv_obj_t* parent, bool first_screen)
     lv_textarea_set_one_line(active_ta, true);
     lv_obj_set_width(active_ta, 320);
     lv_obj_align(active_ta, LV_ALIGN_BOTTOM_MID, 0, -10);
-    lv_obj_add_event_cb(active_ta, active_ta_event_handler, LV_EVENT_ALL, &solution);
+    lv_obj_add_event_cb(active_ta, active_ta_event_handler, LV_EVENT_ALL, &solver);
     lv_obj_add_state(active_ta, LV_STATE_FOCUSED);
 
     lv_keyboard_set_textarea(kb, active_ta); /*Focus it on one of the text areas to start*/
@@ -312,7 +313,7 @@ void Calculator::main_screen_driver(lv_obj_t* parent, bool first_screen)
 		toggle_kb_btn = lv_btn_create(lv_scr_act());
 		lv_obj_add_flag(toggle_kb_btn,LV_OBJ_FLAG_CHECKABLE);
 		lv_obj_align(toggle_kb_btn, LV_ALIGN_TOP_RIGHT, 0, 0);
-		lv_color_t grey = lv_palette_main(LV_PALETTE_GREY);
+		// lv_color_t grey = lv_palette_main(LV_PALETTE_GREY);
 		lv_obj_set_style_bg_color(toggle_kb_btn, lv_palette_darken(LV_PALETTE_GREY, 3), 0);
 		lv_obj_set_size(toggle_kb_btn, 18, 18);
 		lv_obj_t* kb_img = lv_img_create(toggle_kb_btn);
@@ -362,98 +363,41 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
         }
         LV_LOG_USER("Ready, current text: %s", lv_textarea_get_text(ta));
 
-        auto solution = static_cast<Solve*>(e->user_data);
+        Solve* solver = static_cast<Solve*>(e->user_data);
         std::string func_expression = std::string(lv_textarea_get_text(e->target));
 		std::string output;
 		//Check to see if functions are restricted
-		if(global_state.permissions != nullptr && global_state.permissions["permissions"]["functionRestrictionsEnable"].get<bool>()){
-			auto found = std::string::npos;
+		if(global_state.permissions.contains("permissions") 
+			&& global_state.permissions["permissions"].contains("functionRestrictionsEnable")
+			&& global_state.permissions["permissions"]["functionRestrictionsEnable"].get<bool>()){
 			
-			std::vector<std::string> blacklistedFunctions = (global_state.permissions["functionBlacklist"] != nlohmann::detail::value_t::null) ? global_state.permissions["functionBlacklist"].get<std::vector<std::string>>() : std::vector<std::string>();
-			for(std::string function: blacklistedFunctions){
-				found = func_expression.find(function);
-				if(found != std::string::npos){
+			std::vector<std::string> blacklistedFunctions;
+			if (global_state.permissions.contains("functionBlacklist"))
+				blacklistedFunctions = global_state.permissions["functionBlacklist"].get<decltype(blacklistedFunctions)>();
+
+			for(std::string const& function: blacklistedFunctions){
+				if (func_expression.find(function) != std::string::npos){
+					output = "Function is blacklisted!";
 					break;
 				}
 			}
-			if(found == std::string::npos){
-				output = solution->call_giac(func_expression);
-
-			}else{
-				output = "Function is blacklisted!";
-			}
+			output = solver->call_giac(func_expression);
+			
 		}else{
-			output = solution->call_giac(func_expression);
+			output = solver->call_giac(func_expression);
 		}
 
 		/*Reading Time Info For Logging.*/
-		time_t rawtime;
-  		struct tm * timeinfo;
-  		char current_time [80];
-  		time (&rawtime);
-  		timeinfo = localtime (&rawtime);
-  		strftime (current_time,80,"%x-%X",timeinfo);
-  		puts (current_time);
-		std::string str(current_time);
-		//std::cout << current_time;
-		/**/
+		const std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		std::string current_time(std::ctime(&time));
 
-		//playing with json
-		// read a JSON file
-		//Expecting a file, implement try, catch.
-		std::ifstream i("history.json");
-		nlohmann::json j;
-
-		try
-		{
-			i >> j;
-
-			/*Check which entry number we are adding.*/
-			//TODO: Expetcting Int, implement try, catch.
-			int json_length = j["length"];
-
-			if(json_length <= 100)
-			{
-				//Append the new entry and increment the counter
-				j["length"] = json_length + 1;
-				nlohmann::json k =
-				{
-					{"Input ID", current_time},
-					{"user","guest"},
-					{"input", func_expression},
-					{"output", output}
-				};/**/
-
-				j["entries"].push_back(k);
-
-				//Write the new json contents to the file
-				std::ofstream o("history.json");
-				o << std::setw(4) << j << std::endl;
-				o.close();
-			}
-			else
-			{
-				//Either history.json was empty or non-existant. Create the base file.
-				std::cout << "There was an error related to history.json" << std::endl;
-				nlohmann::json base = nlohmann::json::object();
-				base["entries"] = {};
-				base["length"] = 0;
-				std::ofstream o("history.json");
-				o << std::setw(4) << base << std::endl;
-			}
-			/**/
-		}
-		catch(...)
-		{
-			//Either history.json was empty or non-existant. Create the base file.
-			std::cout << "There was an error related to history.json" << std::endl;
-			nlohmann::json base = nlohmann::json::object();
-			base["entries"] = {};
-			base["length"] = 0;
-			std::ofstream o("history.json");
-			o << std::setw(4) << base << std::endl;
-		}
-
+		History::HistoryManager manager;
+		History::InputHistory temp;
+		manager.push_back(History::InputHistory(current_time, "guest", func_expression, output));
+		
+		temp = manager.get_last();
+		std::cout << "time: " << temp.time << "\tuser: " << temp.user << "\tinput: " << temp.input << "\toutput: " << temp.output << "\n";
+		
         const char *copy_input = lv_textarea_get_text(ta);
         
         /*Create the new text areas*/
@@ -492,7 +436,7 @@ static void Calculator::input_history_ta_event_handler(lv_event_t* e)
 static void Calculator::kb_event_cb(lv_event_t* e)
 {
     lv_event_code_t code = lv_event_get_code(e);
-    lv_obj_t* target = lv_event_get_target(e);
+    // lv_obj_t* target = lv_event_get_target(e);
     if (code == LV_EVENT_CANCEL)
     {
         lv_keyboard_set_textarea(kb, NULL);

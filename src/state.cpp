@@ -503,7 +503,7 @@ _STATE(void) screenshot_handle(){
     as.get_current_admin().value_ref().socket.value_ref()->poll();
 }
 
-_STATE(bool) connect_to_admin_app(admin_app::AdminInfo& admin){
+_STATE(bool) connect_to_admin_app(admin_app::AdminInfo const& admin){
     if (!as.is_connected()){
         std::cout << "CONNECTING TO " << admin.name << " AT " << admin.ip << ":" << admin.port << "\n";
         #if UNDEFINED_CODE_BREAK

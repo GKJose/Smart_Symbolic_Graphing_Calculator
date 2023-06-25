@@ -17,7 +17,7 @@
 
 struct None{};
 
-static None OptNone;
+[[maybe_unused]] static None OptNone;
 
 template<typename T>
 class Option{
@@ -28,7 +28,7 @@ public:
 
 
     Option():empty(true){}
-    explicit Option(T value):empty(false),_value(std::move(value)){}
+    explicit Option(T value):_value(std::move(value)),empty(false){}
     Option(None):empty(true){}
 
     constexpr bool is_empty() const noexcept{

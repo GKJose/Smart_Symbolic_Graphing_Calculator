@@ -112,12 +112,12 @@ class Settings{
         lv_btnmatrix_set_btn_ctrl(btnmat, 0, LV_BTNMATRIX_CTRL_HIDDEN);
 
     }
-    void screenshot_handle(){
-        async_screenshot_handle = std::async(std::launch::async, [=]{
-            global_state.screenshot_handle();
-            return 0;
-        });
-    }
+    // void screenshot_handle(){
+    //     async_screenshot_handle = std::async(std::launch::async, [=]{
+    //         global_state.screenshot_handle();
+    //         return 0;
+    //     });
+    // }
 
     /// Disconnects from the currently-connected administrator.
     /// Updates the GUI to reflect the disconnection.

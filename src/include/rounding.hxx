@@ -228,12 +228,12 @@ namespace RoundExt{
 
     }
 
-    template<typename T, RoundingMode Mode = RoundDown>
+    template<typename T, RoundingMode Mode>
 	std::enable_if_t<std::is_arithmetic<T>::value, T> jround(T val, int digits){
         return jround<T, Mode>(val, Option<int>(digits), OptNone, OptNone);
     }
 
-    template<typename T, RoundingMode Mode = RoundDown>
+    template<typename T, RoundingMode Mode>
 	std::enable_if_t<std::is_arithmetic<T>::value, T> jround(T val, int digits, int sigdigits){
         return jround<T, Mode>(val, Option<int>(digits), Option<int>(sigdigits), OptNone);
     }
