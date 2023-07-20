@@ -136,7 +136,7 @@ static void calc_init(void){
     lv_indev_drv_init(&indev_drv_1); /*Basic initialization*/
     indev_drv_1.type = LV_INDEV_TYPE_POINTER;
     indev_drv_1.read_cb = mouse_read;
-    lv_indev_t *mouse_indev = lv_indev_drv_register(&indev_drv_1);
+    [[maybe_unused]] lv_indev_t *mouse_indev = lv_indev_drv_register(&indev_drv_1);
 
     keyboard_init();
     static lv_indev_drv_t indev_drv_2;

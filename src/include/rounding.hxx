@@ -9,8 +9,6 @@ namespace RoundExt{
     namespace Auxiliary{
         template<typename T>
 	    std::enable_if_t<std::is_floating_point<T>::value, bool> isfinite(T v){
-            using lims = std::numeric_limits<T>;
-            
             if (std::isinf(v))
                 return false;
             if (std::isinf(-v))

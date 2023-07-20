@@ -13,6 +13,12 @@
 
 namespace graphing {
 
+    std::string Point::to_string() const {
+        std::stringstream str;
+        str << "(" << x << " " << y << ")";
+        return str.str();
+    }
+    
     /// obj is an lv_canvas
     static void graph_event_cb(lv_event_t* event){
         static lv_point_t last_point{0,0};
@@ -176,7 +182,7 @@ namespace graphing {
                 if (f_range == 0 || std::isnan(f_range))
                     f_range = 1.0;
                 // Skip first and last interval
-                for (ssize_t interval = 0; interval < n_intervals; interval++){
+                for (ssize_t interval = 0; interval < (ssize_t)n_intervals; interval++){
                     auto p = 2 * interval + 1; // NOTE: could cause problems, may have to subtract by 1
                     if (n_tot_refinements[interval] >= max_recursions){
                         // Skip intervals that have been refined too much
@@ -192,17 +198,17 @@ namespace graphing {
                         for (struct {std::size_t i; ssize_t q; double w;} c = {0, _convarr[0].first, _convarr[0].second}; c.i < 3; c.i++){ //auto [q, w] : _convarr
                             if (interval == 0 && c.q == -1)
                                 continue;
-                            if (interval == n_intervals-1 && c.q == 1)
+                            if (interval == ((ssize_t)n_intervals)-1 && c.q == 1)
                                 continue;
                             tot_w += c.w;
                             ssize_t i = p + c.q;
                             // Estimate integral of second derivative over interval, use that as a refinement indicator
                             // https://mathformeremortals.wordpress.com/2013/01/12/a-numerical-second-derivative-from-three-points/
                             assert(i - 1 >= 0);
-                            assert(i < fs.size());
-                            assert(i + 1 < fs.size());
-                            assert(i < xs.size());
-                            assert(i + 1 < xs.size());
+                            assert(i < (ssize_t)fs.size());
+                            assert(i + 1 < (ssize_t)fs.size());
+                            assert(i < (ssize_t)xs.size());
+                            assert(i + 1 < (ssize_t)xs.size());
 
                             curvatures[interval] += std::abs(
                                 2.0 *
@@ -322,7 +328,7 @@ namespace graphing {
             }
             std::pair<decltype(xs), decltype(fs)> result(std::move(xs), std::move(fs));
 
-            return std::move(result);
+            return result;
             #else
             return std::pair<std::vector<double>, std::vector<double>>(std::vector<double>(), std::vector<double>());
             #endif
@@ -579,7 +585,7 @@ namespace graphing {
         if ((size_t)id >= plot_list.size())
             return;
         Plot& plot = plot_list[id];
-        auto& func_name = plot.name;
+        
         auto domain = viewport_virtual_domain();
         
         try {
@@ -615,16 +621,13 @@ namespace graphing {
             return point.x >= 0.0 && point.x < (double)VIEWPORT_WIDTH && point.y >= 0.0 && point.y < (double)VIEWPORT_HEIGHT;
         };
         
-        Option<lv_point_t> last_point = OptNone;
+
         Option<Point> last_point_f = OptNone;
         
         constexpr Point top_left_corner{0.0, 0.0};
         constexpr Point top_right_corner{(double)VIEWPORT_WIDTH, 0.0};
         constexpr Point bottom_right_corner{(double)VIEWPORT_WIDTH, (double)VIEWPORT_HEIGHT};
-        constexpr Point bottom_left_corner{0.0, (double)VIEWPORT_HEIGHT};
-
-        constexpr double coord_max = (double)(std::numeric_limits<lv_coord_t>::max()-1);
-        const double mag_max = std::sqrt(coord_max*coord_max*2); // sqrt is not constexpr :(
+        constexpr Point bottom_left_corner{0.0, (double)VIEWPORT_HEIGHT};        
         
         //lv_draw_rect_dsc_t rect_style;
         //lv_draw_rect_dsc_init(&rect_style);
@@ -688,19 +691,21 @@ namespace graphing {
     }
 
     void Graph::update() {
-        static char buf[20];
         lv_draw_label_dsc_t label;
         lv_draw_label_dsc_init(&label);
         label.font = &lv_font_montserrat_10;
+        #if 0
         auto start = lv_tick_get();
+        #endif
         fill_background();
         draw_axes();
         for (size_t i = 0; i < plot_list.size(); i++){
             draw_function(i, lv_color_black());
         }
         draw_ticks();
-        auto elapsed = lv_tick_elaps(start);
         #if 0
+        static char buf[20];
+        auto elapsed = lv_tick_elaps(start);
         // ms/f -> f/s
         std::sprintf(buf, "%.2lf", 1.0/(((double)elapsed)/1000.0));
         lv_canvas_draw_text(canvas, 10, 10, 100, &label, buf);

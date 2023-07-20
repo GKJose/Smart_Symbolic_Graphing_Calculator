@@ -142,8 +142,8 @@ class Settings{
     static void back_event_handler(lv_event_t * e){}
 
     static void slider_event_cb(lv_event_t * e){
-        lv_obj_t * slider = lv_event_get_target(e);
         #if ENABLE_MCP_KEYPAD
+        lv_obj_t* slider = lv_event_get_target(e);
         softPwmWrite(5,(int)lv_slider_get_value(slider));
         std::cout << (int)lv_slider_get_value(slider) + "\n";
         #endif 
@@ -177,7 +177,6 @@ class Settings{
 
     /// Refreshes and finds new networks.
     static void wifi_scan_cb(lv_event_t* e){
-        using rti = std::regex_token_iterator<std::string::iterator>;
         static int count = 0;
         LV_ASSERT(e->user_data != nullptr);
         uint16_t id = lv_btnmatrix_get_selected_btn(e->target);
@@ -416,8 +415,6 @@ class Settings{
     }
 
     static void admin_scan_cb(lv_event_t* e){
-        using rti = std::regex_token_iterator<std::string::iterator>;
-        static int count = 0;
         LV_ASSERT(e->user_data != nullptr);
         uint16_t id = lv_btnmatrix_get_selected_btn(e->target);
         Settings* settings = static_cast<Settings*>(e->user_data);
@@ -516,9 +513,7 @@ class Settings{
                 true);
             lv_obj_center(connection_result_popup); 
             auto admin_sec = settings->section_map[settings->sub_admin_page][0];
-            auto current_admin_con = settings->container_map[admin_sec][0];
             auto admin_btn_con = settings->container_map[admin_sec][1];
-            lv_obj_t* current_network_label = lv_obj_get_child(current_admin_con, 0); // label
             lv_obj_t* btnmat = lv_obj_get_child(admin_btn_con, 0); // get the button matrix
             if (id == 0){
                 // Make the disconnect button visible if connection was successful
@@ -603,7 +598,7 @@ class Settings{
         LV_ASSERT(section_map.find(root_page) != section_map.end());
         LV_ASSERT(section_map[root_page].size() > 0);
         container* rc = create_container(section_map[root_page][0]);
-        lv_obj_t* rc_text = create_text(rc, icon, name, LV_MENU_ITEM_BUILDER_VARIANT_1);
+        [[maybe_unused]] lv_obj_t* rc_text = create_text(rc, icon, name, LV_MENU_ITEM_BUILDER_VARIANT_1);
         lv_menu_set_load_page_event(menu, rc, p);
         return rc;
     }
@@ -611,7 +606,7 @@ class Settings{
     void init_root_page(){
         root_page = lv_menu_page_create(menu, (char*)"Settings");
         lv_obj_set_style_pad_hor(root_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
-        section* sec = create_section(root_page);
+        [[maybe_unused]] section* sec = create_section(root_page);
         lv_menu_set_sidebar_page(menu, root_page);
     }
 
@@ -626,7 +621,7 @@ class Settings{
 
     void init_misc_page(){
         sub_misc_page = init_page();
-        section* sec = create_section(sub_misc_page);
+        [[maybe_unused]] section* sec = create_section(sub_misc_page);
         lv_obj_t* button = create_button(sub_misc_page, "Update");
         lv_obj_add_event_cb(button, updateButton_cb, LV_EVENT_ALL, nullptr);
         create_root_text_container(sub_misc_page, LV_SYMBOL_REFRESH, "Misc");
@@ -636,7 +631,7 @@ class Settings{
         sub_about_page = init_page();
         section* sec = create_section(sub_about_page);
         container* con = create_container(sec);
-        lv_obj_t* text = create_text(con, nullptr, "Software Version: Alpha 1", LV_MENU_ITEM_BUILDER_VARIANT_1);
+        [[maybe_unused]] lv_obj_t* text = create_text(con, nullptr, "Software Version: Alpha 1", LV_MENU_ITEM_BUILDER_VARIANT_1);
         create_root_text_container(sub_about_page, LV_SYMBOL_WARNING, "About");
     }
 
@@ -678,7 +673,7 @@ class Settings{
         lv_obj_add_event_cb(btnmat, wifi_scan_cb, LV_EVENT_VALUE_CHANGED, this);
 
         create_section(sub_wifi_page); 
-        container* wifi_con = create_root_text_container(sub_wifi_page, LV_SYMBOL_WIFI, "Wifi");
+        [[maybe_unused]] container* wifi_con = create_root_text_container(sub_wifi_page, LV_SYMBOL_WIFI, "Wifi");
     }
 
     void init_admin_page(){
@@ -725,13 +720,13 @@ class Settings{
         lv_obj_set_flex_grow(name_textarea, true);
 
         create_section(sub_admin_page); // section to populate with admin info.
-        container* admin_con = create_root_text_container(sub_admin_page, LV_SYMBOL_TRASH, "Admin");
+        [[maybe_unused]] container* admin_con = create_root_text_container(sub_admin_page, LV_SYMBOL_TRASH, "Admin");
     }
 
 	void init_name_page(){
 		sub_name_page = init_page();
 		section* sec = create_section(sub_name_page);
-		container* con = create_container(sec);
+		[[maybe_unused]] container* con = create_container(sec);
 		create_root_text_container(sub_name_page, LV_SYMBOL_WARNING, "Name");
 	}
 

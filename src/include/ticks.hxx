@@ -78,11 +78,11 @@ namespace Ticks {
 	TickInfo fallback_ticks(
 		double x_min,
 		double x_max,
-		int k_min,
-		int k_max
+		size_t k_min,
+		size_t k_max
 	){
 		if (k_min != 2 && RoundExt::Auxiliary::isfinite(x_min) && RoundExt::Auxiliary::isfinite(x_max)){
-			auto ticks = algext::linspace((double)x_min, (double)x_max, (std::size_t)k_min);
+			auto ticks = algext::linspace((double)x_min, (double)x_max, k_min);
 			return TickInfo {std::move(ticks), x_min, x_max};
 		} else {
 			std::vector<double> ticks = {x_min, x_max};
@@ -99,7 +99,7 @@ namespace Ticks {
 		std::pair<double, double>(3.0, 0.2)
 	};
 
-	template<int k_min = 2, int k_max = 10, int k_ideal = 5>
+	template<size_t k_min = 2, size_t k_max = 10, size_t k_ideal = 5>
 	TickInfo optimize_ticks(
 		double x_min, 
 		double x_max, 
@@ -116,7 +116,6 @@ namespace Ticks {
 			if (xspan < std::numeric_limits<double>::epsilon())
 				return fallback_ticks(x_min, x_max, k_min, k_max);
 
-			auto n = Q.size();
 			bool is_log_scale = false;
 			if (scale)
 				is_log_scale = true;
@@ -163,14 +162,14 @@ namespace Ticks {
 			// saves many allocations
 			
 			std::vector<std::vector<double>> prealloc_Ss;
-			for (int k = k_min; k <= 2*k_max; k++){
+			for (size_t k = k_min; k <= 2*k_max; k++){
 				prealloc_Ss.push_back(std::vector<double>(extend_ticks ? 3*k : k));
 			}
 			std::vector<double>* S = nullptr; // holds a pointer to an element in prealloc_Ss
-			int len_S; // moved outside of the while loop for later use if strict_span is false.
+			size_t len_S; // moved outside of the while loop for later use if strict_span is false.
 			while (2.0*((double)k_max) * std::pow(base, z+1) > xspan){
-				for (struct {int ik, k;} ks = {0, k_min}; ks.k <= 2*k_max; ks.ik++, ks.k++){
-					for (struct {std::size_t i; double q, qscore;} qs = {0, Q[0].first, Q[0].second }; qs.i < Q.size(); ++qs.i, qs.q = Q[qs.i].first, qs.qscore = Q[qs.i].second){
+				for (struct {size_t ik, k;} ks = {0, k_min}; ks.k <= 2*k_max; ks.ik++, ks.k++){
+					for (struct {size_t i; double q, qscore;} qs = {0, Q[0].first, Q[0].second }; qs.i < Q.size(); ++qs.i, qs.q = Q[qs.i].first, qs.qscore = Q[qs.i].second){
 						double tickspan = qs.q * std::pow(base, z);
 						if (tickspan < std::numeric_limits<double>::epsilon())
 							continue;
@@ -219,7 +218,7 @@ namespace Ticks {
 								viewmin = S->at(0), viewmax = S->at(ks.k - 1);
 							}
 
-							int len_S = (int)S->size();
+							len_S = S->size();
 
 							if (strict_span){
 								viewmin = viewmin > x_min ? viewmin : x_min;
@@ -239,7 +238,7 @@ namespace Ticks {
 										counter += 1;
 									}
 								}
-								len_S = (int)counter;
+								len_S = (size_t)counter;
 							}
 
 							// evaluate quality of ticks
@@ -250,7 +249,7 @@ namespace Ticks {
 
 							// granularity
 							double g = ((0 < len_S) && (len_S < 2*k_ideal)) ? 
-								1.0 - ((double)std::abs(len_S - k_ideal))/((double)k_ideal) :
+								1.0 - ((double)std::abs((ssize_t)len_S - (ssize_t)k_ideal))/((double)k_ideal) :
 								0.0;
 							
 							// coverage 

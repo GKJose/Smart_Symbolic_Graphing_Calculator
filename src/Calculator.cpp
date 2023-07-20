@@ -39,18 +39,16 @@ class Solve
 	Solve(){
 		giac::gen g("approx_mode:=1", &ctx);
 		giac::eval(g, &ctx);
-		assert(giac::approx_mode(&ctx) == true);
 	}
 
     std::string call_giac(std::string input)
     {      
-		//giac::approx_mode(false, &ctx); // Change graphing to calculate approximate values.
         giac::gen g(input, &ctx);
-        std::cout << giac::eval(g, &ctx) << "\n";    
-        giac::gen args(input, &ctx);
         std::string output = input + "\n";
         try{
-            output = giac::gen2string(giac::eval(args, &ctx));
+            auto result = giac::eval(g, &ctx);
+            std::cout << result << "\n";;
+            output = giac::gen2string(result);
         }
         catch(...){
             output = "ERROR: Something went wrong!\n";
@@ -341,7 +339,7 @@ void Calculator::main_screen_driver(lv_obj_t* parent, bool first_screen)
 }
 
 /*Callback functions*/
-static void Calculator::active_ta_event_handler(lv_event_t* e)
+void Calculator::active_ta_event_handler(lv_event_t* e)
 {   
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t* ta = lv_event_get_target(e);
@@ -366,6 +364,7 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
         Solve* solver = static_cast<Solve*>(e->user_data);
         std::string func_expression = std::string(lv_textarea_get_text(e->target));
 		std::string output;
+		bool blacklisted = false;
 		//Check to see if functions are restricted
 		if(global_state.permissions.contains("permissions") 
 			&& global_state.permissions["permissions"].contains("functionRestrictionsEnable")
@@ -373,20 +372,21 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
 			
 			std::vector<std::string> blacklistedFunctions;
 			if (global_state.permissions.contains("functionBlacklist"))
-				blacklistedFunctions = global_state.permissions["functionBlacklist"].get<decltype(blacklistedFunctions)>();
+				blacklistedFunctions = global_state.permissions["functionBlacklist"].get<std::vector<std::string>>();
 
+			
 			for(std::string const& function: blacklistedFunctions){
 				if (func_expression.find(function) != std::string::npos){
 					output = "Function is blacklisted!";
+					blacklisted = true;
 					break;
 				}
 			}
-			output = solver->call_giac(func_expression);
-			
-		}else{
-			output = solver->call_giac(func_expression);
 		}
 
+		if (!blacklisted)
+			output = solver->call_giac(func_expression);
+		
 		/*Reading Time Info For Logging.*/
 		const std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 		std::string current_time(std::ctime(&time));
@@ -395,9 +395,12 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
 		History::InputHistory temp;
 		manager.push_back(History::InputHistory(current_time, "guest", func_expression, output));
 		
+		// debugging info.
+		#if 0
 		temp = manager.get_last();
 		std::cout << "time: " << temp.time << "\tuser: " << temp.user << "\tinput: " << temp.input << "\toutput: " << temp.output << "\n";
-		
+		#endif
+
         const char *copy_input = lv_textarea_get_text(ta);
         
         /*Create the new text areas*/
@@ -419,7 +422,7 @@ static void Calculator::active_ta_event_handler(lv_event_t* e)
 
 }
 
-static void Calculator::input_history_ta_event_handler(lv_event_t* e)
+void Calculator::input_history_ta_event_handler(lv_event_t* e)
 {
 	lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t* ta = lv_event_get_target(e);
@@ -433,7 +436,7 @@ static void Calculator::input_history_ta_event_handler(lv_event_t* e)
 }
 
 
-static void Calculator::kb_event_cb(lv_event_t* e)
+void Calculator::kb_event_cb(lv_event_t* e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     // lv_obj_t* target = lv_event_get_target(e);
@@ -445,7 +448,7 @@ static void Calculator::kb_event_cb(lv_event_t* e)
 
 }
 
-static void Calculator::clear_scr_btn_event_handler(lv_event_t* e)
+void Calculator::clear_scr_btn_event_handler(lv_event_t* e)
 {
 	lv_event_code_t code = lv_event_get_code(e);
 	lv_obj_t* parent = static_cast<lv_obj_t*>(lv_event_get_user_data(e));
@@ -459,7 +462,7 @@ static void Calculator::clear_scr_btn_event_handler(lv_event_t* e)
 }
 
 
-static void Calculator::toggle_kb_event_handler(lv_event_t* e)
+void Calculator::toggle_kb_event_handler(lv_event_t* e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     if (code == LV_EVENT_VALUE_CHANGED) {

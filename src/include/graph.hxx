@@ -51,28 +51,12 @@ namespace graphing {
 
         Point(lv_point_t point):x(point.x),y(point.y){}
 
-        std::string to_string() const {
-            std::stringstream str;
-            str << "(" << x << " " << y << ")";
-            return str.str();
-        }
+        std::string to_string() const;
 
         /// Unsafely truncate an lv_point_t from a Point.
         inline lv_point_t to_lv_point() const {
             lv_point_t point{(lv_coord_t)x, (lv_coord_t)y};
             return point;
-        }
-
-        /// Safely get lv_point_t from a Point.
-        inline Option<lv_point_t> maybe_lv_point() const {
-            using PointType = decltype(x);
-            constexpr auto lv_coord_t_max = std::numeric_limits<lv_coord_t>::max();
-            constexpr auto lv_coord_t_min = std::numeric_limits<lv_coord_t>::min();
-            const PointType pt_max(lv_coord_t_max);
-            const PointType pt_min(lv_coord_t_min);
-            if (x > pt_max || x < pt_min || y > pt_max || y < pt_min)
-                return OptNone;
-            return Option<lv_point_t>(lv_point_t{(lv_coord_t)x, (lv_coord_t)y});
         }
 
     };
@@ -128,7 +112,6 @@ namespace graphing {
         template<typename T>
         T giac_call(T data) const {
             static char fcall_buf[128] = {0};
-            constexpr int input_digits = 7;
             std::sprintf(fcall_buf, "%s(", name.c_str());
             if (std::is_same<T, double>::value){
                 sprintf(fcall_buf+name.size()+1, "%.7lf)", data);
@@ -206,14 +189,14 @@ namespace graphing {
                     return DataRange(0.0, 0.0); // returns (0,0) in the case that nothing needs to be recalculated.
                 case RecalculateLeft:
                     // shift values right. Rightmost block gets replaced. Leftmost block gets recalculated
-                    for (ssize_t i = cached_data.size()-1; i > 0; i--){ 
+                    for (ssize_t i = ((ssize_t)cached_data.size())-1; i > 0; i--){ 
                         cached_data.at(i) = std::move(cached_data.at(i-1));
                     }
                     cached_data.at(0) = PlotDataBlock(cached_data.at(1).x_min - block_width, cached_data.at(1).x_min, DataBlock());
                     return DataRange(cached_data.at(0).x_min, cached_data.at(0).x_max);
                 case RecalculateRight:
                     // shift values left. Leftmost block gets replaced. Rightmost block gets recalculated.
-                    for (ssize_t i = 0; i < cached_data.size()-1; i++){
+                    for (ssize_t i = 0; i < ((ssize_t)cached_data.size())-1; i++){
                         cached_data.at(i) = std::move(cached_data.at(i+1));
                     }
                     cached_data.at(5) = PlotDataBlock(cached_data.at(4).x_max, cached_data.at(4).x_max + block_width, DataBlock());
